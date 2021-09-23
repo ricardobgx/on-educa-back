@@ -8,6 +8,7 @@ import './database';
 
 import studentRoutes from './entities/Student/routes';
 import teacherRoutes from './entities/Teacher/routes';
+import subjectRoutes from './entities/Subject/routes';
 
 class App {
   app: Express;
@@ -27,6 +28,7 @@ class App {
   routes() {
     this.app.use('/students', studentRoutes);
     this.app.use('/teachers', teacherRoutes);
+    this.app.use('/subjects', subjectRoutes);
   }
 }
 
