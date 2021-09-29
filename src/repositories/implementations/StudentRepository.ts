@@ -15,16 +15,19 @@ export class StudentRepository extends Repository<Student> implements IStudentRe
     return await this.find();
   }
 
-  async findByEmail(email: string): Promise<Student> {
-    return await this.findOne({ email });
+  async findByEmail(email: string): Promise<Student | undefined> {
+    const student = await this.findOne({ email });
+    return student;
   }
 
   async updateByEmail(updateFields: IStudentRequest): Promise<void> {
     const { email } = updateFields;
     const fields = { ...updateFields };
 
+    delete fields.email;
+
     Object.keys(fields).map(
-      key => fields[key] == undefined && delete fields[key]
+      key => fields[key] === undefined && delete fields[key]
     );
 
     await this.update({ email }, fields);

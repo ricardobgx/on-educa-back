@@ -14,6 +14,7 @@ export class Teacher extends User {
 
   @ManyToMany(type => Subject, subject => subject.teachers, {
     onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
   })
   subjects: Subject[];
 

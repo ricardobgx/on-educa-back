@@ -6,9 +6,9 @@ import './database';
 
 // Rotas
 
-import studentRoutes from './entities/Student/routes';
-import teacherRoutes from './entities/Teacher/routes';
-import subjectRoutes from './entities/Subject/routes';
+import studentRoutes from "./routes/student.routes";
+import teacherRoutes from './routes/teacher.routes';
+import subjectRoutes from './routes/subject.routes';
 
 class App {
   app: Express;

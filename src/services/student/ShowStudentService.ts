@@ -1,27 +1,21 @@
-import { hash } from "bcryptjs";
 import { getCustomRepository, ObjectType } from "typeorm";
-import { IStudentRequest } from "../../dto/IStudentRequest";
 import { Student } from "../../entities/Student";
 import { ApplicationErrors } from "../../errors";
 import { IStudentRepository } from "../../repositories/interfaces/IStudentRepository";
 
-export class CreateStudentService {
+export class ShowStudentService {
   StudentRepository: IStudentRepository;
 
   constructor(StudentRepository: IStudentRepository) {
     this.StudentRepository = StudentRepository;
   }
 
-  async execute(studentParams: IStudentRequest): Promise<Student> {
+  async execute(email: string): Promise<Student> {
     const studentRepository = getCustomRepository(this.StudentRepository as unknown as ObjectType<IStudentRepository>);
 
-    const studentExists = await studentRepository.findByEmail(studentParams.email);
+    const student = await studentRepository.findByEmail(email);
 
-    if (studentExists) throw new ApplicationErrors("Estudante já existe!", 400);
-
-    const passwordCripto = await hash(studentParams.password, 8);
-
-    const student = await studentRepository.createStudent({ ...studentParams, password: passwordCripto });
+    if (!student) throw new ApplicationErrors("Estudante não existe", 404);
 
     return student;
   }

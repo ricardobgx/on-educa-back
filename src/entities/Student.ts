@@ -19,80 +19,70 @@ export class Student extends User {
   // Duvidas
 
   @OneToMany(type => Doubt, doubt => doubt.student, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   doubts: Doubt[];
 
   // Revisoes de conteudo
 
   @OneToMany(type => ContentReview, contentReview => contentReview.student, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   contentReviews: ContentReview[];
 
   // Duelos criados
 
   @OneToMany(type => Duel, duel => duel.student, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   duels: Duel[];
 
   // Duelos participados
 
   @ManyToMany(type => Duel, duel => duel.students, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   duelParticipations: Duel[];
 
   // Sala interativas participadas
 
   @ManyToMany(type => InterativeRoom, interativeRoom => interativeRoom, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   interativeRoomParticipations: InterativeRoom[];
 
   // Chats com professores
 
   @OneToMany(type => StudTeachChat, studTeachChat => studTeachChat.student, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   studTeachChats: StudTeachChat[];
 
   // Mensagens de chats com professores
 
   @OneToMany(type => StudTeachMessage, studTeachMessage => studTeachMessage.student, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   studTeachMessages: StudTeachMessage[];
 
   // Chats com outros alunos criados pelo aluno
 
   @OneToMany(type => StudStudChat, studStudChat => studStudChat.studentOne, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   studStudChatsOne: StudStudChat[];
 
   // Chats com outros alunos criados por outros alunos
 
   @OneToMany(type => StudStudChat, studStudChat => studStudChat.studentTwo, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   studStudChatsTwo: StudStudChat[];
 
   // Mensagens de chats com outros alunos
 
   @OneToMany(type => StudStudMessage, studStudMessage => studStudMessage.student, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    cascade: true
   })
   studStudMessages: StudStudMessage[];
 }

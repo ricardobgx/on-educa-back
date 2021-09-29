@@ -1,13 +1,10 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class InitialEntities1632086023792 implements MigrationInterface {
-    name = 'InitialEntities1632086023792'
+export class InitialEntities1632788760158 implements MigrationInterface {
+    name = 'InitialEntities1632788760158'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "public"."attachment" DROP CONSTRAINT "FK_89566f1d1a6090bef0791b92aee"`);
-        await queryRunner.query(`ALTER TABLE "public"."question" DROP CONSTRAINT "FK_f33a823a5dbb55c92394454e2cf"`);
-        await queryRunner.query(`ALTER TABLE "public"."alternative" DROP CONSTRAINT "FK_03425337045dd8fb7b77f76d76f"`);
-        await queryRunner.query(`ALTER TABLE "public"."alternative" RENAME COLUMN "question" TO "questionId"`);
+        await queryRunner.query(`CREATE TABLE "attachment" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "url" character varying NOT NULL, "contentId" uuid, CONSTRAINT "PK_d2a80c3a8d467f08a750ac4b420" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "doubt" ("id" SERIAL NOT NULL, "description" character varying NOT NULL, "status" boolean NOT NULL, "createdAt" TIMESTAMP NOT NULL, "studentEmail" character varying, "contentId" uuid, CONSTRAINT "PK_8f23d800a75d09d4e139a40b998" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "duel" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "maxGroupParts" integer NOT NULL, "studentEmail" character varying, CONSTRAINT "PK_1575a4255b3bdf1f11398841d0d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "chat" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL, CONSTRAINT "PK_9d0b2ba74336710fd31154738a5" PRIMARY KEY ("id"))`);
@@ -15,12 +12,19 @@ export class InitialEntities1632086023792 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "stud_teach_message" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "content" character varying NOT NULL, "createdAt" character varying NOT NULL, "chatId" integer, "studentEmail" character varying, CONSTRAINT "PK_3a9438a29a4224580bf266d5cfd" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "teach_stud_message" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "content" character varying NOT NULL, "createdAt" character varying NOT NULL, "chatId" integer, "teacherEmail" character varying, CONSTRAINT "PK_b4b9d3a98b8efa33f4984733323" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "stud_teach_chat" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL, "studentEmail" character varying, "teacherEmail" character varying, CONSTRAINT "PK_58cf3973983b8def64d482c57de" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "subject" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, CONSTRAINT "UQ_d011c391e37d9a5e63e8b04c977" UNIQUE ("name"), CONSTRAINT "PK_12eee115462e38d62e5455fc054" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "teach_teach_message" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "content" character varying NOT NULL, "createdAt" character varying NOT NULL, "teacherEmail" character varying, "chatId" integer, CONSTRAINT "PK_5b4415a7cf10ce743bf4223e665" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "teach_teach_chat" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL, "teacherOneEmail" character varying, "teacherTwoEmail" character varying, CONSTRAINT "PK_c71249298bfabf98570d00aaaaf" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "user" ("email" character varying NOT NULL, "name" character varying NOT NULL, "profilePicture" character varying NOT NULL, "password" character varying NOT NULL, "isOnline" boolean NOT NULL, CONSTRAINT "PK_e12875dfb3b1d92d7d7c5377e22" PRIMARY KEY ("email"))`);
+        await queryRunner.query(`CREATE TABLE "teacher" ("email" character varying NOT NULL, "name" character varying NOT NULL, "profilePicture" character varying NOT NULL, "password" character varying NOT NULL, "isOnline" boolean NOT NULL, CONSTRAINT "PK_00634394dce7677d531749ed8e8" PRIMARY KEY ("email"))`);
         await queryRunner.query(`CREATE TABLE "interative_room" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "teacherEmail" character varying, CONSTRAINT "PK_902f9a56045e9dad97c2ccd5929" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "stud_stud_message" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "content" character varying NOT NULL, "createdAt" character varying NOT NULL, "studentEmail" character varying, "chatId" integer, CONSTRAINT "PK_fad5982a7786ffc9c8cbb80c4b7" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "stud_stud_chat" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL, "studentOneEmail" character varying, "studentTwoEmail" character varying, CONSTRAINT "PK_ffdaab2f1e6632119ccef28ff4d" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "student" ("email" character varying NOT NULL, "name" character varying NOT NULL, "profilePicture" character varying NOT NULL, "password" character varying NOT NULL, "isOnline" boolean NOT NULL, "schoolGrade" integer NOT NULL, CONSTRAINT "PK_a56c051c91dbe1068ad683f536e" PRIMARY KEY ("email"))`);
         await queryRunner.query(`CREATE TABLE "content_review" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "createdAt" TIMESTAMP NOT NULL, "studentEmail" character varying, CONSTRAINT "PK_76988fae19e2a3d89ba01bde674" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "content" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "title" character varying NOT NULL, "description" character varying NOT NULL, "video" character varying NOT NULL, "schoolGrade" integer NOT NULL, "index" integer NOT NULL, "subjectId" uuid, "teacherEmail" character varying, CONSTRAINT "PK_6a2083913f3647b44f205204e36" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "question" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "description" character varying NOT NULL, "difficulty" integer NOT NULL, "index" character varying NOT NULL, "contentId" uuid, CONSTRAINT "PK_21e5786aa0ea704ae185a79b2d5" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "alternative" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "description" character varying NOT NULL, "index" integer NOT NULL, "questionId" uuid, CONSTRAINT "PK_93e717011957def707e61de0723" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "duel_students_student" ("duelId" uuid NOT NULL, "studentEmail" character varying NOT NULL, CONSTRAINT "PK_9f73f7481b1cf15cc00a37793b5" PRIMARY KEY ("duelId", "studentEmail"))`);
         await queryRunner.query(`CREATE INDEX "IDX_75ecde94f7707a5840b2f84836" ON "duel_students_student" ("duelId") `);
         await queryRunner.query(`CREATE INDEX "IDX_1cb6d826014d7a96dfef970d83" ON "duel_students_student" ("studentEmail") `);
@@ -42,33 +46,7 @@ export class InitialEntities1632086023792 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "content_review_contents_content" ("contentReviewId" uuid NOT NULL, "contentId" uuid NOT NULL, CONSTRAINT "PK_5b937c7da8baa45aeefb6622e03" PRIMARY KEY ("contentReviewId", "contentId"))`);
         await queryRunner.query(`CREATE INDEX "IDX_087fe9fdd8e15ce9ae3221f0ba" ON "content_review_contents_content" ("contentReviewId") `);
         await queryRunner.query(`CREATE INDEX "IDX_d148cfdb8c8da174a641df0931" ON "content_review_contents_content" ("contentId") `);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" DROP COLUMN "link"`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" DROP COLUMN "content"`);
-        await queryRunner.query(`ALTER TABLE "public"."user" DROP CONSTRAINT "PK_95c07c16136adcfdcb8221c1fc9"`);
-        await queryRunner.query(`ALTER TABLE "public"."user" ADD CONSTRAINT "PK_e12875dfb3b1d92d7d7c5377e22" PRIMARY KEY ("email")`);
-        await queryRunner.query(`ALTER TABLE "public"."user" DROP COLUMN "id"`);
-        await queryRunner.query(`ALTER TABLE "public"."user" DROP COLUMN "photo"`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" DROP CONSTRAINT "PK_5c0837a4bd45afb3ca779026d10"`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" ADD CONSTRAINT "PK_00634394dce7677d531749ed8e8" PRIMARY KEY ("email")`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" DROP COLUMN "id"`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" DROP COLUMN "photo"`);
-        await queryRunner.query(`ALTER TABLE "public"."student" DROP CONSTRAINT "PK_78f0656779bd27e868856e6eb89"`);
-        await queryRunner.query(`ALTER TABLE "public"."student" ADD CONSTRAINT "PK_a56c051c91dbe1068ad683f536e" PRIMARY KEY ("email")`);
-        await queryRunner.query(`ALTER TABLE "public"."student" DROP COLUMN "id"`);
-        await queryRunner.query(`ALTER TABLE "public"."student" DROP COLUMN "photo"`);
-        await queryRunner.query(`ALTER TABLE "public"."question" DROP COLUMN "content"`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" ADD "url" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" ADD "contentId" uuid`);
-        await queryRunner.query(`ALTER TABLE "public"."user" ADD "profilePicture" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" ADD "profilePicture" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."student" ADD "profilePicture" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."content" ADD "subjectId" uuid`);
-        await queryRunner.query(`ALTER TABLE "public"."content" ADD "teacherEmail" character varying`);
-        await queryRunner.query(`ALTER TABLE "public"."question" ADD "contentId" uuid`);
-        await queryRunner.query(`ALTER TABLE "public"."subject" ADD CONSTRAINT "UQ_d011c391e37d9a5e63e8b04c977" UNIQUE ("name")`);
-        await queryRunner.query(`ALTER TABLE "public"."question" DROP COLUMN "index"`);
-        await queryRunner.query(`ALTER TABLE "public"."question" ADD "index" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" ADD CONSTRAINT "FK_bba44fec71adc588b9f4136105f" FOREIGN KEY ("contentId") REFERENCES "content"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "attachment" ADD CONSTRAINT "FK_bba44fec71adc588b9f4136105f" FOREIGN KEY ("contentId") REFERENCES "content"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "doubt" ADD CONSTRAINT "FK_96d2d4833ed229d8d2ce384d4cc" FOREIGN KEY ("studentEmail") REFERENCES "student"("email") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "doubt" ADD CONSTRAINT "FK_24a6551ef4d2649af7a387941b6" FOREIGN KEY ("contentId") REFERENCES "content"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "duel" ADD CONSTRAINT "FK_117b36dab2f0e7024eb5e8863b0" FOREIGN KEY ("studentEmail") REFERENCES "student"("email") ON DELETE NO ACTION ON UPDATE CASCADE`);
@@ -88,10 +66,10 @@ export class InitialEntities1632086023792 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "stud_stud_chat" ADD CONSTRAINT "FK_128b81cd149d2e89848839976a8" FOREIGN KEY ("studentOneEmail") REFERENCES "student"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "stud_stud_chat" ADD CONSTRAINT "FK_f0bdb9c0c4fe8c23b20dadd7da6" FOREIGN KEY ("studentTwoEmail") REFERENCES "student"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "content_review" ADD CONSTRAINT "FK_88f1dfe6c182255d987a60ce976" FOREIGN KEY ("studentEmail") REFERENCES "student"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "public"."content" ADD CONSTRAINT "FK_aca2d12589a8580b96b9d4dd76a" FOREIGN KEY ("subjectId") REFERENCES "subject"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "public"."content" ADD CONSTRAINT "FK_02b51c7f1f531facdc997e846d2" FOREIGN KEY ("teacherEmail") REFERENCES "teacher"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "public"."question" ADD CONSTRAINT "FK_f7cc42568ef88190783fbaf4274" FOREIGN KEY ("contentId") REFERENCES "content"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "public"."alternative" ADD CONSTRAINT "FK_987e598dc6447a20fa182141434" FOREIGN KEY ("questionId") REFERENCES "question"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "content" ADD CONSTRAINT "FK_aca2d12589a8580b96b9d4dd76a" FOREIGN KEY ("subjectId") REFERENCES "subject"("id") ON DELETE NO ACTION ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "content" ADD CONSTRAINT "FK_02b51c7f1f531facdc997e846d2" FOREIGN KEY ("teacherEmail") REFERENCES "teacher"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "question" ADD CONSTRAINT "FK_f7cc42568ef88190783fbaf4274" FOREIGN KEY ("contentId") REFERENCES "content"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "alternative" ADD CONSTRAINT "FK_987e598dc6447a20fa182141434" FOREIGN KEY ("questionId") REFERENCES "question"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "duel_students_student" ADD CONSTRAINT "FK_75ecde94f7707a5840b2f84836f" FOREIGN KEY ("duelId") REFERENCES "duel"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "duel_students_student" ADD CONSTRAINT "FK_1cb6d826014d7a96dfef970d83b" FOREIGN KEY ("studentEmail") REFERENCES "student"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "duel_questions_question" ADD CONSTRAINT "FK_422be4edd69d21b67cde6c379d8" FOREIGN KEY ("duelId") REFERENCES "duel"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
@@ -123,10 +101,10 @@ export class InitialEntities1632086023792 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "duel_questions_question" DROP CONSTRAINT "FK_422be4edd69d21b67cde6c379d8"`);
         await queryRunner.query(`ALTER TABLE "duel_students_student" DROP CONSTRAINT "FK_1cb6d826014d7a96dfef970d83b"`);
         await queryRunner.query(`ALTER TABLE "duel_students_student" DROP CONSTRAINT "FK_75ecde94f7707a5840b2f84836f"`);
-        await queryRunner.query(`ALTER TABLE "public"."alternative" DROP CONSTRAINT "FK_987e598dc6447a20fa182141434"`);
-        await queryRunner.query(`ALTER TABLE "public"."question" DROP CONSTRAINT "FK_f7cc42568ef88190783fbaf4274"`);
-        await queryRunner.query(`ALTER TABLE "public"."content" DROP CONSTRAINT "FK_02b51c7f1f531facdc997e846d2"`);
-        await queryRunner.query(`ALTER TABLE "public"."content" DROP CONSTRAINT "FK_aca2d12589a8580b96b9d4dd76a"`);
+        await queryRunner.query(`ALTER TABLE "alternative" DROP CONSTRAINT "FK_987e598dc6447a20fa182141434"`);
+        await queryRunner.query(`ALTER TABLE "question" DROP CONSTRAINT "FK_f7cc42568ef88190783fbaf4274"`);
+        await queryRunner.query(`ALTER TABLE "content" DROP CONSTRAINT "FK_02b51c7f1f531facdc997e846d2"`);
+        await queryRunner.query(`ALTER TABLE "content" DROP CONSTRAINT "FK_aca2d12589a8580b96b9d4dd76a"`);
         await queryRunner.query(`ALTER TABLE "content_review" DROP CONSTRAINT "FK_88f1dfe6c182255d987a60ce976"`);
         await queryRunner.query(`ALTER TABLE "stud_stud_chat" DROP CONSTRAINT "FK_f0bdb9c0c4fe8c23b20dadd7da6"`);
         await queryRunner.query(`ALTER TABLE "stud_stud_chat" DROP CONSTRAINT "FK_128b81cd149d2e89848839976a8"`);
@@ -146,33 +124,7 @@ export class InitialEntities1632086023792 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "duel" DROP CONSTRAINT "FK_117b36dab2f0e7024eb5e8863b0"`);
         await queryRunner.query(`ALTER TABLE "doubt" DROP CONSTRAINT "FK_24a6551ef4d2649af7a387941b6"`);
         await queryRunner.query(`ALTER TABLE "doubt" DROP CONSTRAINT "FK_96d2d4833ed229d8d2ce384d4cc"`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" DROP CONSTRAINT "FK_bba44fec71adc588b9f4136105f"`);
-        await queryRunner.query(`ALTER TABLE "public"."question" DROP COLUMN "index"`);
-        await queryRunner.query(`ALTER TABLE "public"."question" ADD "index" integer NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."subject" DROP CONSTRAINT "UQ_d011c391e37d9a5e63e8b04c977"`);
-        await queryRunner.query(`ALTER TABLE "public"."question" DROP COLUMN "contentId"`);
-        await queryRunner.query(`ALTER TABLE "public"."content" DROP COLUMN "teacherEmail"`);
-        await queryRunner.query(`ALTER TABLE "public"."content" DROP COLUMN "subjectId"`);
-        await queryRunner.query(`ALTER TABLE "public"."student" DROP COLUMN "profilePicture"`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" DROP COLUMN "profilePicture"`);
-        await queryRunner.query(`ALTER TABLE "public"."user" DROP COLUMN "profilePicture"`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" DROP COLUMN "contentId"`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" DROP COLUMN "url"`);
-        await queryRunner.query(`ALTER TABLE "public"."question" ADD "content" uuid`);
-        await queryRunner.query(`ALTER TABLE "public"."student" ADD "photo" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."student" ADD "id" uuid NOT NULL DEFAULT uuid_generate_v4()`);
-        await queryRunner.query(`ALTER TABLE "public"."student" DROP CONSTRAINT "PK_a56c051c91dbe1068ad683f536e"`);
-        await queryRunner.query(`ALTER TABLE "public"."student" ADD CONSTRAINT "PK_78f0656779bd27e868856e6eb89" PRIMARY KEY ("id", "email")`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" ADD "photo" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" ADD "id" uuid NOT NULL DEFAULT uuid_generate_v4()`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" DROP CONSTRAINT "PK_00634394dce7677d531749ed8e8"`);
-        await queryRunner.query(`ALTER TABLE "public"."teacher" ADD CONSTRAINT "PK_5c0837a4bd45afb3ca779026d10" PRIMARY KEY ("id", "email")`);
-        await queryRunner.query(`ALTER TABLE "public"."user" ADD "photo" character varying NOT NULL`);
-        await queryRunner.query(`ALTER TABLE "public"."user" ADD "id" uuid NOT NULL DEFAULT uuid_generate_v4()`);
-        await queryRunner.query(`ALTER TABLE "public"."user" DROP CONSTRAINT "PK_e12875dfb3b1d92d7d7c5377e22"`);
-        await queryRunner.query(`ALTER TABLE "public"."user" ADD CONSTRAINT "PK_95c07c16136adcfdcb8221c1fc9" PRIMARY KEY ("id", "email")`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" ADD "content" uuid`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" ADD "link" character varying NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "attachment" DROP CONSTRAINT "FK_bba44fec71adc588b9f4136105f"`);
         await queryRunner.query(`DROP INDEX "IDX_d148cfdb8c8da174a641df0931"`);
         await queryRunner.query(`DROP INDEX "IDX_087fe9fdd8e15ce9ae3221f0ba"`);
         await queryRunner.query(`DROP TABLE "content_review_contents_content"`);
@@ -194,12 +146,19 @@ export class InitialEntities1632086023792 implements MigrationInterface {
         await queryRunner.query(`DROP INDEX "IDX_1cb6d826014d7a96dfef970d83"`);
         await queryRunner.query(`DROP INDEX "IDX_75ecde94f7707a5840b2f84836"`);
         await queryRunner.query(`DROP TABLE "duel_students_student"`);
+        await queryRunner.query(`DROP TABLE "alternative"`);
+        await queryRunner.query(`DROP TABLE "question"`);
+        await queryRunner.query(`DROP TABLE "content"`);
         await queryRunner.query(`DROP TABLE "content_review"`);
+        await queryRunner.query(`DROP TABLE "student"`);
         await queryRunner.query(`DROP TABLE "stud_stud_chat"`);
         await queryRunner.query(`DROP TABLE "stud_stud_message"`);
         await queryRunner.query(`DROP TABLE "interative_room"`);
+        await queryRunner.query(`DROP TABLE "teacher"`);
+        await queryRunner.query(`DROP TABLE "user"`);
         await queryRunner.query(`DROP TABLE "teach_teach_chat"`);
         await queryRunner.query(`DROP TABLE "teach_teach_message"`);
+        await queryRunner.query(`DROP TABLE "subject"`);
         await queryRunner.query(`DROP TABLE "stud_teach_chat"`);
         await queryRunner.query(`DROP TABLE "teach_stud_message"`);
         await queryRunner.query(`DROP TABLE "stud_teach_message"`);
@@ -207,10 +166,7 @@ export class InitialEntities1632086023792 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "chat"`);
         await queryRunner.query(`DROP TABLE "duel"`);
         await queryRunner.query(`DROP TABLE "doubt"`);
-        await queryRunner.query(`ALTER TABLE "public"."alternative" RENAME COLUMN "questionId" TO "question"`);
-        await queryRunner.query(`ALTER TABLE "public"."alternative" ADD CONSTRAINT "FK_03425337045dd8fb7b77f76d76f" FOREIGN KEY ("question") REFERENCES "question"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "public"."question" ADD CONSTRAINT "FK_f33a823a5dbb55c92394454e2cf" FOREIGN KEY ("content") REFERENCES "content"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "public"."attachment" ADD CONSTRAINT "FK_89566f1d1a6090bef0791b92aee" FOREIGN KEY ("content") REFERENCES "content"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`DROP TABLE "attachment"`);
     }
 
 }
