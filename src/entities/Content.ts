@@ -3,8 +3,7 @@ import { Attachment } from "./Attachment";
 import { ContentReview } from "./ContentReview";
 import { Doubt } from "./Doubt";
 import { Question } from "./Question";
-import { Subject } from "./Subject";
-import { Teacher } from "./Teacher";
+import { Unity } from "./Unity";
 
 @Entity()
 export class Content {
@@ -44,16 +43,10 @@ export class Content {
   })
   doubts: Doubt[];
 
-  @ManyToOne(type => Subject, subject => subject.contents, {
+  @ManyToOne(type => Unity, unity => unity.contents, {
     onUpdate: 'CASCADE',
   })
-  subject: Subject;
-
-  @ManyToOne(type => Teacher, teacher => teacher.contents, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  teacher: Teacher;
+  unity: Unity;
 
   @ManyToMany(type => ContentReview, contentReview => contentReview.contents, {
     onUpdate: 'CASCADE',
