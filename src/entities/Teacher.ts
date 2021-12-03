@@ -34,14 +34,6 @@ export class Teacher extends User {
   })
   interativeRoomParticipations: InterativeRoom[];
 
-  // Conteudos criados
-
-  @OneToMany(type => Content, content => content.teacher, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  contents: Content[];
-
   // Chats com alunos
 
   @OneToMany(type => StudTeachChat, studTeachChat => studTeachChat.teacher, {
