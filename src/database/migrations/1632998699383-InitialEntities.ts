@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class InitialEntities1632788760158 implements MigrationInterface {
-    name = 'InitialEntities1632788760158'
+export class InitialEntities1632998699383 implements MigrationInterface {
+    name = 'InitialEntities1632998699383'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "attachment" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "url" character varying NOT NULL, "contentId" uuid, CONSTRAINT "PK_d2a80c3a8d467f08a750ac4b420" PRIMARY KEY ("id"))`);
@@ -71,15 +71,15 @@ export class InitialEntities1632788760158 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "question" ADD CONSTRAINT "FK_f7cc42568ef88190783fbaf4274" FOREIGN KEY ("contentId") REFERENCES "content"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "alternative" ADD CONSTRAINT "FK_987e598dc6447a20fa182141434" FOREIGN KEY ("questionId") REFERENCES "question"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "duel_students_student" ADD CONSTRAINT "FK_75ecde94f7707a5840b2f84836f" FOREIGN KEY ("duelId") REFERENCES "duel"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "duel_students_student" ADD CONSTRAINT "FK_1cb6d826014d7a96dfef970d83b" FOREIGN KEY ("studentEmail") REFERENCES "student"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "duel_students_student" ADD CONSTRAINT "FK_1cb6d826014d7a96dfef970d83b" FOREIGN KEY ("studentEmail") REFERENCES "student"("email") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "duel_questions_question" ADD CONSTRAINT "FK_422be4edd69d21b67cde6c379d8" FOREIGN KEY ("duelId") REFERENCES "duel"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "duel_questions_question" ADD CONSTRAINT "FK_8181c4d50660730da4802f3fd2f" FOREIGN KEY ("questionId") REFERENCES "question"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "subject_teachers_teacher" ADD CONSTRAINT "FK_145dd9504ff5a5075c2c1f0c3e4" FOREIGN KEY ("subjectId") REFERENCES "subject"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "subject_teachers_teacher" ADD CONSTRAINT "FK_ecc74beadd0eea8dcd0eac02c04" FOREIGN KEY ("teacherEmail") REFERENCES "teacher"("email") ON DELETE NO ACTION ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "subject_teachers_teacher" ADD CONSTRAINT "FK_ecc74beadd0eea8dcd0eac02c04" FOREIGN KEY ("teacherEmail") REFERENCES "teacher"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "interative_room_teachers_teacher" ADD CONSTRAINT "FK_99247eb0d041dac5dff873ce1bb" FOREIGN KEY ("interativeRoomId") REFERENCES "interative_room"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "interative_room_teachers_teacher" ADD CONSTRAINT "FK_9480785f6c33f11d6a8e257d341" FOREIGN KEY ("teacherEmail") REFERENCES "teacher"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "interative_room_students_student" ADD CONSTRAINT "FK_775a6fcd97e1d308eaea34a8aa9" FOREIGN KEY ("interativeRoomId") REFERENCES "interative_room"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
-        await queryRunner.query(`ALTER TABLE "interative_room_students_student" ADD CONSTRAINT "FK_752d3dd7bdef2df8bf85b35efe7" FOREIGN KEY ("studentEmail") REFERENCES "student"("email") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "interative_room_students_student" ADD CONSTRAINT "FK_752d3dd7bdef2df8bf85b35efe7" FOREIGN KEY ("studentEmail") REFERENCES "student"("email") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "interative_room_questions_question" ADD CONSTRAINT "FK_4e2cd85136840150f6fc3674594" FOREIGN KEY ("interativeRoomId") REFERENCES "interative_room"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "interative_room_questions_question" ADD CONSTRAINT "FK_6c7221dde585ad26b925e2f4ee8" FOREIGN KEY ("questionId") REFERENCES "question"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "content_review_contents_content" ADD CONSTRAINT "FK_087fe9fdd8e15ce9ae3221f0ba0" FOREIGN KEY ("contentReviewId") REFERENCES "content_review"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
