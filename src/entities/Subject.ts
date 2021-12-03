@@ -1,6 +1,8 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Content } from "./Content";
+import { SchoolGrade } from "./SchoolGrade";
 import { Teacher } from "./Teacher";
+import { Unity } from "./Unity";
 
 @Entity()
 export class Subject {
@@ -10,16 +12,14 @@ export class Subject {
   @Column({ unique: true, nullable: false })
   name: string;
 
-  @OneToMany(type => Content, content => content.subject, {
+  @OneToMany(type => Unity, units => units.subject, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE'
   })
-  contents: Content[];
+  units: Unity[];
 
-  @ManyToMany(type => Teacher, teacher => teacher.subjects, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+  @ManyToOne(type => SchoolGrade, schoolGrade => schoolGrade.subjects, {
+    onUpdate: 'CASCADE'
   })
-  @JoinTable()
-  teachers: Teacher[];
+  schoolGrade: SchoolGrade;
 }
