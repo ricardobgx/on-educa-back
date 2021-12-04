@@ -26,7 +26,4 @@ export class TeachingTypeRepository extends Repository<TeachingType> implements 
 
     await this.update({ id }, fields);
   }
-  async deleteById(id: string): Promise<DeleteResult> {
-    return await this.delete({ id });
-  }
 }

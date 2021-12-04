@@ -6,12 +6,13 @@ import { CreateSubjectService } from "../../services/subject/CreateSubjectServic
 
 class CreateSubjectController {
   async handle(req: Request, res: Response) {
-    const { name } = req.body as ISubjectRequest;
+    const { name, schoolGradeId } = req.body as ISubjectRequest;
 
     const createSubjectService = new CreateSubjectService(new SubjectRepository());
 
     const subject = await createSubjectService.execute({
-      name
+      name,
+      schoolGradeId
     });
 
     return res.status(201).json(subject);

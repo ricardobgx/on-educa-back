@@ -17,7 +17,7 @@ export class CreateSubjectService {
 
     const subjectExists = await subjectRepository.findById(subjectParams.id);
 
-    if (subjectExists) throw new ApplicationErrors("Estudante já existe!", 400);
+    if (subjectExists) throw new ApplicationErrors("Disciplina já existe!", 400);
 
     const subject = await subjectRepository.createSubject(subjectParams);
 

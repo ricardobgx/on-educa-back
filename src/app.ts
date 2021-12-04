@@ -9,6 +9,9 @@ import './database';
 import studentRoutes from "./routes/student.routes";
 import teacherRoutes from './routes/teacher.routes';
 import subjectRoutes from './routes/subject.routes';
+import teachingTypeRoutes from './routes/teachingtype.routes';
+import schoolGradeRoutes from './routes/schoolgrade.routes';
+import unityRoutes from './routes/unity.routes';
 
 class App {
   app: Express;
@@ -29,6 +32,9 @@ class App {
     this.app.use('/students', studentRoutes);
     this.app.use('/teachers', teacherRoutes);
     this.app.use('/subjects', subjectRoutes);
+    this.app.use('/teachingtypes', teachingTypeRoutes);
+    this.app.use('/schoolgrades', schoolGradeRoutes);
+    this.app.use('/units', unityRoutes);
   }
 }
 

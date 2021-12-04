@@ -9,7 +9,7 @@ export class Subject {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ nullable: false })
   name: string;
 
   @OneToMany(type => Unity, units => units.subject, {

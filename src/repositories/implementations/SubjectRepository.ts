@@ -1,20 +1,38 @@
-import { DeleteResult, EntityRepository, Repository } from "typeorm";
+import { DeleteResult, EntityRepository, getCustomRepository, Repository } from "typeorm";
 import { ISubjectRequest } from "../../dto/ISubjectRequest";
 import { Subject } from "../../entities/Subject";
 import { ISubjectRepository } from "../interfaces/ISubjectRepository";
+import { SchoolGradeRepository } from "./SchoolGradeRepository";
 
 @EntityRepository(Subject)
 export class SubjectRepository extends Repository<Subject> implements ISubjectRepository {
   async createSubject(subjectParams: ISubjectRequest): Promise<Subject> {
-    const subject = await this.save(subjectParams);
+    const { name, schoolGradeId } = subjectParams;
+
+    const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
+    const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
+
+    const newSubjectParams = this.create({ name, schoolGrade });
+
+    const subject = await this.save(newSubjectParams);
 
     return subject;
   }
 
   async findAll(): Promise<Subject[]> {
     return await this.find({
-      relations: ['teachers']
+      relations: ['units', 'schoolGrade']
     });
+  }
+
+  async findBySchoolGrade(schoolGradeId: string): Promise<Subject[]> {
+    const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
+
+    const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
+    
+    const subjects = this.find({ where: { schoolGrade }, relations: ['units'] });
+
+    return subjects;
   }
 
   async findById(id: string): Promise<Subject | undefined> {
@@ -36,9 +54,6 @@ export class SubjectRepository extends Repository<Subject> implements ISubjectRe
   }
 
   async deleteById(id: string): Promise<DeleteResult> {
-    const subject = await this.findById(id);
-    await this.removeTeachers(subject);
-
     return await this.delete({ id });
   }
 

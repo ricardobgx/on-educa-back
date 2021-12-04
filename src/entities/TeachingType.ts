@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { SchoolGrade } from "./SchoolGrade";
+import { Teacher } from "./Teacher";
 
 @Entity()
 export class TeachingType {
@@ -8,6 +9,9 @@ export class TeachingType {
 
   @Column()
   title: string;
+
+  @OneToMany(type => Teacher, teachers => teachers.teachingType)
+  teachers: Teacher[];
 
   @OneToMany(type => SchoolGrade, schoolGrades => schoolGrades.teachingType, {
     onUpdate: 'CASCADE',

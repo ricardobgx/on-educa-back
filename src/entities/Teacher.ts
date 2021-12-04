@@ -1,8 +1,7 @@
-import { Entity, ManyToMany, OneToMany } from "typeorm";
-import { Content } from "./Content";
+import { Entity, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { InterativeRoom } from "./InterativeRoom";
 import { StudTeachChat } from "./StudTeachChat";
-import { Subject } from "./Subject";
+import { TeachingType } from "./TeachingType";
 import { TeachStudMessage } from "./TeachStudMessage";
 import { TeachTeachChat } from "./TeachTeachChat";
 import { TeachTeachMessage } from "./TeachTeachMessage";
@@ -10,13 +9,10 @@ import { User } from "./User";
 
 @Entity()
 export class Teacher extends User {
-  // Disciplinas
-
-  @ManyToMany(type => Subject, subject => subject.teachers, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+  @ManyToOne(type => TeachingType, teachingType => teachingType.teachers, {
+    onUpdate: 'CASCADE'
   })
-  subjects: Subject[];
+  teachingType: TeachingType;
 
   // Salas interativas criadas
 
