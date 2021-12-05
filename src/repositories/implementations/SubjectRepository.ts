@@ -1,4 +1,5 @@
 import { DeleteResult, EntityRepository, getCustomRepository, Repository } from "typeorm";
+import { IManySubjects } from "../../dto/IManySubjects";
 import { ISubjectRequest } from "../../dto/ISubjectRequest";
 import { Subject } from "../../entities/Subject";
 import { ISubjectRepository } from "../interfaces/ISubjectRepository";
@@ -23,6 +24,20 @@ export class SubjectRepository extends Repository<Subject> implements ISubjectRe
     return await this.find({
       relations: ['units', 'schoolGrade']
     });
+  }
+
+  async createManySubjects(subjectsParams: IManySubjects): Promise<Subject[]> {
+    const subjects: Subject[] = [];
+    const { names, schoolGradeId } = subjectsParams;
+
+    await Promise.all(
+      names.map(async (name): Promise<void> => {
+        const subject = await this.createSubject({ name, schoolGradeId });
+        subjects.push(subject);
+      })
+    );
+    
+    return subjects;
   }
 
   async findBySchoolGrade(schoolGradeId: string): Promise<Subject[]> {
