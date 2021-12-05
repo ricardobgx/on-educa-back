@@ -1,4 +1,5 @@
 import { Router } from "express";
+import CreateManySubjectsController from "../controllers/subject/CreateManySubjectsController";
 import CreateSubjectController from "../controllers/subject/CreateSubjectController";
 import DeleteSubjectController from "../controllers/subject/DeleteSubjectController";
 import ListSubjectBySchoolGradeController from "../controllers/subject/ListSubjectBySchoolGradeController";
@@ -12,6 +13,7 @@ routes.get("/", ListSubjectController.handle);
 routes.get("/schoolgrade/:id", ListSubjectBySchoolGradeController.handle);
 routes.get('/:id', ShowSubjectController.handle);
 routes.post("/", CreateSubjectController.handle);
+routes.post("/many", CreateManySubjectsController.handle);
 routes.put("/:id", UpdateSubjectController.handle);
 routes.delete("/:id", DeleteSubjectController.handle);
 
