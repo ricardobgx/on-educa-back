@@ -20,9 +20,6 @@ export class Content {
   video: string;
 
   @Column()
-  schoolGrade: number;
-
-  @Column()
   index: number;
 
   @OneToMany(type => Attachment, attachment => attachment.content, {
