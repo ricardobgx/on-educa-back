@@ -12,11 +12,9 @@ export class UnityRepository extends Repository<Unity> implements IUnityReposito
     const subjectRepository = getCustomRepository(SubjectRepository);
     const subject = await subjectRepository.findById(subjectId);
     
-    const newUnityParams = this.create({ title, subject });
+    const unity = this.create({ title, subject });
 
-    const unity = await this.save(newUnityParams);
-    
-    return unity;
+    return await this.save(unity);
   }
   
   async findAll(): Promise<Unity[]> {
@@ -41,7 +39,6 @@ export class UnityRepository extends Repository<Unity> implements IUnityReposito
   async updateById(updateFields: IUnityRequest): Promise<void> {
     const { id } = updateFields;
     const fields = {...updateFields};
-    const unity  = this.findOne({ id });
 
     Object.keys(fields).map(
       key => fields[key] === undefined && delete fields[key]
