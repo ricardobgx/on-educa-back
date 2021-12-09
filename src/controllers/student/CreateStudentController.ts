@@ -7,7 +7,7 @@ import { CreateStudentService } from "../../services/student/CreateStudentServic
 
 class CreateStudentController {
   async handle(req: Request, res: Response) {
-    const { email, name, password, profilePicture, schoolGrade, isOnline } = req.body as IStudentRequest;
+    const { email, name, password, profilePicture, teachingTypeId, isOnline } = req.body as IStudentRequest;
 
     const createStudentService = new CreateStudentService(new StudentRepository());
 
@@ -16,7 +16,7 @@ class CreateStudentController {
       name,
       password,
       profilePicture,
-      schoolGrade,
+      teachingTypeId,
       isOnline
     });
 
