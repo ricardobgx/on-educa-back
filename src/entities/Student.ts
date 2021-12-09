@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, OneToMany } from "typeorm";
+import { Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { ContentReview } from "./ContentReview";
 import { Doubt } from "./Doubt";
 import { Duel } from "./Duel";
@@ -7,15 +7,16 @@ import { StudStudChat } from "./StudStudChat";
 import { StudStudMessage } from "./StudStudMessage";
 import { StudTeachChat } from "./StudTeachChat";
 import { StudTeachMessage } from "./StudTeachMessage";
+import { TeachingType } from "./TeachingType";
 import { User } from "./User";
 
 @Entity()
 export class Student extends User {
-  // Serie escolar
-
-  @Column()
-  schoolGrade: number;
-
+  @ManyToOne(type => TeachingType, teachingType => teachingType.students, {
+    onUpdate: 'CASCADE'
+  })
+  teachingType: TeachingType;
+  
   // Duvidas
 
   @OneToMany(type => Doubt, doubt => doubt.student, {

@@ -1,18 +1,31 @@
-import { DeleteResult, EntityRepository, Repository } from "typeorm";
+import { DeleteResult, EntityRepository, getCustomRepository, Repository } from "typeorm";
 import { IStudentRequest } from "../../dto/IStudentRequest";
 import { Student } from "../../entities/Student";
 import { IStudentRepository } from "../interfaces/IStudentRepository";
+import { TeachingTypeRepository } from "./TeachingTypeRepository";
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> implements IStudentRepository {
   async createStudent(studentParams: IStudentRequest): Promise<Student> {
-    const student = await this.save(studentParams);
+    const { teachingTypeId } = studentParams;
+    
+    const teachingTypeRepository = getCustomRepository(TeachingTypeRepository);
+    const teachingType = await teachingTypeRepository.findById(teachingTypeId);
+    
+    delete studentParams.teachingTypeId;
 
-    return student;
+    const student = this.create({ ...studentParams, teachingType });
+
+    return await this.save(student);
   }
 
   async findAll(): Promise<Student[]> {
     return await this.find();
+  }
+
+  async findById(id: string): Promise<Student | undefined> {
+    const student = await this.findOne({ id }, { relations: ['teachingType'] });
+    return student;
   }
 
   async findByEmail(email: string): Promise<Student | undefined> {
