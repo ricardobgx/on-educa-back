@@ -19,9 +19,7 @@ export class CreateTeacherService {
 
     if (teacherExists) throw new ApplicationErrors("Professor já existe!", 400);
 
-    const passwordCripto = await hash(teacherParams.password, 8);
-
-    const teacher = await teacherRepository.createTeacher({ ...teacherParams, password: passwordCripto });
+    const teacher = await teacherRepository.createTeacher({ ...teacherParams });
 
     return teacher;
   }

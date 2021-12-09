@@ -19,9 +19,7 @@ export class CreateStudentService {
 
     if (studentExists) throw new ApplicationErrors("Estudante já existe!", 400);
 
-    const passwordCripto = await hash(studentParams.password, 8);
-
-    const student = await studentRepository.createStudent({ ...studentParams, password: passwordCripto });
+    const student = await studentRepository.createStudent({ ...studentParams });
 
     return student;
   }
