@@ -6,16 +6,16 @@ import { IStudentRepository } from "../../repositories/interfaces/IStudentReposi
 import { IUserAuthenticationRequest } from "../../dto/IUserAuthenticationRequest";
 
 export class AuthenticationStudentService {
-  StudentRepository: IStudentRepository;
+  studentRepository: IStudentRepository;
 
-  constructor(StudentRepository: IStudentRepository) {
-    this.StudentRepository = StudentRepository;
+  constructor(studentRepository: IStudentRepository) {
+    this.studentRepository = studentRepository;
   }
 
   async execute(credentials: IUserAuthenticationRequest): Promise<string> {
     const { email, password } = credentials;
 
-    const studentRepository = getCustomRepository(this.StudentRepository as unknown as ObjectType<IStudentRepository>);
+    const studentRepository = getCustomRepository(this.studentRepository as unknown as ObjectType<IStudentRepository>);
 
     const student = await studentRepository.findByEmail(email);
 
