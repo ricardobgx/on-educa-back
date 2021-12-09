@@ -5,7 +5,8 @@ import { Teacher } from "../../entities/Teacher";
 export interface ITeacherRepository {
   createTeacher(teacherParams: ITeacherRequest): Promise<Teacher>;
   findAll(): Promise<Teacher[]>;
-  findByEmail(email: string): Promise<Teacher | null>;
+  findById(id: string): Promise<Teacher | undefined>;
+  findByEmail(email: string): Promise<Teacher | undefined>;
   updateByEmail(updateFields: ITeacherRequest): Promise<void>;
   deleteByEmail(email: string): Promise<DeleteResult>;
 }

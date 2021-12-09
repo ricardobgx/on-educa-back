@@ -1,26 +1,39 @@
-import { DeleteResult, EntityRepository, Repository } from "typeorm";
+import { DeleteResult, EntityRepository, getCustomRepository, Repository } from "typeorm";
 import { ITeacherRequest } from "../../dto/ITeacherRequest";
-import { Subject } from "../../entities/Subject";
 import { Teacher } from "../../entities/Teacher";
 import { ITeacherRepository } from "../interfaces/ITeacherRepository";
+import { TeachingTypeRepository } from "./TeachingTypeRepository";
 
 @EntityRepository(Teacher)
 export class TeacherRepository extends Repository<Teacher> implements ITeacherRepository {
   async createTeacher(teacherParams: ITeacherRequest): Promise<Teacher> {
-    const teacher = await this.save(teacherParams);
+    const { teachingTypeId } = teacherParams;
 
-    return teacher;
+    const teachingTypeRepository = getCustomRepository(TeachingTypeRepository);
+    const teachingType = await teachingTypeRepository.findById(teachingTypeId);
+    
+    delete teacherParams.teachingTypeId;
+
+    const teacher = this.create({...teacherParams, teachingType });
+
+    return await await this.save(teacher);
   }
 
   async findAll(): Promise<Teacher[]> {
     return await this.find({
-      relations: ['subjects']
+      relations: ['teachingType']
     });
   }
 
-  async findByEmail(email: string): Promise<Teacher> {
+  async findById(id: string): Promise<Teacher | undefined> {
+    return await this.findOne({ id }, {
+      relations: ['teachingType']
+    });
+  }
+
+  async findByEmail(email: string): Promise<Teacher | undefined> {
     return await this.findOne({ email }, {
-      relations: ['subjects']
+      relations: ['teachingType']
     });
   }
 
@@ -32,42 +45,10 @@ export class TeacherRepository extends Repository<Teacher> implements ITeacherRe
       key => fields[key] === undefined && delete fields[key]
     );
 
-    const teacher = await this.findByEmail(email);
-
-    await this.removeSubjects(teacher);
-
-    if (fields.subjects) {
-      fields.subjects.map(async subject => {
-        await this.createQueryBuilder()
-          .relation(Teacher, 'subjects')
-          .of(teacher)
-          .add(subject);
-      });
-    }
-
-    delete fields.subjects;
-
     await this.update({ email }, fields);
   }
 
-  async removeSubjects(teacher: Teacher): Promise<void> {
-    const subjects: Subject[] = await this.createQueryBuilder()
-      .relation(Teacher, 'subjects')
-      .of(teacher)
-      .loadMany();
-
-    subjects.map(async subject => {
-      await this.createQueryBuilder()
-        .relation(Teacher, 'subjects')
-        .of(teacher)
-        .remove(subject);
-    });
-  }
-
   async deleteByEmail(email: string): Promise<DeleteResult> {
-    const teacher = await this.findByEmail(email);
-    await this.removeSubjects(teacher);
-
     return await this.delete({ email });
   }
 }
