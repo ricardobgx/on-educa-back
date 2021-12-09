@@ -9,5 +9,5 @@ import { StudTeachMessage } from "../entities/StudTeachMessage";
 import { IUserRequest } from "./IUserRequest";
 
 export interface IStudentRequest extends IUserRequest {
-  schoolGrade: number;
+  teachingTypeId?: string;
 }
