@@ -9,9 +9,9 @@ class AuthenticationStudentController {
 
     const authenticationStudentService = new AuthenticationStudentService(new StudentRepository());
 
-    const token = await authenticationStudentService.execute({ email, password });
+    const authResponse = await authenticationStudentService.execute({ email, password });
 
-    return res.status(201).json(token);
+    return res.status(201).json(authResponse);
   }
 }
 

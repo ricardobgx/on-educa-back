@@ -4,6 +4,7 @@ import { getCustomRepository, ObjectType } from "typeorm";
 import { ApplicationErrors } from "../../errors";
 import { IStudentRepository } from "../../repositories/interfaces/IStudentRepository";
 import { IUserAuthenticationRequest } from "../../dto/IUserAuthenticationRequest";
+import { IAuthenticationResponse } from "../../dto/IAuthenticationResponse";
 
 export class AuthenticationStudentService {
   studentRepository: IStudentRepository;
@@ -12,7 +13,7 @@ export class AuthenticationStudentService {
     this.studentRepository = studentRepository;
   }
 
-  async execute(credentials: IUserAuthenticationRequest): Promise<string> {
+  async execute(credentials: IUserAuthenticationRequest): Promise<IAuthenticationResponse> {
     const { email, password } = credentials;
 
     const studentRepository = getCustomRepository(this.studentRepository as unknown as ObjectType<IStudentRepository>);
@@ -33,10 +34,10 @@ export class AuthenticationStudentService {
       tokenKey,
       {
         expiresIn: "7d",
-        subject: student.email
+        subject: student.id
       }
     );
 
-    return token;
+    return { id: student.id, token };
   }
 }
