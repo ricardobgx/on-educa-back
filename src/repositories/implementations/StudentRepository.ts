@@ -2,19 +2,19 @@ import { DeleteResult, EntityRepository, getCustomRepository, Repository } from 
 import { IStudentRequest } from "../../dto/IStudentRequest";
 import { Student } from "../../entities/Student";
 import { IStudentRepository } from "../interfaces/IStudentRepository";
-import { TeachingTypeRepository } from "./TeachingTypeRepository";
+import { SchoolGradeRepository } from "./SchoolGradeRepository";
 
 @EntityRepository(Student)
 export class StudentRepository extends Repository<Student> implements IStudentRepository {
   async createStudent(studentParams: IStudentRequest): Promise<Student> {
-    const { teachingTypeId } = studentParams;
+    const { schoolGradeId } = studentParams;
     
-    const teachingTypeRepository = getCustomRepository(TeachingTypeRepository);
-    const teachingType = await teachingTypeRepository.findById(teachingTypeId);
+    const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
+    const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
     
-    delete studentParams.teachingTypeId;
+    delete studentParams.schoolGradeId;
 
-    const student = this.create({ ...studentParams, teachingType });
+    const student = this.create({ ...studentParams, schoolGrade });
 
     return await this.save(student);
   }
@@ -24,7 +24,7 @@ export class StudentRepository extends Repository<Student> implements IStudentRe
   }
 
   async findById(id: string): Promise<Student | undefined> {
-    const student = await this.findOne({ id }, { relations: ['teachingType'] });
+    const student = await this.findOne({ id }, { relations: ['schoolGrade'] });
     return student;
   }
 

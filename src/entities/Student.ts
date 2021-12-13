@@ -3,19 +3,20 @@ import { ContentReview } from "./ContentReview";
 import { Doubt } from "./Doubt";
 import { Duel } from "./Duel";
 import { InterativeRoom } from "./InterativeRoom";
+import { SchoolGrade } from "./SchoolGrade";
 import { StudStudChat } from "./StudStudChat";
 import { StudStudMessage } from "./StudStudMessage";
 import { StudTeachChat } from "./StudTeachChat";
 import { StudTeachMessage } from "./StudTeachMessage";
-import { TeachingType } from "./TeachingType";
 import { User } from "./User";
 
 @Entity()
 export class Student extends User {
-  @ManyToOne(type => TeachingType, teachingType => teachingType.students, {
-    onUpdate: 'CASCADE'
+  @ManyToOne(type => SchoolGrade, schoolGrade => schoolGrade.students, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
   })
-  teachingType: TeachingType;
+  schoolGrade: SchoolGrade;
   
   // Duvidas
 

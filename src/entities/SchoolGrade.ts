@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Student } from "./Student";
 import { Subject } from "./Subject";
 import { TeachingType } from "./TeachingType";
 
@@ -9,6 +10,12 @@ export class SchoolGrade {
 
   @Column()
   index: number;
+
+  @OneToMany(type => Student, students => students.schoolGrade, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
+  })
+  students: Student[];
 
   @OneToMany(type => Subject, subjects => subjects.schoolGrade, {
     onUpdate: 'CASCADE',
