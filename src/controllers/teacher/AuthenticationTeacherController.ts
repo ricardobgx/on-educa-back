@@ -9,9 +9,9 @@ class AuthenticationTeacherController {
 
     const authenticationTeacherService = new AuthenticationTeacherService(new TeacherRepository());
 
-    const token = await authenticationTeacherService.execute({ email, password });
+    const authResponse = await authenticationTeacherService.execute({ email, password });
 
-    return res.status(201).json(token);
+    return res.status(201).json(authResponse);
   }
 }
 

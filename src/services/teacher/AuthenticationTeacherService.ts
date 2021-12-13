@@ -4,6 +4,7 @@ import { getCustomRepository, ObjectType } from "typeorm";
 import { ApplicationErrors } from "../../errors";
 import { IUserAuthenticationRequest } from "../../dto/IUserAuthenticationRequest";
 import { ITeacherRepository } from "../../repositories/interfaces/ITeacherRepository";
+import { IAuthenticationResponse } from "../../dto/IAuthenticationResponse";
 
 export class AuthenticationTeacherService {
   teacherRepository: ITeacherRepository;
@@ -12,20 +13,16 @@ export class AuthenticationTeacherService {
     this.teacherRepository = teacherRepository;
   }
 
-  async execute(credentials: IUserAuthenticationRequest): Promise<string> {
+  async execute(credentials: IUserAuthenticationRequest): Promise<IAuthenticationResponse> {
     const { email, password } = credentials;
 
     const teacherRepository = getCustomRepository(this.teacherRepository as unknown as ObjectType<ITeacherRepository>);
 
     const teacher = await teacherRepository.findByEmail(email);
 
-    console.log(teacher);
-
     if (!teacher) throw new ApplicationErrors("E-mail ou senha incorreta", 400);
 
     const passwordCompared = await compare(password, teacher.password);
-
-    console.log(password);
 
     if (!passwordCompared) throw new ApplicationErrors("E-mail ou senha incorreta", 400);
 
@@ -41,6 +38,6 @@ export class AuthenticationTeacherService {
       }
     );
 
-    return token;
+    return { id: teacher.id, token };
   }
 }
