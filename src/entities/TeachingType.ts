@@ -14,9 +14,6 @@ export class TeachingType {
   @OneToMany(type => Teacher, teachers => teachers.teachingType)
   teachers: Teacher[];
 
-  @OneToMany(type => Student, students => students.teachingType)
-  students: Student[];
-
   @OneToMany(type => SchoolGrade, schoolGrades => schoolGrades.teachingType, {
     onUpdate: 'CASCADE',
     onDelete:'CASCADE'
