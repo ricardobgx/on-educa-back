@@ -4,11 +4,11 @@ import { ShowTeacherService } from "../../services/teacher/ShowTeacherService";
 
 class ShowTeacherController {
   async handle(req: Request, res: Response) {
-    const { email } = req.params;
+    const { id } = req.params;
 
     const showTeacherService = new ShowTeacherService(new TeacherRepository());
 
-    const teacher = await showTeacherService.execute(email);
+    const teacher = await showTeacherService.execute(id);
 
     return res.status(200).json(teacher);
   }

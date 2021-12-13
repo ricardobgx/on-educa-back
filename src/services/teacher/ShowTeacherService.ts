@@ -10,10 +10,10 @@ export class ShowTeacherService {
     this.TeacherRepository = TeacherRepository;
   }
 
-  async execute(email: string): Promise<Teacher> {
+  async execute(id: string): Promise<Teacher> {
     const teacherRepository = getCustomRepository(this.TeacherRepository as unknown as ObjectType<ITeacherRepository>);
 
-    const teacher = await teacherRepository.findByEmail(email);
+    const teacher = await teacherRepository.findById(id);
 
     if (!teacher) throw new ApplicationErrors("Professor não existe", 404);
 

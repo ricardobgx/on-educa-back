@@ -10,7 +10,7 @@ import { verifyAuthentication as teacherAuthentication } from "../middlewares/te
 const routes = Router();
 
 routes.get("/", teacherAuthentication, ListTeacherController.handle);
-routes.get('/:email', teacherAuthentication, ShowTeacherController.handle);
+routes.get('/:id', teacherAuthentication, ShowTeacherController.handle);
 routes.post("/", CreateTeacherController.handle);
 routes.put("/:email", teacherAuthentication, UpdateTeacherController.handle);
 routes.delete("/:email", teacherAuthentication, DeleteTeacherController.handle);
