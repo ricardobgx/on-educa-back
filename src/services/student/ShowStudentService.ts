@@ -10,10 +10,10 @@ export class ShowStudentService {
     this.StudentRepository = StudentRepository;
   }
 
-  async execute(email: string): Promise<Student> {
+  async execute(id: string): Promise<Student> {
     const studentRepository = getCustomRepository(this.StudentRepository as unknown as ObjectType<IStudentRepository>);
 
-    const student = await studentRepository.findByEmail(email);
+    const student = await studentRepository.findById(id);
 
     if (!student) throw new ApplicationErrors("Estudante não existe", 404);
 
