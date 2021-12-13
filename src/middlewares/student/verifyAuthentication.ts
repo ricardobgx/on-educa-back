@@ -1,4 +1,4 @@
-import { NextFunction, Request, response, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 
 interface Payload {
@@ -20,11 +20,11 @@ export function verifyAuthentication(
   }
 
   const tokenKey = process.env.TOKEN_KEY || '';
-  const tokenCripto = token.split(" ");
+  const tokenCripto = token.split(' ');
 
   try {
     const { sub, email } = verify(tokenCripto[1], tokenKey) as Payload;
-    req.student_email = sub;
+    req.student_email = email;
     return next();
   } catch (error) {
     return res.status(401).json({ message: "Token inválido" });

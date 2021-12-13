@@ -1,5 +1,8 @@
 import { NextFunction, Request, response, Response } from "express";
 import { verify } from "jsonwebtoken";
+import { getCustomRepository } from "typeorm";
+import { ApplicationErrors } from "../../errors";
+import { TeacherRepository } from "../../repositories/implementations/TeacherRepository";
 
 interface Payload {
   iat: number;
@@ -25,6 +28,7 @@ export function verifyAuthentication(
   try {
     const { sub, email } = verify(tokenCripto[1], tokenKey) as Payload;
     req.teacher_email = sub;
+    
     return next();
   } catch (error) {
     return res.status(401).json({ message: "Token inválido" });
