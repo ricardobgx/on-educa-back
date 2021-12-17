@@ -4,7 +4,7 @@ import { Content } from "../../entities/Content";
 
 export interface IContentRepository {
   createContent(contentParams: IContentRequest): Promise<Content>;
-  findAll(): Promise<Content[]>;
+  findAll(name?: string): Promise<Content[]>;
   findByUnity(unityId: string): Promise<Content[]>;
   findById(id: string): Promise<Content | undefined>;
   updateById(updateFields: IContentRequest): Promise<void>;

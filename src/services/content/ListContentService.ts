@@ -9,10 +9,10 @@ export class ListContentService {
     this.contentRepository = contentRepository;
   }
 
-  async execute(): Promise<Content[]> {
+  async execute(name?: string): Promise<Content[]> {
     const contentRepository = getCustomRepository(this.contentRepository as unknown as ObjectType<IContentRepository>);
 
-    const contents = contentRepository.findAll();
+    const contents = contentRepository.findAll(name);
 
     return contents;
   }

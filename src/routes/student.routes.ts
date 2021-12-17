@@ -12,7 +12,7 @@ const routes = Router();
 routes.get("/", studentAuthentication, ListStudentController.handle);
 routes.get('/:id', studentAuthentication, ShowStudentController.handle);
 routes.post("/", CreateStudentController.handle);
-routes.put("/:email", studentAuthentication, UpdateStudentController.handle);
+routes.put("/:id", studentAuthentication, UpdateStudentController.handle);
 routes.delete("/:email", studentAuthentication, DeleteStudentController.handle);
 
 routes.post("/login", AuthenticationStudentController.handle);

@@ -8,5 +8,6 @@ export interface IStudentRepository {
   findById(id: string): Promise<Student | undefined>;
   findByEmail(email: string): Promise<Student | undefined>;
   updateByEmail(updateFields: IStudentRequest): Promise<void>;
+  updateById(updateFields: IStudentRequest): Promise<void>;
   deleteByEmail(email: string): Promise<DeleteResult>;
 }

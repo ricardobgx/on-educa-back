@@ -1,27 +1,29 @@
-import { hash } from "bcryptjs";
-import { getCustomRepository, ObjectType } from "typeorm";
-import { ITeacherRequest } from "../../dto/ITeacherRequest";
-import { ApplicationErrors } from "../../errors";
-import { ITeacherRepository } from "../../repositories/interfaces/ITeacherRepository";
+import { hash } from 'bcryptjs';
+import { getCustomRepository, ObjectType } from 'typeorm';
+import { ITeacherRequest } from '../../dto/ITeacherRequest';
+import { ApplicationErrors } from '../../errors';
+import { ITeacherRepository } from '../../repositories/interfaces/ITeacherRepository';
 
 export class UpdateTeacherService {
-  TeacherRepository: ITeacherRepository;
+  teacherRepository: ITeacherRepository;
 
-  constructor(TeacherRepository: ITeacherRepository) {
-    this.TeacherRepository = TeacherRepository;
+  constructor(teacherRepository: ITeacherRepository) {
+    this.teacherRepository = teacherRepository;
   }
 
   async execute(teacherParams: ITeacherRequest): Promise<void> {
-    const teacherRepository = getCustomRepository(this.TeacherRepository as unknown as ObjectType<ITeacherRepository>);
+    const teacherRepository = getCustomRepository(
+      this.teacherRepository as unknown as ObjectType<ITeacherRepository>
+    );
 
-    const teacher = await teacherRepository.findByEmail(teacherParams.email);
+    const teacher = await teacherRepository.findById(teacherParams.id);
 
-    if (!teacher) throw new ApplicationErrors("Estudante não existe", 404);
+    if (!teacher) throw new ApplicationErrors('Professor não existe', 404);
 
     if (teacherParams.password) {
       teacherParams.password = await hash(teacherParams.password, 8);
     }
 
-    await teacherRepository.updateByEmail(teacherParams);
+    await teacherRepository.updateById(teacherParams);
   }
 }

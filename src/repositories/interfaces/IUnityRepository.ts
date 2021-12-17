@@ -1,6 +1,6 @@
-import { DeleteResult } from "typeorm";
-import { IUnityRequest } from "../../dto/IUnityRequest";
-import { Unity } from "../../entities/Unity";
+import { DeleteResult } from 'typeorm';
+import { IUnityRequest } from '../../dto/IUnityRequest';
+import { Unity } from '../../entities/Unity';
 
 export interface IUnityRepository {
   createUnity(unityParams: IUnityRequest): Promise<Unity>;
@@ -8,5 +8,5 @@ export interface IUnityRepository {
   findBySubject(subjectId: string): Promise<Unity[]>;
   findById(id: string): Promise<Unity | undefined>;
   updateById(updateFields: IUnityRequest): Promise<void>;
-  deleteById(id: string): Promise<DeleteResult>;
+  deleteById(id: string): Promise<void>;
 }

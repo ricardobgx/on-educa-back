@@ -9,18 +9,25 @@ export class StudentRepository extends Repository<Student> implements IStudentRe
   async createStudent(studentParams: IStudentRequest): Promise<Student> {
     const { schoolGradeId } = studentParams;
     
-    const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
-    const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
-    
     delete studentParams.schoolGradeId;
 
-    const student = this.create({ ...studentParams, schoolGrade });
+    let student = { ...studentParams };
+
+    if (schoolGradeId) {
+    
+    const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
+    const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
+    student = this.create({ ...studentParams, schoolGrade });
+    }
+
+    delete studentParams.schoolGradeId;
+
 
     return await this.save(student);
   }
 
   async findAll(): Promise<Student[]> {
-    return await this.find();
+    return await this.find({ relations: ['schoolGrade'] });
   }
 
   async findById(id: string): Promise<Student | undefined> {
@@ -40,10 +47,32 @@ export class StudentRepository extends Repository<Student> implements IStudentRe
     delete fields.email;
 
     Object.keys(fields).map(
-      key => fields[key] === undefined && delete fields[key]
+      key => !!fields[key] === undefined && delete fields[key]
     );
 
     await this.update({ email }, fields);
+  }
+
+  async updateById(updateFields: IStudentRequest): Promise<void> {
+    const { id } = updateFields;
+    const fields = { ...updateFields };
+
+    delete fields.id;
+
+    Object.keys(fields).map(
+      key => fields[key] === undefined && delete fields[key]
+    );
+
+    let student = {...fields};
+
+    if (fields.schoolGradeId) {
+      const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
+      const schoolGrade = await schoolGradeRepository.findById(fields.schoolGradeId);
+
+      if (schoolGrade) student = this.create({ ...fields, schoolGrade });
+    }
+
+    await this.update({ id }, student);
   }
 
   async deleteByEmail(email: string): Promise<DeleteResult> {

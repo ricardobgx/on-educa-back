@@ -14,7 +14,7 @@ export class UpdateStudentService {
   async execute(studentParams: IStudentRequest): Promise<void> {
     const studentRepository = getCustomRepository(this.StudentRepository as unknown as ObjectType<IStudentRepository>);
 
-    const student = await studentRepository.findByEmail(studentParams.email);
+    const student = await studentRepository.findById(studentParams.id);
 
     if (!student) throw new ApplicationErrors("Estudante não existe", 404);
 
@@ -22,6 +22,6 @@ export class UpdateStudentService {
       studentParams.password = await hash(studentParams.password, 8);
     }
 
-    await studentRepository.updateByEmail(studentParams);
+    await studentRepository.updateById(studentParams);
   }
 }

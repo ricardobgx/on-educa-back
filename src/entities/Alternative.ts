@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Question } from "./Question";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { DuelQuestionAnswer } from './DuelQuestionAnswer';
+import { Question } from './Question';
 
 @Entity()
 export class Alternative {
@@ -12,9 +19,19 @@ export class Alternative {
   @Column()
   index: number;
 
-  @ManyToOne(type => Question, question => question.alternatives, {
+  @ManyToOne(() => Question, (question) => question.alternatives, {
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   question: Question;
+
+  @OneToMany(
+    () => DuelQuestionAnswer,
+    (duelQuestionAnswer) => duelQuestionAnswer.selectedAlternative,
+    {
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    }
+  )
+  duelQuestionAlternative: DuelQuestionAnswer;
 }

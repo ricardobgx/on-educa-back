@@ -5,13 +5,14 @@ import { UpdateStudentService } from "../../services/student/UpdateStudentServic
 
 class UpdateStudentController {
   async handle(req: Request, res: Response) {
-    const { name, password, schoolGradeId, isOnline, profilePicture } = req.body as IStudentRequest;
+    const { name, email, password, schoolGradeId, isOnline, profilePicture } = req.body as IStudentRequest;
 
-    const { email } = req.params;
+    const { id } = req.params;
 
     const updateStudentService = new UpdateStudentService(new StudentRepository());
 
     await updateStudentService.execute({
+      id,
       email,
       name,
       password,

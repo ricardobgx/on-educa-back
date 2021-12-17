@@ -1,6 +1,12 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Content } from "./Content";
-import { Subject } from "./Subject";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Content } from './Content';
+import { Subject } from './Subject';
 
 @Entity()
 export class Unity {
@@ -10,14 +16,15 @@ export class Unity {
   @Column()
   title: string;
 
-  @ManyToOne(type => Subject, subject => subject.units, {
+  @ManyToOne((type) => Subject, (subject) => subject.units, {
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   subject: Subject;
 
-  @OneToMany(type => Content, contents => contents.unity, {
-    onUpdate: 'CASCADE'
+  @OneToMany((type) => Content, (contents) => contents.unity, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   })
   contents: Content[];
 }
