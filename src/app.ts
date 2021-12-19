@@ -6,13 +6,14 @@ import './database';
 
 // Rotas
 
-import studentRoutes from "./routes/student.routes";
+import studentRoutes from './routes/student.routes';
 import teacherRoutes from './routes/teacher.routes';
 import subjectRoutes from './routes/subject.routes';
 import teachingTypeRoutes from './routes/teachingtype.routes';
 import schoolGradeRoutes from './routes/schoolgrade.routes';
 import unityRoutes from './routes/unity.routes';
 import contentRoutes from './routes/content.routes';
+import questionRoutes from './routes/question.routes';
 
 class App {
   app: Express;
@@ -37,6 +38,7 @@ class App {
     this.app.use('/schoolgrades', schoolGradeRoutes);
     this.app.use('/units', unityRoutes);
     this.app.use('/contents', contentRoutes);
+    this.app.use('/questions', questionRoutes);
   }
 }
 
