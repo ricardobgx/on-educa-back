@@ -24,14 +24,4 @@ export class Alternative {
     onDelete: 'CASCADE',
   })
   question: Question;
-
-  @OneToMany(
-    () => DuelQuestionAnswer,
-    (duelQuestionAnswer) => duelQuestionAnswer.selectedAlternative,
-    {
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    }
-  )
-  duelQuestionAlternative: DuelQuestionAnswer;
 }

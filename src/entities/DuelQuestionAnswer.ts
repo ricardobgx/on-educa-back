@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { DuelQuestion } from './DuelQuestion';
 import { Alternative } from './Alternative';
 import { DuelTeamParticipation } from './DuelTeamParticipation';
@@ -24,13 +30,10 @@ export class DuelQuestionAnswer {
   })
   question: DuelQuestion;
 
-  @ManyToOne(
-    (type) => Alternative,
-    (alternative) => alternative.duelQuestionAlternative,
-    {
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    }
-  )
+  @ManyToOne(() => Alternative, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
   selectedAlternative: Alternative;
 }
