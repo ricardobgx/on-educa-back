@@ -3,11 +3,12 @@ import {
   EntityRepository,
   getCustomRepository,
   Repository,
-  ILike,
 } from 'typeorm';
 import { IQuestionRequest } from '../../dto/IQuestionRequest';
+import { Alternative } from '../../entities/Alternative';
 import { Question } from '../../entities/Question';
 import { IQuestionRepository } from '../interfaces/IQuestionRepository';
+import { AlternativeRepository } from './AlternativeRepository';
 import { ContentRepository } from './ContentRepository';
 
 @EntityRepository(Question)
@@ -16,20 +17,35 @@ export class QuestionRepository
   implements IQuestionRepository
 {
   async createQuestion(questionParams: IQuestionRequest): Promise<Question> {
-    const { description, difficulty, contentId } = questionParams;
+    const { contentId, alternativesDescriptions } = questionParams;
+
+    delete questionParams.contentId;
+    delete questionParams.alternativesDescriptions;
+
+    let question = { ...questionParams };
 
     const contentRepository = getCustomRepository(ContentRepository);
     const content = await contentRepository.findById(contentId);
 
-    const newQuestionParams = this.create({
-      description,
-      difficulty,
-      content,
-    });
+    question = this.create({ ...question, content });
 
-    const question = await this.save(newQuestionParams);
+    const alternativeRepository = getCustomRepository(AlternativeRepository);
+    const alternatives: Alternative[] = [];
 
-    return question;
+    Promise.all(
+      alternativesDescriptions.map(async (alternativeDescription) => {
+        const { description, index } = alternativeDescription;
+        const alternative = await alternativeRepository.createAlternative({
+          description,
+          index,
+        });
+        alternatives.push(alternative);
+      })
+    );
+
+    question = this.create({ ...question, alternatives });
+
+    return await this.save(question);
   }
 
   async findAll(): Promise<Question[]> {

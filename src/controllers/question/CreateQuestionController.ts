@@ -6,7 +6,8 @@ import { CreateQuestionService } from '../../services/question/CreateQuestionSer
 
 class CreateQuestionController {
   async handle(req: Request, res: Response) {
-    const { description, difficulty, contentId } = req.body as IQuestionRequest;
+    const { description, difficulty, contentId, alternativesDescriptions } =
+      req.body as IQuestionRequest;
 
     const createQuestionService = new CreateQuestionService(
       new QuestionRepository()
@@ -16,6 +17,7 @@ class CreateQuestionController {
       description,
       difficulty,
       contentId,
+      alternativesDescriptions,
     });
 
     return res.status(201).json(question);
