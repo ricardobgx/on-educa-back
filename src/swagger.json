@@ -1,0 +1,363 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ON EDUCA Documentation",
+    "version": "1.0.0",
+    "description": "API da plataforma de revisões de conteúdo ON EDUCA",
+    "contact": {
+      "name": "José Ricardo Brasileiro Gonçalves",
+      "email": "jricardobgoncalves@gmail.com",
+      "url": "https://ricardobrasileiro.herokuapp.com/"
+    }
+  },
+  "servers": [
+    {
+      "url": "http:/localhost:8080",
+      "description": "Development Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Students",
+      "description": "Alunos"
+    },
+    {
+      "name": "Teachers",
+      "description": "Professores"
+    },
+    {
+      "name": "TeachingTypes",
+      "description": "Tipos de ensino"
+    },
+    {
+      "name": "SchoolGrades",
+      "description": "Séries escolares"
+    },
+    {
+      "name": "Subjects",
+      "description": "Disciplinas escolares"
+    },
+    {
+      "name": "Units",
+      "description": "Unidades de disciplinas"
+    },
+    {
+      "name": "Contents",
+      "description": "Conteúdos escolares"
+    },
+    {
+      "name": "Attachments",
+      "description": "Anexos dos conteúdos"
+    },
+    {
+      "name": "Questions",
+      "description": "Questões sobre os conteúdos"
+    },
+    {
+      "name": "Alternatives",
+      "description": "Alternativas das questões"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "email": {
+            "type": "string",
+            "example": "example@email.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Andrew Bart"
+          },
+          "profilePicture": {
+            "type": "string",
+            "example": "https://www.anywebsite/image-path.jpg"
+          },
+          "password": {
+            "type": "string",
+            "example": "$2a$08$ZJB6z4sQOEpvqB1amO3/Xu/MfKKr5REl0cEBy3tGEIlbw7AzHBiT6"
+          },
+          "isOnline": {
+            "type": "boolean",
+            "example": "true"
+          }
+        }
+      },
+      "NewUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "example@email.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "Andrew Bart"
+          },
+          "profilePicture": {
+            "type": "string",
+            "example": "https://www.anywebsite/image-path.jpg"
+          },
+          "password": {
+            "type": "string",
+            "example": "andrew123"
+          },
+          "isOnline": {
+            "type": "boolean",
+            "example": "true"
+          }
+        }
+      },
+      "Student": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "properties": {}
+          }
+        ]
+      },
+      "NewStudent": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewUser"
+          },
+          {
+            "properties": {
+              "schoolGradeId": {
+                "type": "string",
+                "example": "68f7ba0a-c803-46a5-b1d5-e45fb3778f2a"
+              }
+            }
+          }
+        ]
+      },
+      "Teacher": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          },
+          {
+            "properties": {}
+          }
+        ]
+      },
+      "TeachingType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "title": {
+            "type": "string",
+            "example": "Ensino Médio"
+          },
+          "teachers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Teacher"
+            }
+          }
+        }
+      },
+      "SchoolGrade": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "index": {
+            "type": "integer",
+            "example": "2"
+          },
+          "students": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Student"
+            }
+          },
+          "subjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Subject"
+            }
+          },
+          "teachingType": {
+            "$ref": "#/components/schemas/TeachingType"
+          }
+        }
+      },
+      "Subject": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "name": {
+            "type": "string",
+            "example": "Matemática"
+          },
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Unity"
+            }
+          },
+          "schoolGrade": {
+            "$ref": "#/components/schemas/SchoolGrade"
+          }
+        }
+      },
+      "Unity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "title": {
+            "type": "string",
+            "example": "Funções"
+          },
+          "subject": {
+            "$ref": "#/components/schemas/Subject"
+          },
+          "contents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Content"
+            }
+          }
+        }
+      },
+      "Content": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "title": {
+            "type": "string",
+            "example": "Função do Segundo Grau"
+          },
+          "description": {
+            "type": "string",
+            "example": "Nesse conteúdo você irá aprender sobre as funções do segundo grau"
+          },
+          "video": {
+            "type": "string",
+            "example": "https://www.youtube.com/watch?v=aKaMQwvwnR4"
+          },
+          "index": {
+            "type": "integer",
+            "example": "1"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Question"
+            }
+          },
+          "unity": {
+            "$ref": "#/components/schemas/Unity"
+          }
+        }
+      },
+      "Attachment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "name": {
+            "type": "string",
+            "example": "Lista de exercícios"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://www.anywebsite/attachment-path.pdf"
+          },
+          "content": {
+            "$ref": "#/components/schemas/Content"
+          }
+        }
+      },
+      "Question": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "description": {
+            "type": "string",
+            "example": "Qual o resultado da seguinte função do segundo grau sabendo que A vale 9, B vale..."
+          },
+          "difficulty": {
+            "type": "integer",
+            "example": "2"
+          },
+          "content": {
+            "$ref": "#/components/schemas/Content"
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Alternative"
+            }
+          },
+          "rightAlternative": {
+            "$ref": "#/components/schemas/Alternative"
+          }
+        }
+      },
+      "Alternative": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "bc72e142-8325-4ecd-a2e1-d56ec09a8216"
+          },
+          "description": {
+            "type": "string",
+            "example": "a) 25"
+          },
+          "index": {
+            "type": "integer",
+            "example": "1"
+          },
+          "question": {
+            "$ref": "#/components/schemas/Question"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

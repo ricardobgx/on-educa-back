@@ -3,6 +3,17 @@ import express, { Express } from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import './database';
+import swaggerUI from 'swagger-ui-express';
+import * as swaggerDefinitionDocument from './swagger.json';
+import { paths } from './routes';
+
+// Documentacao da API
+
+const swaggerDocument = { ...swaggerDefinitionDocument, paths };
+
+// Variaveis de ambiente
+
+const { PORT } = process.env;
 
 // Rotas
 
@@ -14,6 +25,8 @@ import schoolGradeRoutes from './routes/schoolgrade.routes';
 import unityRoutes from './routes/unity.routes';
 import contentRoutes from './routes/content.routes';
 import questionRoutes from './routes/question.routes';
+
+// Aplicacao
 
 class App {
   app: Express;
@@ -39,6 +52,7 @@ class App {
     this.app.use('/units', unityRoutes);
     this.app.use('/contents', contentRoutes);
     this.app.use('/questions', questionRoutes);
+    this.app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
   }
 }
 
