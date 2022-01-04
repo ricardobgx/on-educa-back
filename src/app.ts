@@ -25,6 +25,7 @@ import schoolGradeRoutes from './routes/schoolgrade.routes';
 import unityRoutes from './routes/unity.routes';
 import contentRoutes from './routes/content.routes';
 import questionRoutes from './routes/question.routes';
+import alternativeRoutes from './routes/alternative.routes';
 
 // Aplicacao
 
@@ -52,6 +53,7 @@ class App {
     this.app.use('/units', unityRoutes);
     this.app.use('/contents', contentRoutes);
     this.app.use('/questions', questionRoutes);
+    this.app.use('/alternatives', alternativeRoutes);
     this.app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
   }
 }
