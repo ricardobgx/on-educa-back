@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import { getCustomRepository } from 'typeorm';
-import { StudentRepository } from '../../repositories/implementations/StudentRepository';
 
 interface Payload {
   iat: number;
@@ -26,13 +24,8 @@ export async function verifyAuthentication(
 
   try {
     const { id } = verify(tokenCripto[1], tokenKey) as Payload;
-    req.student_id = id;
-
-    const studentRepository = getCustomRepository(StudentRepository);
-    const student = await studentRepository.findById(id);
-
-    if (student) return next();
-    return res.status(401).json({ message: 'Token inválido' });
+    req.user_id = id;
+    return next();
   } catch (error) {
     return res.status(401).json({ message: 'Token inválido' });
   }
