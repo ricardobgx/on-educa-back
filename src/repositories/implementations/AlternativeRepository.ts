@@ -1,7 +1,14 @@
-import { EntityRepository, Repository } from 'typeorm';
+import {
+  DeleteResult,
+  EntityRepository,
+  getCustomRepository,
+  Repository,
+} from 'typeorm';
 import { IAlternativeRequest } from '../../dto/IAlternativeRequest';
+import { IManyAlternatives } from '../../dto/IManyAlternatives';
 import { Alternative } from '../../entities/Alternative';
 import { IAlternativeRepository } from '../interfaces/IAlternativeRepository';
+import { QuestionRepository } from './QuestionRepository';
 
 @EntityRepository(Alternative)
 export class AlternativeRepository
@@ -11,10 +18,39 @@ export class AlternativeRepository
   async createAlternative(
     alternativeParams: IAlternativeRequest
   ): Promise<Alternative> {
-    const alternative = await this.save(alternativeParams);
+    const { questionId } = alternativeParams;
 
-    return alternative;
+    delete alternativeParams.questionId;
+
+    let alternative = { ...alternativeParams };
+
+    const questionRepository = await getCustomRepository(QuestionRepository);
+    const question = await questionRepository.findById(questionId);
+
+    if (question) alternative = this.create({ ...alternative, question });
+
+    return await this.save(alternative);
   }
+
+  async createManyAlternatives(
+    alternativesParams: IManyAlternatives
+  ): Promise<Alternative[]> {
+    const { alternativesDescriptions, questionId } = alternativesParams;
+    const alternatives: Alternative[] = [];
+
+    Promise.all(
+      alternativesDescriptions.map(async (alternativeParams) => {
+        await this.createAlternative({ ...alternativeParams, questionId }).then(
+          (response) => {
+            alternatives.push(response);
+          }
+        );
+      })
+    );
+
+    return alternatives;
+  }
+
   async findAll(): Promise<Alternative[]> {
     return await this.find({ relations: ['question'] });
   }
@@ -30,5 +66,8 @@ export class AlternativeRepository
     );
 
     await this.update({ id }, fields);
+  }
+  async deleteById(id: string): Promise<DeleteResult> {
+    return await this.delete({ id });
   }
 }
