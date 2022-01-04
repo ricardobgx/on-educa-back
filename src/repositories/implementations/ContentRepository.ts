@@ -51,7 +51,7 @@ export class ContentRepository
 
             let foundContents = await this.find({
               where: { title: ILike(`%${text}%`) },
-              relations: ['unity'],
+              relations: ['unity', 'questions'],
             });
             foundContents.map((foundContent) =>
               contentsFound.push(foundContent)
@@ -70,18 +70,21 @@ export class ContentRepository
       return contents;
     }
 
-    return await this.find({ relations: ['unity'] });
+    return await this.find({ relations: ['unity', 'questions'] });
   }
 
   async findByUnity(unityId: string): Promise<Content[]> {
     const unityRepository = getCustomRepository(UnityRepository);
     const unity = await unityRepository.findById(unityId);
 
-    return await this.find({ where: { unity }, relations: ['unity'] });
+    return await this.find({
+      where: { unity },
+      relations: ['unity', 'questions'],
+    });
   }
 
   async findById(id: string): Promise<Content> {
-    return await this.findOne({ id }, { relations: ['unity'] });
+    return await this.findOne({ id }, { relations: ['unity', 'questions'] });
   }
 
   async updateById(updateFields: IContentRequest): Promise<void> {
@@ -92,7 +95,16 @@ export class ContentRepository
       (key) => fields[key] === undefined && delete fields[key]
     );
 
-    await this.update({ id }, fields);
+    let content = { ...fields };
+
+    if (content.unityId) {
+      const unityRepository = getCustomRepository(UnityRepository);
+      const unity = await unityRepository.findById(fields.unityId);
+
+      if (unity) content = this.create({ ...content, unity });
+    }
+
+    await this.update({ id }, content);
   }
 
   async deleteById(id: string): Promise<DeleteResult> {
