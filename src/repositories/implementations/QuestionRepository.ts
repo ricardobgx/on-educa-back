@@ -5,7 +5,6 @@ import {
   Repository,
 } from 'typeorm';
 import { IQuestionRequest } from '../../dto/IQuestionRequest';
-import { Alternative } from '../../entities/Alternative';
 import { Question } from '../../entities/Question';
 import { IQuestionRepository } from '../interfaces/IQuestionRepository';
 import { AlternativeRepository } from './AlternativeRepository';
@@ -17,39 +16,26 @@ export class QuestionRepository
   implements IQuestionRepository
 {
   async createQuestion(questionParams: IQuestionRequest): Promise<Question> {
-    const { contentId, alternativesDescriptions } = questionParams;
+    const { contentId, alternativesDescription } = questionParams;
 
     delete questionParams.contentId;
-    delete questionParams.alternativesDescriptions;
+    delete questionParams.alternativesDescription;
 
-    let question = { ...questionParams };
+    let newQuestionParams = { ...questionParams };
 
     const contentRepository = getCustomRepository(ContentRepository);
     const content = await contentRepository.findById(contentId);
 
-    question = this.create({ ...question, content });
+    newQuestionParams = this.create({
+      ...newQuestionParams,
+      content,
+    });
 
-    const alternativeRepository = getCustomRepository(AlternativeRepository);
-    const alternatives: Alternative[] = [];
-
-    Promise.all(
-      alternativesDescriptions.map(async (alternativeDescription) => {
-        const { description, index } = alternativeDescription;
-        const alternative = await alternativeRepository.createAlternative({
-          description,
-          index,
-        });
-        alternatives.push(alternative);
-      })
-    );
-
-    question = this.create({ ...question, alternatives });
-
-    return await this.save(question);
+    return await this.save(newQuestionParams);
   }
 
   async findAll(): Promise<Question[]> {
-    return await this.find({ relations: ['alternatives'] });
+    return await this.find({ relations: ['alternatives', 'content'] });
   }
 
   async findByContent(contentId: string): Promise<Question[]> {
