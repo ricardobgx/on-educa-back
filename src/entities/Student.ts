@@ -39,8 +39,9 @@ export class Student extends User {
 
   // Duelos criados
 
-  @OneToMany((type) => Duel, (duel) => duel.owner, {
-    cascade: true,
+  @OneToMany((type) => Duel, (duel) => duel.student, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   })
   duels: Duel[];
 
@@ -50,7 +51,8 @@ export class Student extends User {
     (type) => DuelTeamParticipation,
     (duelTeamsParticipations) => duelTeamsParticipations.student,
     {
-      cascade: true,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   )
   duelTeamsParticipations: DuelTeamParticipation[];
@@ -58,7 +60,8 @@ export class Student extends User {
   // Sala interativas participadas
 
   @ManyToMany((type) => InterativeRoom, (interativeRoom) => interativeRoom, {
-    cascade: true,
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   })
   interativeRoomParticipations: InterativeRoom[];
 
@@ -68,7 +71,8 @@ export class Student extends User {
     (type) => StudTeachChat,
     (studTeachChat) => studTeachChat.student,
     {
-      cascade: true,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   )
   studTeachChats: StudTeachChat[];
@@ -79,7 +83,8 @@ export class Student extends User {
     (type) => StudTeachMessage,
     (studTeachMessage) => studTeachMessage.student,
     {
-      cascade: true,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   )
   studTeachMessages: StudTeachMessage[];
@@ -90,7 +95,8 @@ export class Student extends User {
     (type) => StudStudChat,
     (studStudChat) => studStudChat.studentOne,
     {
-      cascade: true,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   )
   studStudChatsOne: StudStudChat[];
@@ -101,7 +107,8 @@ export class Student extends User {
     (type) => StudStudChat,
     (studStudChat) => studStudChat.studentTwo,
     {
-      cascade: true,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   )
   studStudChatsTwo: StudStudChat[];
@@ -112,7 +119,8 @@ export class Student extends User {
     (type) => StudStudMessage,
     (studStudMessage) => studStudMessage.student,
     {
-      cascade: true,
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   )
   studStudMessages: StudStudMessage[];

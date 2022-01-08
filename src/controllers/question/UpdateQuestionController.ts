@@ -5,7 +5,8 @@ import { UpdateQuestionService } from '../../services/question/UpdateQuestionSer
 
 class UpdateQuestionController {
   async handle(req: Request, res: Response) {
-    const { description, difficulty, contentId } = req.body as IQuestionRequest;
+    const { description, difficulty, contentId, rightAlternativeId } =
+      req.body as IQuestionRequest;
 
     const { id } = req.params;
 
@@ -18,6 +19,7 @@ class UpdateQuestionController {
       description,
       difficulty,
       contentId,
+      rightAlternativeId,
     });
 
     return res.status(200).json({ message: 'Disciplina atualizada!' });

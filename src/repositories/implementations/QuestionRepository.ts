@@ -16,22 +16,21 @@ export class QuestionRepository
   implements IQuestionRepository
 {
   async createQuestion(questionParams: IQuestionRequest): Promise<Question> {
-    const { contentId, alternativesDescription } = questionParams;
+    const { contentId } = questionParams;
 
     delete questionParams.contentId;
-    delete questionParams.alternativesDescription;
 
-    let newQuestionParams = { ...questionParams };
+    let question = { ...questionParams };
 
     const contentRepository = getCustomRepository(ContentRepository);
     const content = await contentRepository.findById(contentId);
 
-    newQuestionParams = this.create({
-      ...newQuestionParams,
+    question = this.create({
+      ...question,
       content,
     });
 
-    return await this.save(newQuestionParams);
+    return await this.save(question);
   }
 
   async findAll(): Promise<Question[]> {
@@ -63,7 +62,37 @@ export class QuestionRepository
       (key) => fields[key] === undefined && delete fields[key]
     );
 
-    await this.update({ id }, fields);
+    let question = { ...fields };
+
+    if (question.contentId) {
+      const { contentId } = question;
+
+      delete question.contentId;
+
+      const contentRepository = getCustomRepository(ContentRepository);
+      const content = await contentRepository.findById(contentId);
+
+      if (content) {
+        question = this.create({ ...question, content });
+      }
+    }
+
+    if (question.rightAlternativeId) {
+      const { rightAlternativeId } = question;
+
+      delete question.rightAlternativeId;
+
+      const alternativeRepository = getCustomRepository(AlternativeRepository);
+      const rightAlternative = await alternativeRepository.findById(
+        rightAlternativeId
+      );
+
+      if (rightAlternative) {
+        question = this.create({ ...question, rightAlternative });
+      }
+    }
+
+    await this.update({ id }, question);
   }
 
   async deleteById(id: string): Promise<DeleteResult> {

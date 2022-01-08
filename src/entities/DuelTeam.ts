@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Duel } from './Duel';
+import { DuelRound } from './DuelRound';
 import { DuelTeamParticipation } from './DuelTeamParticipation';
 
 @Entity()
@@ -19,17 +19,18 @@ export class DuelTeam {
   @Column()
   lastParticipantIndex: number;
 
-  @ManyToOne((type) => Duel, (duel) => duel.teams, {
+  @ManyToOne(() => DuelRound, (duelTeam) => duelTeam.teams, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  duel: Duel;
+  duelRound: DuelRound;
 
   @ManyToOne(
-    (type) => DuelTeamParticipation,
+    () => DuelTeamParticipation,
     (participations) => participations.duelTeam,
     {
       onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   )
   @JoinTable()

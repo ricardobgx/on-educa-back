@@ -5,5 +5,5 @@ export interface IQuestionRequest {
   description?: string;
   difficulty?: number;
   contentId?: string;
-  alternativesDescription?: IAlternativeRequest[];
+  rightAlternativeId?: string;
 }

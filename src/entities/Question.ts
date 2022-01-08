@@ -39,20 +39,4 @@ export class Question {
   @OneToOne(() => Alternative)
   @JoinColumn()
   rightAlternative: Alternative;
-
-  @ManyToMany(() => Duel, (duel) => duel.questions, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-  })
-  duels: Duel[];
-
-  @ManyToMany(
-    () => InterativeRoom,
-    (interativeRoom) => interativeRoom.questions,
-    {
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    }
-  )
-  interativeRooms: InterativeRoom[];
 }

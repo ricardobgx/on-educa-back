@@ -1,28 +1,32 @@
 import { Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Duel } from './Duel';
 import { DuelQuestionAnswer } from './DuelQuestionAnswer';
+import { DuelRound } from './DuelRound';
 import { Question } from './Question';
 
 @Entity()
-export class DuelQuestion {
+export class DuelRoundQuestion {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne((type) => Duel, (duel) => duel.questions, {
+  @ManyToOne(() => DuelRound, (duelRound) => duelRound.questions, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  duel: Duel;
+  duelRound: DuelRound;
 
-  @ManyToOne((type) => Question, (question) => question.duels, {
+  @ManyToOne(() => Question, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   question: Question;
 
   @OneToOne(
-    (type) => DuelQuestionAnswer,
-    (duelQuestionAnswer) => duelQuestionAnswer.question
+    () => DuelQuestionAnswer,
+    (duelQuestionAnswer) => duelQuestionAnswer.question,
+    {
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    }
   )
   answer: DuelQuestionAnswer;
 }

@@ -1,34 +1,48 @@
-import { Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Question } from "./Question";
-import { Student } from "./Student";
-import { Teacher } from "./Teacher";
+import {
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Question } from './Question';
+import { Student } from './Student';
+import { Teacher } from './Teacher';
 
 @Entity()
 export class InterativeRoom {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(type => Teacher, teacher => teacher.interativeRooms, {
+  @ManyToOne((type) => Teacher, (teacher) => teacher.interativeRooms, {
     onUpdate: 'CASCADE',
   })
   teacher: Teacher;
 
-  @ManyToMany(type => Teacher, teacher => teacher.interativeRoomParticipations, {
-    onUpdate: 'CASCADE',
-  })
+  @ManyToMany(
+    (type) => Teacher,
+    (teacher) => teacher.interativeRoomParticipations,
+    {
+      onUpdate: 'CASCADE',
+    }
+  )
   @JoinTable()
   teachers: Teacher[];
 
-  @ManyToMany(type => Student, student => student.interativeRoomParticipations, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
+  @ManyToMany(
+    (type) => Student,
+    (student) => student.interativeRoomParticipations,
+    {
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    }
+  )
   @JoinTable()
   students: Student[];
 
-  @ManyToMany(type => Question, question => question.interativeRooms, {
+  @ManyToMany((type) => Question, {
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   @JoinTable()
   questions: Question[];

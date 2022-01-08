@@ -38,7 +38,7 @@ export class AlternativeRepository
     const { alternativesDescriptions, questionId } = alternativesParams;
     const alternatives: Alternative[] = [];
 
-    Promise.all(
+    await Promise.all(
       alternativesDescriptions.map(async (alternativeParams) => {
         await this.createAlternative({ ...alternativeParams, questionId }).then(
           (response) => {

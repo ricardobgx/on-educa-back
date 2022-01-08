@@ -6,10 +6,10 @@ import {
 } from 'typeorm';
 import { IDuelRequest } from '../../dto/IDuelRequest';
 import { Duel } from '../../entities/Duel';
-import { Question } from '../../entities/Question';
+import { DuelRound } from '../../entities/DuelRound';
 import { ApplicationErrors } from '../../errors';
 import { IDuelRepository } from '../interfaces/IDuelRepository';
-import { ContentRepository } from './ContentRepository';
+import { DuelRoundRepository } from './DuelRoundRepository';
 import { StudentRepository } from './StudentRepository';
 
 @EntityRepository(Duel)
@@ -18,92 +18,71 @@ export class DuelRepository
   implements IDuelRepository
 {
   async createDuel(duelParams: IDuelRequest): Promise<Duel> {
-    let { duelOwnerId, contentsId } = duelParams;
+    // Desestruturando as variaveis a serem usadas na funcao
+    const {
+      studentId,
+      contentsId,
+      maxGroupParticipants,
+      questionsPerContent,
+      timeForQuestion,
+    } = duelParams;
 
-    if (!duelOwnerId)
+    // Verifica se o id do estudante que criou o duelo foi fornecido
+    if (!studentId)
       throw new ApplicationErrors('Estudante não encontrado', 404);
 
+    // Exclui os campos que nao devem ser salvos na base de dados de forma direta
     delete duelParams.contentsId;
-    delete duelParams.duelOwnerId;
+    delete duelParams.studentId;
 
-    let newDuelParams = { ...duelParams };
+    // Armazena os campos que devem ser salvos em uma no variavel
+    let duel = { ...duelParams };
 
+    // Obtem o repositorio que armazena os dados dos estudantes
     const studentRepository = getCustomRepository(StudentRepository);
-    const duelOwner = await studentRepository.findById(duelOwnerId || '');
+    // Procura o estudante pelo id fornecido
+    const student = await studentRepository.findById(studentId || '');
 
-    if (!duelOwner)
-      throw new ApplicationErrors('Estudante não encontrado', 404);
+    // Se o estudante nao for encontrado retorna uma mensagem de erro
+    if (!student) throw new ApplicationErrors('Estudante não encontrado', 404);
 
-    const contentRepository = getCustomRepository(ContentRepository);
+    // Armazena o estudante encontrado no duelo
+    duel = this.create({ ...duel, student });
 
-    contentsId = contentsId || [];
+    // Obtem o repositorio que armazenas os rounds dos duelos
+    const duelRoundRepository = await getCustomRepository(DuelRoundRepository);
+    // Cria o round do duelo com os parametros necessarios
+    const duelRound = await duelRoundRepository.createDuelRound({
+      maxGroupParticipants,
+      questionsPerContent,
+      timeForQuestion,
+      contentsId,
+    });
 
-    let questions: Question[] = [];
-    let questionsPerContent = duelParams.questionsPerContent || 0;
+    console.log(duelRound);
 
-    Promise.all(
-      contentsId.map(async (contentId) => {
-        const content = await contentRepository.findById(contentId);
+    // Declaracao do vetor que armazena os rounds do duelo
+    let duelRounds: DuelRound[] = [];
+    // Adiciona o round criado ao vetor de rounds do duelo
+    duelRounds = [...duelRounds, duelRound];
 
-        const easyQuestions = content.questions.filter(
-          (question) => question.difficulty === 1
-        );
-        const mediumQuestions = content.questions.filter(
-          (question) => question.difficulty === 2
-        );
-        const hardQuestions = content.questions.filter(
-          (question) => question.difficulty === 3
-        );
+    // Adiciona o vetor de rounds e o round criado ao duelo
+    duel = this.create({ ...duel, duelRounds, duelRound });
 
-        questions = [
-          ...questions,
-          ...this.randomDuelQuestions(easyQuestions, questionsPerContent / 2),
-        ];
-        questions = [
-          ...questions,
-          ...this.randomDuelQuestions(
-            mediumQuestions,
-            Math.floor(questionsPerContent / 3)
-          ),
-        ];
-        questions = [
-          ...questions,
-          ...this.randomDuelQuestions(hardQuestions, questionsPerContent / 5),
-        ];
-      })
-    );
-
-    const duel = await this.save({ ...newDuelParams });
-
-    return duel;
-  }
-
-  randomDuelQuestions(
-    defaultQuestions: Question[],
-    questionsNumber: number
-  ): Question[] {
-    let questionIndex = -1;
-    const questions: Question[] = [];
-
-    for (let i = 0; i < questionsNumber && i < defaultQuestions.length; i++) {
-      questionIndex = Math.random();
-
-      questions.push(defaultQuestions[questionIndex]);
-    }
-
-    return questions;
+    // Salva o duelo na base de dados
+    return await this.save({ ...duel });
   }
 
   async findAll(): Promise<Duel[]> {
     return await this.find({
-      relations: ['duelOwner', 'questions', 'teams'],
+      relations: ['student', 'duelRounds', 'duelRound'],
     });
   }
 
   async findById(id: string): Promise<Duel | undefined> {
     return await this.findOne(
       { id },
-      { relations: ['duelOwner', 'questions', 'teams'] }
+      { relations: ['student', 'duelRound', 'duelRounds'] }
     );
   }
 

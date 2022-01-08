@@ -1,14 +1,12 @@
 import {
-  Column,
   Entity,
-  JoinTable,
-  ManyToMany,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DuelQuestion } from './DuelQuestion';
-import { DuelTeam } from './DuelTeam';
+import { DuelRound } from './DuelRound';
 import { Student } from './Student';
 
 @Entity()
@@ -16,29 +14,22 @@ export class Duel {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false })
-  maxGroupParticipants: number;
-
-  @Column({ nullable: false })
-  questionsPerContent: number;
-
-  @Column({ nullable: false })
-  timeForQuestion: number;
-
-  @ManyToOne((type) => Student, (student) => student.duels, {
+  @ManyToOne(() => Student, (student) => student.duels, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  owner: Student;
+  student: Student;
 
-  @OneToMany((type) => DuelTeam, (teams) => teams.duel, {
+  @OneToOne(() => DuelRound, {
     onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   })
-  teams: DuelTeam[];
+  @JoinColumn()
+  duelRound: DuelRound;
 
-  @ManyToMany((type) => DuelQuestion, (questions) => questions.duel, {
+  @OneToMany(() => DuelRound, (duelRounds) => duelRounds.duel, {
     onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   })
-  @JoinTable()
-  questions: DuelQuestion[];
+  duelRounds: DuelRound[];
 }

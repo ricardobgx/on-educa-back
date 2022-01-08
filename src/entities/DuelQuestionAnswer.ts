@@ -5,7 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DuelQuestion } from './DuelQuestion';
+import { DuelRoundQuestion } from './DuelRoundQuestion';
 import { Alternative } from './Alternative';
 import { DuelTeamParticipation } from './DuelTeamParticipation';
 
@@ -15,7 +15,7 @@ export class DuelQuestionAnswer {
   id: string;
 
   @ManyToOne(
-    (type) => DuelTeamParticipation,
+    () => DuelTeamParticipation,
     (duelTeamParticipation) => duelTeamParticipation.duelQuestionsAnswers,
     {
       onUpdate: 'CASCADE',
@@ -24,11 +24,11 @@ export class DuelQuestionAnswer {
   )
   duelTeamParticipation: DuelTeamParticipation;
 
-  @OneToOne((type) => DuelQuestion, (duelQuestion) => duelQuestion.answer, {
+  @OneToOne(() => DuelRoundQuestion, (duelRoundQuestion) => duelRoundQuestion.answer, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  question: DuelQuestion;
+  question: DuelRoundQuestion;
 
   @ManyToOne(() => Alternative, {
     onUpdate: 'CASCADE',
