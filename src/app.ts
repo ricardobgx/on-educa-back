@@ -27,6 +27,7 @@ import contentRoutes from './routes/content.routes';
 import questionRoutes from './routes/question.routes';
 import alternativeRoutes from './routes/alternative.routes';
 import duelRoutes from './routes/duel.routes';
+import duelTeamParticipationRoutes from './routes/duelTeamParticipation.routes';
 
 // Aplicacao
 
@@ -50,13 +51,14 @@ class App {
     this.app.use('/students', studentRoutes);
     this.app.use('/teachers', teacherRoutes);
     this.app.use('/subjects', subjectRoutes);
-    this.app.use('/teachingtypes', teachingTypeRoutes);
-    this.app.use('/schoolgrades', schoolGradeRoutes);
+    this.app.use('/teachingTypes', teachingTypeRoutes);
+    this.app.use('/schoolGrades', schoolGradeRoutes);
     this.app.use('/units', unityRoutes);
     this.app.use('/contents', contentRoutes);
     this.app.use('/questions', questionRoutes);
     this.app.use('/alternatives', alternativeRoutes);
     this.app.use('/duels', duelRoutes);
+    this.app.use('/duelTeamParts', duelTeamParticipationRoutes);
 
     // Docs routes
     this.app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));

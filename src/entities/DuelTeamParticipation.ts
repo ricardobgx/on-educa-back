@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { DuelQuestionAnswer } from './DuelQuestionAnswer';
 import { DuelTeam } from './DuelTeam';
 import { Student } from './Student';
@@ -7,6 +13,9 @@ import { Student } from './Student';
 export class DuelTeamParticipation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ nullable: false })
+  index: number;
 
   @ManyToOne(() => DuelTeam, (duelTeam) => duelTeam.participations, {
     onUpdate: 'CASCADE',

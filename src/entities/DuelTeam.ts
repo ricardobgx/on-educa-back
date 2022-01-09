@@ -3,6 +3,7 @@ import {
   Entity,
   JoinTable,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { DuelRound } from './DuelRound';
@@ -16,8 +17,11 @@ export class DuelTeam {
   @Column({ nullable: false })
   name: string;
 
+  @Column({ nullable: false })
+  index: number;
+
   @Column()
-  lastParticipantIndex: number;
+  lastParticipationIndex: number;
 
   @ManyToOne(() => DuelRound, (duelTeam) => duelTeam.teams, {
     onUpdate: 'CASCADE',
@@ -25,7 +29,7 @@ export class DuelTeam {
   })
   duelRound: DuelRound;
 
-  @ManyToOne(
+  @OneToMany(
     () => DuelTeamParticipation,
     (participations) => participations.duelTeam,
     {
@@ -33,6 +37,5 @@ export class DuelTeam {
       onDelete: 'CASCADE',
     }
   )
-  @JoinTable()
   participations: DuelTeamParticipation[];
 }

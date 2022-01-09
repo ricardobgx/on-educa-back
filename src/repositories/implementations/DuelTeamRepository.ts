@@ -6,6 +6,7 @@ import {
 } from 'typeorm';
 import { IDuelTeamRequest } from '../../dto/IDuelTeamRequest';
 import { IManyDuelTeamsRequest } from '../../dto/IManyDuelTeamsRequest';
+import { DuelRound } from '../../entities/DuelRound';
 import { DuelTeam } from '../../entities/DuelTeam';
 import { IDuelTeamRepository } from '../interfaces/IDuelTeamRepository';
 import { DuelTeamParticipationRepository } from './DuelTeamParticipationRepository';
@@ -26,18 +27,19 @@ export class DuelTeamRepository
     let duelTeam = { ...duelTeamParams };
 
     // Obtendo o repositorio de conteudos
-    // const duelTeamParticipationRepository = await getCustomRepository(
-    //   DuelTeamParticipationRepository
-    // );
+    const duelTeamParticipationRepository = await getCustomRepository(
+      DuelTeamParticipationRepository
+    );
 
-    // const participations =
-    //   await duelTeamParticipationRepository.createManyDuelTeamParticipations({
-    //     studentsIds,
-    //   });
+    const participations =
+      await duelTeamParticipationRepository.createManyDuelTeamParticipations({
+        studentsIds,
+      });
 
     duelTeam = this.create({
       ...duelTeam,
-      lastParticipantIndex: 0,
+      lastParticipationIndex: -1,
+      participations,
     });
 
     // Criando o Team do duelo
@@ -51,10 +53,12 @@ export class DuelTeamRepository
     const duelTeams: DuelTeam[] = [];
 
     await Promise.all(
-      basicDuelTeamsParams.map(async (basicDuelTeamParams) => {
-        const duelTeam = await this.createDuelTeam({ ...basicDuelTeamParams });
+      basicDuelTeamsParams.map(async (basicDuelTeamParams, index) => {
+        const duelTeam = await this.createDuelTeam({
+          ...basicDuelTeamParams,
+          index,
+        });
         duelTeams.push(duelTeam);
-        console.log(duelTeam);
       })
     );
 
@@ -67,11 +71,17 @@ export class DuelTeamRepository
     });
   }
 
+  async findByDuelRound(duelRound: DuelRound): Promise<DuelTeam[]> {
+    return await this.find({
+      where: {
+        duelRound,
+      },
+      relations: ['participations'],
+    });
+  }
+
   async findById(id: string): Promise<DuelTeam | undefined> {
-    return await this.findOne(
-      { id },
-      { relations: ['duelTeamOwner', 'questions', 'teams'] }
-    );
+    return await this.findOne({ id }, { relations: ['participations'] });
   }
 
   async updateById(updateFields: IDuelTeamRequest): Promise<void> {

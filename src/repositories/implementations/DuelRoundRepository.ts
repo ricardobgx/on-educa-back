@@ -22,7 +22,8 @@ export class DuelRoundRepository
     duelRoundParams: IDuelRoundRequest
   ): Promise<DuelRound> {
     // Desestruturando parametros a serem utilizados na funcao
-    let { questionsPerContent, contentsId } = duelRoundParams;
+    let { questionsPerContent, contentsId, maxGroupParticipants } =
+      duelRoundParams;
 
     // Excluindo a variavel que armazena o id dos conteudos da entidade
     delete duelRoundParams.contentsId;
@@ -100,12 +101,23 @@ export class DuelRoundRepository
     const duelTeamRepository = await getCustomRepository(DuelTeamRepository);
     const teams = await duelTeamRepository.createManyDuelTeams({
       basicDuelTeamsParams: [
-        { name: 'Equipe A', studentsIds: [] },
-        { name: 'Equipe B', studentsIds: [] },
+        {
+          name: 'Equipe A',
+          studentsIds: ['', ''],
+        },
+        {
+          name: 'Equipe B',
+          studentsIds: ['', ''],
+        },
       ],
     });
 
-    duelRound = this.create({ ...duelRound, questions, teams });
+    duelRound = this.create({
+      ...duelRound,
+      questions,
+      teams,
+      lastTeamIndex: -1,
+    });
 
     // Criando o round do duelo
     return await this.save({ ...duelRound });
@@ -169,10 +181,17 @@ export class DuelRoundRepository
   }
 
   async findById(id: string): Promise<DuelRound | undefined> {
-    return await this.findOne(
+    let duelRound = await this.findOne(
       { id },
-      { relations: ['duelRoundOwner', 'questions', 'teams'] }
+      { relations: ['duel', 'questions'] }
     );
+
+    const duelTeamRepository = await getCustomRepository(DuelTeamRepository);
+    const teams = await duelTeamRepository.findByDuelRound(duelRound);
+
+    duelRound = { ...duelRound, teams };
+
+    return duelRound;
   }
 
   async updateById(updateFields: IDuelRoundRequest): Promise<void> {

@@ -23,6 +23,9 @@ export class DuelRound {
   @Column()
   timeForQuestion: number;
 
+  @Column()
+  lastTeamIndex: number;
+
   @ManyToOne(() => Duel, (duel) => duel.duelRounds, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
