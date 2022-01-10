@@ -117,6 +117,7 @@ export class DuelRoundRepository
       questions,
       teams,
       lastTeamIndex: -1,
+      status: 0,
     });
 
     // Criando o round do duelo
@@ -181,17 +182,7 @@ export class DuelRoundRepository
   }
 
   async findById(id: string): Promise<DuelRound | undefined> {
-    let duelRound = await this.findOne(
-      { id },
-      { relations: ['duel', 'questions'] }
-    );
-
-    const duelTeamRepository = await getCustomRepository(DuelTeamRepository);
-    const teams = await duelTeamRepository.findByDuelRound(duelRound);
-
-    duelRound = { ...duelRound, teams };
-
-    return duelRound;
+    return await this.findOne({ id }, { relations: ['duel', 'questions'] });
   }
 
   async updateById(updateFields: IDuelRoundRequest): Promise<void> {

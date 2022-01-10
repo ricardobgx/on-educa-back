@@ -80,19 +80,10 @@ export class DuelRepository
   }
 
   async findById(id: string): Promise<Duel | undefined> {
-    let duel: Duel = await this.findOne(
+    return await this.findOne(
       { id },
       { relations: ['student', 'duelRound', 'duelRounds'] }
     );
-
-    const { duelRound: duelRoundFound } = duel;
-
-    const duelRoundRepository = await getCustomRepository(DuelRoundRepository);
-    const duelRound = await duelRoundRepository.findById(duelRoundFound.id);
-
-    duel = { ...duel, duelRound };
-
-    return duel;
   }
 
   async updateById(updateFields: IDuelRequest): Promise<void> {

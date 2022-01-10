@@ -8,7 +8,10 @@ import { IDuelTeamRequest } from '../../dto/IDuelTeamRequest';
 import { IManyDuelTeamsRequest } from '../../dto/IManyDuelTeamsRequest';
 import { DuelRound } from '../../entities/DuelRound';
 import { DuelTeam } from '../../entities/DuelTeam';
+import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 import { IDuelTeamRepository } from '../interfaces/IDuelTeamRepository';
+import { DuelRepository } from './DuelRepository';
+import { DuelRoundRepository } from './DuelRoundRepository';
 import { DuelTeamParticipationRepository } from './DuelTeamParticipationRepository';
 
 @EntityRepository(DuelTeam)
@@ -71,17 +74,53 @@ export class DuelTeamRepository
     });
   }
 
-  async findByDuelRound(duelRound: DuelRound): Promise<DuelTeam[]> {
-    return await this.find({
+  async findByDuelRoundId(duelRoundId: string): Promise<DuelTeam[]> {
+    const duelRoundRepository = await getCustomRepository(DuelRoundRepository);
+    const duelRound = await duelRoundRepository.findById(duelRoundId);
+
+    const foundDuelTeams = await this.find({
       where: {
         duelRound,
       },
-      relations: ['participations'],
     });
+
+    const duelTeams: DuelTeam[] = [];
+
+    await Promise.all(
+      foundDuelTeams.map(async (foundDuelTeam) => {
+        const duelTeam = await this.findById(foundDuelTeam.id);
+        duelTeams.push(duelTeam);
+
+        return duelTeam;
+      })
+    );
+
+    console.log(duelTeams);
+
+    return duelTeams;
   }
 
   async findById(id: string): Promise<DuelTeam | undefined> {
-    return await this.findOne({ id }, { relations: ['participations'] });
+    const duelTeam = await this.findOne(
+      { id },
+      { relations: ['participations'] }
+    );
+
+    const participations: DuelTeamParticipation[] = [];
+
+    const duelTeamParticipationRepository = await getCustomRepository(
+      DuelTeamParticipationRepository
+    );
+
+    await Promise.all(
+      duelTeam.participations.map(async (participation) => {
+        const foundParticipation =
+          await duelTeamParticipationRepository.findById(participation.id);
+        participations.push(foundParticipation);
+      })
+    );
+
+    return { ...duelTeam, participations };
   }
 
   async updateById(updateFields: IDuelTeamRequest): Promise<void> {

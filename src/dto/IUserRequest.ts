@@ -5,4 +5,5 @@ export interface IUserRequest {
   profilePicture?: string;
   password?: string;
   isOnline?: boolean;
+  userType?: string;
 }

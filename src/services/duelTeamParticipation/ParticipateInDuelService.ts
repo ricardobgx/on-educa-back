@@ -1,9 +1,9 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IDuelTeamParticipationByDuelRequest } from '../../dto/IDuelTeamParticipationByDuelRequest';
+import { IParticipateInDuelRequest } from '../../dto/IParticipateInDuelRequest';
 import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 import { IDuelTeamParticipationRepository } from '../../repositories/interfaces/IDuelTeamParticipationRepository';
 
-export class CreateDuelTeamParticipationByDuelService {
+export class ParticipateInDuelService {
   duelTeamParticipationRepository: IDuelTeamParticipationRepository;
 
   constructor(
@@ -13,7 +13,7 @@ export class CreateDuelTeamParticipationByDuelService {
   }
 
   async execute(
-    duelTeamParticipationByDuelParams: IDuelTeamParticipationByDuelRequest
+    participateInDuelParams: IParticipateInDuelRequest
   ): Promise<DuelTeamParticipation> {
     const duelTeamParticipationRepository = getCustomRepository(
       this
@@ -21,8 +21,8 @@ export class CreateDuelTeamParticipationByDuelService {
     );
 
     const duelTeamParticipation =
-      await duelTeamParticipationRepository.createDuelTeamParticipationByDuelId(
-        duelTeamParticipationByDuelParams
+      await duelTeamParticipationRepository.participateInDuel(
+        participateInDuelParams
       );
 
     return duelTeamParticipation;

@@ -14,7 +14,7 @@ export class User {
   @Column({ unique: true, nullable: false })
   email: string;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
 
   @Column()
@@ -25,4 +25,7 @@ export class User {
 
   @Column()
   isOnline: boolean;
+
+  @Column({ nullable: false })
+  userType: string;
 }
