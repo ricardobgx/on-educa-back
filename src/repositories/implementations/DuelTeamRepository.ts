@@ -9,6 +9,7 @@ import { IManyDuelTeamsRequest } from '../../dto/IManyDuelTeamsRequest';
 import { DuelRound } from '../../entities/DuelRound';
 import { DuelTeam } from '../../entities/DuelTeam';
 import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
+import { sortDuelTeamParticipations } from '../../functions/duelTeamParticipation';
 import { IDuelTeamRepository } from '../interfaces/IDuelTeamRepository';
 import { DuelRepository } from './DuelRepository';
 import { DuelRoundRepository } from './DuelRoundRepository';
@@ -39,9 +40,12 @@ export class DuelTeamRepository
         studentsIds,
       });
 
+    const sortedParticipations = sortDuelTeamParticipations(participations);
+    const participation = sortedParticipations[0];
+
     duelTeam = this.create({
       ...duelTeam,
-      lastParticipationIndex: -1,
+      participation,
       participations,
     });
 
@@ -95,16 +99,16 @@ export class DuelTeamRepository
       })
     );
 
-    console.log(duelTeams);
-
     return duelTeams;
   }
 
   async findById(id: string): Promise<DuelTeam | undefined> {
-    const duelTeam = await this.findOne(
+    let duelTeam = await this.findOne(
       { id },
-      { relations: ['participations'] }
+      { relations: ['participation', 'participations'] }
     );
+
+    const { participation: participationFound } = duelTeam;
 
     const participations: DuelTeamParticipation[] = [];
 
@@ -120,6 +124,16 @@ export class DuelTeamRepository
       })
     );
 
+    if (participationFound) {
+      const participation = await duelTeamParticipationRepository.findById(
+        participationFound.id
+      );
+
+      if (participation) {
+        duelTeam = this.create({ ...duelTeam, participation });
+      }
+    }
+
     return { ...duelTeam, participations };
   }
 
@@ -131,7 +145,26 @@ export class DuelTeamRepository
       (key: string) => fields[key] === undefined && delete fields[key]
     );
 
-    await this.update({ id }, fields);
+    const { participationId } = fields;
+
+    delete fields.participationId;
+
+    let duelTeam = { ...fields };
+
+    if (participationId) {
+      const duelTeamParticipationRepository = await getCustomRepository(
+        DuelTeamParticipationRepository
+      );
+      const participation = await duelTeamParticipationRepository.findById(
+        participationId
+      );
+
+      if (participation) {
+        duelTeam = this.create({ ...duelTeam, participation });
+      }
+    }
+
+    await this.update({ id }, duelTeam);
   }
 
   async deleteById(id: string): Promise<DeleteResult> {
