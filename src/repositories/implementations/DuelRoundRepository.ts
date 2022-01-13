@@ -6,7 +6,11 @@ import {
 } from 'typeorm';
 import { IDuelRoundRequest } from '../../dto/IDuelRoundRequest';
 import { DuelRound } from '../../entities/DuelRound';
+import { DuelTeam } from '../../entities/DuelTeam';
+import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 import { Question } from '../../entities/Question';
+import { sortDuelTeams } from '../../functions/duelRound';
+import { findValidDuelTeamParticipation } from '../../functions/duelTeamParticipation';
 import { randInt } from '../../functions/utils';
 import { IDuelRoundRepository } from '../interfaces/IDuelRoundRepository';
 import { ContentRepository } from './ContentRepository';
@@ -46,45 +50,12 @@ export class DuelRoundRepository
         // Obtendo o conteudo na posicao da iteracao
         const content = await contentRepository.findById(contentId);
 
-        // Selecionando as questoes faceis do conteudo
-        const easyQuestions = content.questions.filter(
-          (question) => question.difficulty === 1
-        );
-
-        // Selecionando as questoes de dificuldade media
-        const mediumQuestions = content.questions.filter(
-          (question) => question.difficulty === 2
-        );
-
-        // Selecionando as questoes dificeis
-        const hardQuestions = content.questions.filter(
-          (question) => question.difficulty === 3
-        );
-
-        // Sorteando e adicionando as questoes faceis no vetor de questoes
+        // Sorteando e adicionando as questoes no vetor de ids de questoes
         questionsIds = [
           ...questionsIds,
           ...this.randomDuelRoundQuestionsIds(
-            easyQuestions,
-            questionsPerContent === 3 ? 1 : Math.ceil(questionsPerContent / 2)
-          ),
-        ];
-
-        // Sorteando e adicionando as questoes de nivel medio no vetor de questoes
-        questionsIds = [
-          ...questionsIds,
-          ...this.randomDuelRoundQuestionsIds(
-            mediumQuestions,
-            Math.floor(questionsPerContent / 3)
-          ),
-        ];
-
-        // Sorteando e adicionando as questoes dificeis no vetor de questoes
-        questionsIds = [
-          ...questionsIds,
-          ...this.randomDuelRoundQuestionsIds(
-            hardQuestions,
-            Math.ceil(questionsPerContent / 5)
+            content.questions,
+            questionsPerContent
           ),
         ];
       })
@@ -98,30 +69,45 @@ export class DuelRoundRepository
         questionsIds,
       });
 
+    const studentsIds = this.generateDefaultStudentsIds(maxGroupParticipants);
+
     const duelTeamRepository = await getCustomRepository(DuelTeamRepository);
     const teams = await duelTeamRepository.createManyDuelTeams({
       basicDuelTeamsParams: [
         {
           name: 'Equipe A',
-          studentsIds: ['', ''],
+          studentsIds,
         },
         {
           name: 'Equipe B',
-          studentsIds: ['', ''],
+          studentsIds,
         },
       ],
     });
 
+    const sortedTeams = sortDuelTeams(teams);
+    const team = sortedTeams[0];
+
     duelRound = this.create({
       ...duelRound,
       questions,
+      team,
       teams,
-      lastTeamIndex: -1,
       status: 0,
     });
 
     // Criando o round do duelo
     return await this.save({ ...duelRound });
+  }
+
+  generateDefaultStudentsIds(maxGroupParticipants: number): string[] {
+    const studentsIds: string[] = [];
+
+    for (let i = 0; i < maxGroupParticipants; i += 1) {
+      studentsIds.push('');
+    }
+
+    return studentsIds;
   }
 
   /***************************************************************************
@@ -182,7 +168,51 @@ export class DuelRoundRepository
   }
 
   async findById(id: string): Promise<DuelRound | undefined> {
-    return await this.findOne({ id }, { relations: ['duel', 'questions'] });
+    let duelRound = await this.findOne(
+      { id },
+      { relations: ['duel', 'question', 'questions', 'team', 'teams'] }
+    );
+
+    if (duelRound) {
+      const {
+        teams: teamsFound,
+        question: questionFound,
+        team: teamFound,
+      } = duelRound;
+      const teams: DuelTeam[] = [];
+
+      const duelTeamRepository = await getCustomRepository(DuelTeamRepository);
+      await Promise.all(
+        teamsFound.map(async (teamFound) => {
+          const team = await duelTeamRepository.findById(teamFound.id);
+          teams.push(team);
+        })
+      );
+
+      duelRound = this.create({ ...duelRound, teams });
+
+      if (questionFound) {
+        const duelRoundQuestionRepository = await getCustomRepository(
+          DuelRoundQuestionRepository
+        );
+        const question = await duelRoundQuestionRepository.findById(
+          questionFound.id
+        );
+
+        duelRound = this.create({ ...duelRound, question });
+      }
+
+      if (teamFound) {
+        const duelTeamRepository = await getCustomRepository(
+          DuelTeamRepository
+        );
+        const team = await duelTeamRepository.findById(teamFound.id);
+
+        duelRound = this.create({ ...duelRound, team });
+      }
+    }
+
+    return duelRound;
   }
 
   async updateById(updateFields: IDuelRoundRequest): Promise<void> {
@@ -198,5 +228,91 @@ export class DuelRoundRepository
 
   async deleteById(id: string): Promise<DeleteResult> {
     return await this.delete({ id });
+  }
+
+  async startDuelRound(duelRoundId: string): Promise<void> {
+    const duelRound = await this.findById(duelRoundId);
+
+    if (duelRound) {
+      const {
+        team: activeTeam,
+        teams,
+        question: activeQuestion,
+        questions,
+      } = duelRound;
+
+      // Verifica se tem um time ativo
+      if (activeTeam) {
+        const { participation: activeParticipation } = activeTeam;
+
+        // Verifica se a participacao ativa nao eh valida
+        if (!activeParticipation.student) {
+          let newActiveParticipation: DuelTeamParticipation;
+          let newActiveTeam: DuelTeam;
+
+          // Procura por uma nova participacao valida no time
+          newActiveParticipation = findValidDuelTeamParticipation(
+            activeTeam.participations
+          );
+
+          // Verifica se achou uma participacao valida
+          if (newActiveParticipation) {
+            newActiveTeam = activeTeam;
+          } else {
+            teams.map((team) => {
+              // Verifica se o time nao eh o antigo e se ainda nao achou uma participacao
+              if (team.id !== activeTeam.id && !newActiveParticipation) {
+                // Procura por uma participacao valida no time iterado
+                newActiveParticipation = findValidDuelTeamParticipation(
+                  team.participations
+                );
+                // Se achar uma participacao define o time como ativo
+                if (newActiveParticipation) {
+                  newActiveTeam = team;
+                }
+              }
+              return team;
+            });
+          }
+
+          // Se ainda nao tiver achado uma participacao o round eh dado como finalizado
+          if (!newActiveParticipation) {
+            await this.updateById({ id: duelRound.id, status: 2 });
+            return;
+          } else {
+            // Caso encontre sera atualizada a participacao no time
+
+            // Obtendo repositorio de times
+            const duelTeamRepository = await getCustomRepository(
+              DuelTeamRepository
+            );
+
+            // Atualizando a participacao valida no time
+            await duelTeamRepository.updateById({
+              id: activeTeam.id,
+              participationId: activeParticipation.id,
+            });
+
+            // Atualizando o time ativo no round
+            await this.update({ id: duelRound.id }, { team: newActiveTeam });
+          }
+        }
+      }
+
+      // Verifica se existe uma questao ativa
+      if (!activeQuestion) {
+        // Verifica se possuem questoes para serem sorteadas
+        if (questions.length > 0) {
+          const questionIndex = randInt(0, questions.length);
+          const question = questions[questionIndex];
+
+          await this.update({ id: duelRound.id }, { question });
+        } else {
+          await this.updateById({ id: duelRound.id, status: 2 });
+        }
+      }
+
+      await this.updateById({ id: duelRound.id, status: 1 });
+    }
   }
 }
