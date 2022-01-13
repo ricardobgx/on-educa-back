@@ -7,7 +7,7 @@ class UpdateDuelTeamController {
   async handle(req: Request, res: Response) {
     const { id } = req.params;
 
-    const { index, name, lastParticipantIndex } = req.body as IDuelTeamRequest;
+    const { index, name } = req.body as IDuelTeamRequest;
 
     const updateDuelTeamService = new UpdateDuelTeamService(
       new DuelTeamRepository()
@@ -17,7 +17,6 @@ class UpdateDuelTeamController {
       id,
       index,
       name,
-      lastParticipantIndex,
     });
 
     return res.status(200).json({ message: 'Entidade atualizada!' });

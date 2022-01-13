@@ -7,7 +7,7 @@ class CreateDuelTeamController {
   async handle(req: Request, res: Response) {
     const { id } = req.params;
 
-    const { index, name, lastParticipantIndex } = req.body as IDuelTeamRequest;
+    const { index, name } = req.body as IDuelTeamRequest;
 
     const createDuelTeamService = new CreateDuelTeamService(
       new DuelTeamRepository()
@@ -17,7 +17,6 @@ class CreateDuelTeamController {
       id,
       index,
       name,
-      lastParticipantIndex,
     });
 
     return res.status(201).json(duelTeam);
