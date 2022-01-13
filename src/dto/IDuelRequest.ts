@@ -1,5 +1,6 @@
 export interface IDuelRequest {
   id?: string;
+  code?: string;
   maxGroupParticipants?: number;
   timeForQuestion?: number;
   questionsPerContent?: number;
