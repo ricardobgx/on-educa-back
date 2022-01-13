@@ -4,11 +4,14 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
+import { IAnswerDuelRoundQuestionRequest } from '../../dto/IAnswerDuelRoundQuestionRequest';
 import { IDuelRoundQuestionRequest } from '../../dto/IDuelRoundQuestionRequest';
 import { IManyDuelRoundQuestionsRequest } from '../../dto/IManyDuelRoundQuestionsRequest';
 import { DuelRoundQuestion } from '../../entities/DuelRoundQuestion';
 import { ApplicationErrors } from '../../errors';
 import { IDuelRoundQuestionRepository } from '../interfaces/IDuelRoundQuestionRepository';
+import { DuelQuestionAnswerRepository } from './DuelQuestionAnswerRepository';
+import { DuelRoundRepository } from './DuelRoundRepository';
 import { QuestionRepository } from './QuestionRepository';
 
 @EntityRepository(DuelRoundQuestion)
@@ -71,10 +74,41 @@ export class DuelRoundQuestionRepository
   }
 
   async findById(id: string): Promise<DuelRoundQuestion | undefined> {
-    return await this.findOne(
-      { id },
-      { relations: ['duelRoundQuestionOwner', 'questions', 'teams'] }
+    const duelRoundQuestion = await this.findOne({
+      where: {
+        id,
+      },
+      relations: ['question'],
+    });
+
+    const { question: foundQuestion } = duelRoundQuestion;
+
+    const questionRepository = await getCustomRepository(QuestionRepository);
+
+    const question = await questionRepository.findById(foundQuestion.id);
+
+    return { ...duelRoundQuestion, question };
+  }
+
+  async findByDuelRoundId(duelRoundId: string): Promise<DuelRoundQuestion[]> {
+    const duelRoundRepository = await getCustomRepository(DuelRoundRepository);
+    const duelRound = await duelRoundRepository.findById(duelRoundId);
+
+    const { questions: duelRoundQuestionsFound } = duelRound;
+
+    const duelRoundQuestions: DuelRoundQuestion[] = [];
+
+    await Promise.all(
+      duelRoundQuestionsFound.map(async (duelRoundQuestionFound) => {
+        const duelRoundQuestion = await this.findById(
+          duelRoundQuestionFound.id
+        );
+
+        duelRoundQuestions.push(duelRoundQuestion);
+      })
     );
+
+    return duelRoundQuestions;
   }
 
   async updateById(updateFields: IDuelRoundQuestionRequest): Promise<void> {
