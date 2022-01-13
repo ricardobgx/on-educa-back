@@ -59,8 +59,6 @@ export class DuelRepository
       contentsId,
     });
 
-    console.log(duelRound);
-
     // Declaracao do vetor que armazena os rounds do duelo
     let duelRounds: DuelRound[] = [];
     // Adiciona o round criado ao vetor de rounds do duelo
@@ -80,10 +78,34 @@ export class DuelRepository
   }
 
   async findById(id: string): Promise<Duel | undefined> {
-    return await this.findOne(
+    const duel = await this.findOne(
       { id },
       { relations: ['student', 'duelRound', 'duelRounds'] }
     );
+
+    if (duel) {
+      const { duelRound: duelRoundFound } = duel;
+
+      if (duelRoundFound) {
+        const duelRoundRepository = await getCustomRepository(
+          DuelRoundRepository
+        );
+        const duelRound = await duelRoundRepository.findById(duelRoundFound.id);
+
+        return { ...duel, duelRound };
+      }
+    }
+
+    return duel;
+  }
+
+  async findByCode(code: string): Promise<Duel[]> {
+    return await this.find({
+      where: {
+        code,
+      },
+      relations: ['student', 'duelRounds', 'duelRound'],
+    });
   }
 
   async updateById(updateFields: IDuelRequest): Promise<void> {
