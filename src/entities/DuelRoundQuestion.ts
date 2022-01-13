@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { DuelQuestionAnswer } from './DuelQuestionAnswer';
 import { DuelRound } from './DuelRound';
 import { Question } from './Question';
@@ -28,5 +34,6 @@ export class DuelRoundQuestion {
       onDelete: 'CASCADE',
     }
   )
+  @JoinColumn()
   answer: DuelQuestionAnswer;
 }

@@ -1,4 +1,5 @@
 import {
+  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -13,6 +14,9 @@ import { Student } from './Student';
 export class Duel {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ unique: true })
+  code: string;
 
   @ManyToOne(() => Student, (student) => student.duels, {
     onUpdate: 'CASCADE',

@@ -1,8 +1,10 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Duel } from './Duel';
@@ -23,9 +25,6 @@ export class DuelRound {
   @Column()
   timeForQuestion: number;
 
-  @Column()
-  lastTeamIndex: number;
-
   @Column({ nullable: false })
   status: number;
 
@@ -35,11 +34,26 @@ export class DuelRound {
   })
   duel: Duel;
 
+  @OneToOne(() => DuelTeam, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn()
+  team: DuelTeam;
+
   @OneToMany(() => DuelTeam, (teams) => teams.duelRound, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   teams: DuelTeam[];
+
+  @OneToOne(() => DuelRoundQuestion, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  question: DuelRoundQuestion;
 
   @OneToMany(
     () => DuelRoundQuestion,
