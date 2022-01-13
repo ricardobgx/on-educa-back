@@ -99,13 +99,29 @@ export class DuelTeamParticipationRepository
     const duelRepository = await getCustomRepository(DuelRepository);
     const duel = await duelRepository.findById(duelId);
 
-    let duelTeamParticipation;
+    let duelTeamParticipation: DuelTeamParticipation;
 
     if (duel) {
       const { duelRound } = duel;
 
       const duelTeamRepository = await getCustomRepository(DuelTeamRepository);
       const teams = await duelTeamRepository.findByDuelRoundId(duelRound.id);
+
+      let existingParticipation: DuelTeamParticipation;
+
+      teams.map((team) => {
+        if (!existingParticipation) {
+          existingParticipation = team.participations.find(
+            (participation) =>
+              participation.student && participation.student.id === studentId
+          );
+        }
+        return team;
+      });
+
+      if (existingParticipation) {
+        return existingParticipation;
+      }
 
       let availableDuelTeamParticipation: DuelTeamParticipation;
 
@@ -119,14 +135,22 @@ export class DuelTeamParticipationRepository
       });
 
       if (availableDuelTeamParticipation) {
-        duelTeamParticipation = await this.updateById({
+        await this.updateById({
           id: availableDuelTeamParticipation.id,
           studentId,
         });
+
+        duelTeamParticipation = await this.findById(
+          availableDuelTeamParticipation.id
+        );
       }
     }
 
     return duelTeamParticipation;
+  }
+
+  async exitDuelTeamParticipation(id: string): Promise<void> {
+    await this.update({ id }, { student: null });
   }
 
   async findAll(): Promise<DuelTeamParticipation[]> {
@@ -201,6 +225,10 @@ export class DuelTeamParticipationRepository
 
     // Se a antiga participacao nao existir a funcao se encerra
     if (!newDuelTeamParticipation) {
+      return;
+    }
+
+    if (newDuelTeamParticipation.student) {
       return;
     }
 
