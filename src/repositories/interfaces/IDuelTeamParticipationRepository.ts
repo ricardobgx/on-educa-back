@@ -15,6 +15,7 @@ export interface IDuelTeamParticipationRepository {
   participateInDuel(
     participateInDuelParams: IParticipateInDuelRequest
   ): Promise<DuelTeamParticipation | undefined>;
+  exitDuelTeamParticipation(id: string): Promise<void>;
   findAll(name?: string): Promise<DuelTeamParticipation[]>;
   findByDuelTeam(id: string): Promise<DuelTeamParticipation[]>;
   findById(id: string): Promise<DuelTeamParticipation | undefined>;
