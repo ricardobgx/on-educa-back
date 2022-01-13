@@ -17,7 +17,11 @@ class ParticipateInDuelController {
       duelId,
     });
 
-    return res.status(201).json(duelTeamParticipation);
+    if (duelTeamParticipation) {
+      return res.status(200).json(duelTeamParticipation);
+    }
+
+    return res.status(400).json({ message: 'Não foi possível participar' });
   }
 }
 
