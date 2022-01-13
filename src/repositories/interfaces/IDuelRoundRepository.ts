@@ -1,6 +1,7 @@
-import { DeleteResult } from "typeorm";
-import { IDuelRoundRequest } from "../../dto/IDuelRoundRequest";
-import { DuelRound } from "../../entities/DuelRound";
+import { DeleteResult } from 'typeorm';
+import { IDuelRoundRequest } from '../../dto/IDuelRoundRequest';
+import { DuelRound } from '../../entities/DuelRound';
+import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 
 export interface IDuelRoundRepository {
   createDuelRound(duelRoundParams: IDuelRoundRequest): Promise<DuelRound>;
@@ -8,4 +9,5 @@ export interface IDuelRoundRepository {
   findById(id: string): Promise<DuelRound | undefined>;
   updateById(updateFields: IDuelRoundRequest): Promise<void>;
   deleteById(id: string): Promise<DeleteResult>;
+  startDuelRound(duelRoundId: string): Promise<void>;
 }
