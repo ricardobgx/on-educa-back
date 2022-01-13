@@ -50,7 +50,7 @@ export class QuestionRepository
   async findById(id: string): Promise<Question> {
     return await this.findOne(
       { id },
-      { relations: ['content', 'alternatives'] }
+      { relations: ['content', 'alternatives', 'rightAlternative'] }
     );
   }
 
