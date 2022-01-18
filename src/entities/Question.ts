@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -10,8 +9,6 @@ import {
 } from 'typeorm';
 import { Alternative } from './Alternative';
 import { Content } from './Content';
-import { Duel } from './Duel';
-import { InterativeRoom } from './InterativeRoom';
 
 @Entity()
 export class Question {
