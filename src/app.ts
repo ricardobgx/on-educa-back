@@ -32,6 +32,10 @@ import contentRoutes from './routes/content.routes';
 import questionRoutes from './routes/question.routes';
 import alternativeRoutes from './routes/alternative.routes';
 
+// Praticas
+
+import practiceRoutes from './routes/practice.routes';
+
 // Duelos
 
 import duelRoutes from './routes/duel.routes';
@@ -52,6 +56,10 @@ class App {
     this.routes();
   }
 
+  /**
+   * Define os middlewares que devem ser usados em todas as requisicoes e res-
+   * postas
+   */
   middlewares() {
     /* Middlewares */
 
@@ -68,11 +76,11 @@ class App {
     this.app.use(express.urlencoded({ extended: true }));
   }
 
+  /**
+   * Define as rotas da aplicacao
+   */
   routes() {
-    /* Utilizacao das rotas */
-
     // Usuarios
-
     this.app.use('/students', studentRoutes);
     this.app.use('/teachers', teacherRoutes);
 
@@ -85,8 +93,10 @@ class App {
     this.app.use('/questions', questionRoutes);
     this.app.use('/alternatives', alternativeRoutes);
 
-    // Duelos
+    // Praticas
+    this.app.use('/practices', practiceRoutes);
 
+    // Duelos
     this.app.use('/duels', duelRoutes);
     this.app.use('/duelRounds', duelRoundRoutes);
     this.app.use('/duelTeams', duelTeamRoutes);
@@ -95,7 +105,6 @@ class App {
     this.app.use('/duelQuestionAnswers', duelQuestionAnswerRoutes);
 
     // Documentacao
-
     this.app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
   }
 }
