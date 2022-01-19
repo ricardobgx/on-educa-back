@@ -4,7 +4,6 @@ import { Doubt } from './Doubt';
 import { Duel } from './Duel';
 import { DuelTeamParticipation } from './DuelTeamParticipation';
 import { InterativeRoom } from './InterativeRoom';
-import { Practice } from './Practice';
 import { SchoolGrade } from './SchoolGrade';
 import { StudStudChat } from './StudStudChat';
 import { StudStudMessage } from './StudStudMessage';
@@ -26,14 +25,6 @@ export class Student extends User {
     cascade: true,
   })
   doubts: Doubt[];
-
-  // Praticas
-
-  @OneToMany(() => Practice, (practices) => practices.student, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-  })
-  practices: Practice[];
 
   // Revisoes de conteudo
   @OneToMany(

@@ -32,10 +32,6 @@ import contentRoutes from './routes/content.routes';
 import questionRoutes from './routes/question.routes';
 import alternativeRoutes from './routes/alternative.routes';
 
-// Praticas
-
-import practiceRoutes from './routes/practice.routes';
-
 // Duelos
 
 import duelRoutes from './routes/duel.routes';
@@ -92,9 +88,6 @@ class App {
     this.app.use('/contents', contentRoutes);
     this.app.use('/questions', questionRoutes);
     this.app.use('/alternatives', alternativeRoutes);
-
-    // Praticas
-    this.app.use('/practices', practiceRoutes);
 
     // Duelos
     this.app.use('/duels', duelRoutes);
