@@ -22,6 +22,10 @@ const { PORT } = process.env;
 import studentRoutes from './routes/student.routes';
 import teacherRoutes from './routes/teacher.routes';
 
+// Desempenho
+
+import studentWeekPerformanceRoutes from './routes/studentWeekPerformance.routes';
+
 // Materiais escolares
 
 import teachingTypeRoutes from './routes/teachingtype.routes';
@@ -79,6 +83,9 @@ class App {
     // Usuarios
     this.app.use('/students', studentRoutes);
     this.app.use('/teachers', teacherRoutes);
+
+    // Desempenho
+    this.app.use('/studentWeekPerformances', studentWeekPerformanceRoutes);
 
     // Materiais escolares
     this.app.use('/subjects', subjectRoutes);

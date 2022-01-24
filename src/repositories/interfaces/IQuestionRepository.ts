@@ -7,6 +7,7 @@ export interface IQuestionRepository {
   findAll(): Promise<Question[]>;
   findByContent(contentId: string): Promise<Question[]>;
   findById(id: string): Promise<Question | undefined>;
+  getPracticeQuestions(contentId: string): Promise<Question[]>;
   updateById(updateFields: IQuestionRequest): Promise<void>;
   deleteById(id: string): Promise<DeleteResult>;
 }

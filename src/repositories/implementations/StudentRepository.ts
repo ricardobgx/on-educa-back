@@ -1,27 +1,40 @@
-import { DeleteResult, EntityRepository, getCustomRepository, Repository } from "typeorm";
-import { IStudentRequest } from "../../dto/IStudentRequest";
-import { Student } from "../../entities/Student";
-import { IStudentRepository } from "../interfaces/IStudentRepository";
-import { SchoolGradeRepository } from "./SchoolGradeRepository";
+import {
+  DeleteResult,
+  EntityRepository,
+  getCustomRepository,
+  Repository,
+} from 'typeorm';
+import { IStudentRequest } from '../../dto/IStudentRequest';
+import { Student } from '../../entities/Student';
+import { IStudentRepository } from '../interfaces/IStudentRepository';
+import { SchoolGradeRepository } from './SchoolGradeRepository';
+import { StudentWeekPerformanceRepository } from './StudentWeekPerformanceRepository';
 
 @EntityRepository(Student)
-export class StudentRepository extends Repository<Student> implements IStudentRepository {
+export class StudentRepository
+  extends Repository<Student>
+  implements IStudentRepository
+{
   async createStudent(studentParams: IStudentRequest): Promise<Student> {
     const { schoolGradeId } = studentParams;
-    
+
     delete studentParams.schoolGradeId;
 
     let student = { ...studentParams };
 
     if (schoolGradeId) {
-    
-    const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
-    const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
-    student = this.create({ ...studentParams, schoolGrade });
+      const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
+      const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
+      student = this.create({ ...studentParams, schoolGrade });
     }
 
-    delete studentParams.schoolGradeId;
+    const studentWeekPerformanceRepository = await getCustomRepository(
+      StudentWeekPerformanceRepository
+    );
+    const weekPerformance =
+      await studentWeekPerformanceRepository.createStudentWeekPerformance({});
 
+    student = this.create({ ...student, weekPerformance });
 
     return await this.save(student);
   }
@@ -47,7 +60,7 @@ export class StudentRepository extends Repository<Student> implements IStudentRe
     delete fields.email;
 
     Object.keys(fields).map(
-      key => !!fields[key] === undefined && delete fields[key]
+      (key) => !!fields[key] === undefined && delete fields[key]
     );
 
     await this.update({ email }, fields);
@@ -60,14 +73,16 @@ export class StudentRepository extends Repository<Student> implements IStudentRe
     delete fields.id;
 
     Object.keys(fields).map(
-      key => fields[key] === undefined && delete fields[key]
+      (key) => fields[key] === undefined && delete fields[key]
     );
 
-    let student = {...fields};
+    let student = { ...fields };
 
     if (fields.schoolGradeId) {
       const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
-      const schoolGrade = await schoolGradeRepository.findById(fields.schoolGradeId);
+      const schoolGrade = await schoolGradeRepository.findById(
+        fields.schoolGradeId
+      );
 
       if (schoolGrade) student = this.create({ ...fields, schoolGrade });
     }
