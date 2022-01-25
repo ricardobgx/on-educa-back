@@ -8,6 +8,7 @@ import { IStudentWeekDayPerformanceRequest } from '../../dto/IStudentWeekDayPerf
 import { IUpdateStudentWeekDayPerformanceRequest } from '../../dto/IUpdateStudentWeekDayPerformanceRequest';
 import { StudentWeekDayPerformance } from '../../entities/StudentWeekDayPerformance';
 import { ApplicationErrors } from '../../errors';
+import { getFullDate } from '../../functions/utils';
 import { IStudentWeekDayPerformanceRepository } from '../interfaces/IStudentWeekDayPerformanceRepository';
 import { StudentWeekPerformanceRepository } from './StudentWeekPerformanceRepository';
 
@@ -28,13 +29,7 @@ export class StudentWeekDayPerformanceRepository
       weekPerformanceId
     );
 
-    const now = new Date();
-
-    const day = now.getUTCDate();
-    const month = now.getUTCMonth() + 1;
-    const year = now.getUTCFullYear();
-
-    const fullDate = `${day}/${month}/${year}`;
+    const fullDate = getFullDate();
 
     // Salva a pratica na base de dados e retorna
     return await this.save({

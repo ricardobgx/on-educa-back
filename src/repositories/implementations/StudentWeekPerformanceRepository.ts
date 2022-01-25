@@ -8,6 +8,7 @@ import { IStudentWeekPerformanceRequest } from '../../dto/IStudentWeekPerformanc
 import { IUpdateStudentWeekPerformanceRequest } from '../../dto/IUpdateStudentWeekPerformanceRequest';
 import { StudentWeekPerformance } from '../../entities/StudentWeekPerformance';
 import { ApplicationErrors } from '../../errors';
+import { getFullDate } from '../../functions/utils';
 import { IStudentWeekPerformanceRepository } from '../interfaces/IStudentWeekPerformanceRepository';
 import { StudentRepository } from './StudentRepository';
 import { StudentWeekDayPerformanceRepository } from './StudentWeekDayPerformanceRepository';
@@ -20,13 +21,7 @@ export class StudentWeekPerformanceRepository
   async createStudentWeekPerformance(
     studentWeekPerformanceParams: IStudentWeekPerformanceRequest
   ): Promise<StudentWeekPerformance> {
-    const now = new Date();
-
-    const day = now.getUTCDate();
-    const month = now.getUTCMonth() + 1;
-    const year = now.getUTCFullYear();
-
-    const fullDate = `${day}/${month}/${year}`;
+    const fullDate = getFullDate();
 
     // Salva o desempenho semanal do aluno na base de dados e retorna
     const studentWeekPerformance = await this.save({
@@ -55,6 +50,30 @@ export class StudentWeekPerformanceRepository
     });
   }
 
+  async verifyStudentWeekDayPerformance(
+    studentWeekPerformance: StudentWeekPerformance
+  ): Promise<StudentWeekPerformance | undefined> {
+    const { id, weekDay } = studentWeekPerformance;
+    const fullDate = getFullDate();
+
+    if (weekDay.date === fullDate) {
+      return { ...studentWeekPerformance };
+    }
+
+    const studentWeekDayPerformanceRepository = await getCustomRepository(
+      StudentWeekDayPerformanceRepository
+    );
+
+    const newWeekDay =
+      await studentWeekDayPerformanceRepository.createStudentWeekDayPerformance(
+        { weekPerformanceId: id }
+      );
+
+    await this.update({ id }, { weekDay: newWeekDay });
+
+    return { ...studentWeekPerformance, weekDay: newWeekDay };
+  }
+
   async findById(id: string): Promise<StudentWeekPerformance | undefined> {
     const studentWeekPerformance = await this.findOne(
       { id },
@@ -70,9 +89,13 @@ export class StudentWeekPerformanceRepository
     const studentRepository = await getCustomRepository(StudentRepository);
     const student = await studentRepository.findById(studentId);
 
-    const studentWeekPerformance = await this.findOne(
+    const studentWeekPerformanceFound = await this.findOne(
       { student },
       { relations: ['weekDay', 'weekDays'] }
+    );
+
+    const studentWeekPerformance = await this.verifyStudentWeekDayPerformance(
+      studentWeekPerformanceFound
     );
 
     return studentWeekPerformance;

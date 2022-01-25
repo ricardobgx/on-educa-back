@@ -51,3 +51,13 @@ export const generateDuelCode = (codeSize: number): string => {
 
   return code;
 };
+
+export const getFullDate = (): string => {
+  const now = new Date();
+
+  const day = now.getUTCDate();
+  const month = now.getUTCMonth() + 1;
+  const year = now.getUTCFullYear();
+
+  return `${day}/${month}/${year}`;
+};
