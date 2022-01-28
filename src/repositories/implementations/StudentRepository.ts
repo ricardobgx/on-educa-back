@@ -5,8 +5,10 @@ import {
   Repository,
 } from 'typeorm';
 import { IStudentRequest } from '../../dto/IStudentRequest';
+import { Image } from '../../entities/Image';
 import { Student } from '../../entities/Student';
 import { IStudentRepository } from '../interfaces/IStudentRepository';
+import { ImageRepository } from './ImageRepository';
 import { SchoolGradeRepository } from './SchoolGradeRepository';
 import { StudentWeekPerformanceRepository } from './StudentWeekPerformanceRepository';
 
@@ -16,9 +18,10 @@ export class StudentRepository
   implements IStudentRepository
 {
   async createStudent(studentParams: IStudentRequest): Promise<Student> {
-    const { schoolGradeId } = studentParams;
+    const { schoolGradeId, profilePictureId } = studentParams;
 
     delete studentParams.schoolGradeId;
+    delete studentParams.profilePictureId;
 
     let student = { ...studentParams };
 
@@ -26,6 +29,12 @@ export class StudentRepository
       const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
       const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
       student = this.create({ ...studentParams, schoolGrade });
+    }
+
+    if (profilePictureId) {
+      const imageRepository = await getCustomRepository(ImageRepository);
+      const profilePicture = await imageRepository.findById(profilePictureId);
+      student = this.create({ ...student, profilePicture });
     }
 
     const studentWeekPerformanceRepository = await getCustomRepository(
@@ -40,12 +49,22 @@ export class StudentRepository
   }
 
   async findAll(): Promise<Student[]> {
-    return await this.find({ relations: ['schoolGrade'] });
+    return await this.find({
+      relations: ['schoolGrade', 'profilePicture'],
+    });
   }
 
   async findById(id: string): Promise<Student | undefined> {
-    const student = await this.findOne({ id }, { relations: ['schoolGrade'] });
-    return student;
+    const student = await this.findOne(
+      { id },
+      { relations: ['schoolGrade', 'profilePicture'] }
+    );
+
+    const profilePicture = await this.getProfilePicture(
+      student.profilePicture.id
+    );
+
+    return this.create({ ...student, profilePicture });
   }
 
   async findByEmail(email: string): Promise<Student | undefined> {
@@ -87,10 +106,39 @@ export class StudentRepository
       if (schoolGrade) student = this.create({ ...fields, schoolGrade });
     }
 
+    if (fields.profilePictureId) {
+      const imageRepository = await getCustomRepository(ImageRepository);
+      const profilePicture = await imageRepository.findById(
+        fields.profilePictureId
+      );
+
+      if (profilePicture) {
+        const oldStudent = await this.findById(id);
+        const { profilePicture: oldProfilePicture } = oldStudent;
+
+        if (
+          oldProfilePicture &&
+          oldProfilePicture.id !== process.env.DEFAULT_PROFILE_PICTURE
+        ) {
+          console.log('apagou foto');
+          await this.update({ id }, { profilePicture: null });
+          await imageRepository.deleteById(oldProfilePicture.id);
+        }
+        student = this.create({ ...student, profilePicture });
+      }
+    }
+
     await this.update({ id }, student);
   }
 
   async deleteByEmail(email: string): Promise<DeleteResult> {
     return await this.delete({ email });
+  }
+
+  async getProfilePicture(imageId: string): Promise<Image> {
+    const imageRepository = await getCustomRepository(ImageRepository);
+    const image = await imageRepository.findById(imageId);
+
+    return image;
   }
 }

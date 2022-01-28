@@ -1,15 +1,18 @@
-import { Request, Response } from "express";
-import { IStudentRequest } from "../../dto/IStudentRequest";
-import { StudentRepository } from "../../repositories/implementations/StudentRepository";
-import { UpdateStudentService } from "../../services/student/UpdateStudentService";
+import { Request, Response } from 'express';
+import { IStudentRequest } from '../../dto/IStudentRequest';
+import { StudentRepository } from '../../repositories/implementations/StudentRepository';
+import { UpdateStudentService } from '../../services/student/UpdateStudentService';
 
 class UpdateStudentController {
   async handle(req: Request, res: Response) {
-    const { name, email, password, schoolGradeId, isOnline, profilePicture } = req.body as IStudentRequest;
+    const { name, email, password, schoolGradeId, isOnline, profilePictureId } =
+      req.body as IStudentRequest;
 
     const { id } = req.params;
 
-    const updateStudentService = new UpdateStudentService(new StudentRepository());
+    const updateStudentService = new UpdateStudentService(
+      new StudentRepository()
+    );
 
     await updateStudentService.execute({
       id,
@@ -18,12 +21,11 @@ class UpdateStudentController {
       password,
       schoolGradeId,
       isOnline,
-      profilePicture
+      profilePictureId,
     });
 
-    return res.status(200).json({ message: "Estudante atualizado!" });
+    return res.status(200).json({ message: 'Estudante atualizado!' });
   }
-
 }
 
 export default new UpdateStudentController();

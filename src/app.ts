@@ -6,6 +6,7 @@ import './database';
 import swaggerUI from 'swagger-ui-express';
 import * as swaggerDefinitionDocument from './swagger.json';
 import { paths } from './routes';
+import path from 'path';
 
 // Documentacao da API
 
@@ -44,6 +45,10 @@ import duelTeamRoutes from './routes/duelTeam.routes';
 import duelTeamParticipationRoutes from './routes/duelTeamParticipation.routes';
 import duelRoundQuestionRoutes from './routes/duelRoundQuestion.routes';
 import duelQuestionAnswerRoutes from './routes/duelQuestionAnswer.routes';
+
+// Imagens
+
+import imagesRoute from './routes/image.routes';
 
 // Aplicacao
 
@@ -103,6 +108,17 @@ class App {
     this.app.use('/duelTeamParts', duelTeamParticipationRoutes);
     this.app.use('/duelRoundQuestions', duelRoundQuestionRoutes);
     this.app.use('/duelQuestionAnswers', duelQuestionAnswerRoutes);
+
+    // Imagens
+
+    this.app.use('/images', imagesRoute);
+
+    // Uploads
+
+    this.app.use(
+      '/uploads',
+      express.static(path.join(__dirname, '..', 'uploads'))
+    );
 
     // Documentacao
     this.app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));

@@ -6,15 +6,10 @@ import { CreateTeacherService } from '../../services/teacher/CreateTeacherServic
 
 class CreateTeacherController {
   async handle(req: Request, res: Response) {
-    const {
-      email,
-      name,
-      password,
-      profilePicture,
-      isOnline,
-      teachingTypeId,
-      userType,
-    } = req.body as ITeacherRequest;
+    const { email, name, password, isOnline, teachingTypeId, userType } =
+      req.body as ITeacherRequest;
+
+    const profilePictureId = 'ac982a73-5fa2-4333-8f59-ccc48e80d337';
 
     const createTeacherService = new CreateTeacherService(
       new TeacherRepository()
@@ -24,10 +19,10 @@ class CreateTeacherController {
       email,
       name,
       password,
-      profilePicture,
       isOnline,
       teachingTypeId,
       userType,
+      profilePictureId,
     });
 
     return res.status(201).json(teacher);

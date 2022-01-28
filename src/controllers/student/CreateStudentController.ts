@@ -7,15 +7,10 @@ import { CreateStudentService } from '../../services/student/CreateStudentServic
 
 class CreateStudentController {
   async handle(req: Request, res: Response) {
-    const {
-      email,
-      name,
-      password,
-      profilePicture,
-      schoolGradeId,
-      isOnline,
-      userType,
-    } = req.body as IStudentRequest;
+    const { email, name, password, schoolGradeId, isOnline, userType } =
+      req.body as IStudentRequest;
+
+    const profilePictureId = process.env.DEFAULT_PROFILE_PICTURE;
 
     const createStudentService = new CreateStudentService(
       new StudentRepository()
@@ -25,10 +20,10 @@ class CreateStudentController {
       email,
       name,
       password,
-      profilePicture,
       schoolGradeId,
       isOnline,
       userType,
+      profilePictureId,
     });
 
     return res.status(201).json(student);

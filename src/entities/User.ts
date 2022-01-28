@@ -1,5 +1,13 @@
 import { hash } from 'bcryptjs';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Image } from './Image';
 
 @Entity()
 export class User {
@@ -18,9 +26,6 @@ export class User {
   name: string;
 
   @Column()
-  profilePicture: string;
-
-  @Column()
   password: string;
 
   @Column()
@@ -28,4 +33,11 @@ export class User {
 
   @Column({ nullable: false })
   userType: string;
+
+  @OneToOne(() => Image, {
+    onUpdate: 'CASCADE',
+    nullable: true,
+  })
+  @JoinColumn()
+  profilePicture: Image;
 }

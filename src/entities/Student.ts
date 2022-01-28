@@ -34,7 +34,6 @@ export class Student extends User {
     (weekPerformance) => weekPerformance.student,
     {
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
     }
   )
   weekPerformance: StudentWeekPerformance;

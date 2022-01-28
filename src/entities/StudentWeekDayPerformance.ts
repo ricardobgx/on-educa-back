@@ -32,6 +32,7 @@ export class StudentWeekDayPerformance {
     (weekPerformance) => weekPerformance.weekDays,
     {
       onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     }
   )
   weekPerformance: StudentWeekPerformance;

@@ -19,13 +19,13 @@ export class StudentWeekPerformance {
 
   @OneToOne(() => Student, (student) => student.weekPerformance, {
     onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   student: Student;
 
   @OneToOne(() => StudentWeekDayPerformance, {
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
   })
   @JoinColumn()
   weekDay: StudentWeekDayPerformance;
@@ -35,7 +35,6 @@ export class StudentWeekPerformance {
     (studentWeekDayPerformance) => studentWeekDayPerformance.weekPerformance,
     {
       onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
     }
   )
   weekDays: StudentWeekDayPerformance[];
