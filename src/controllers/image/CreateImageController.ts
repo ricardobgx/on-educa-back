@@ -10,15 +10,13 @@ class CreateImageController {
       const img = req.file;
       let path = img.filename;
 
-      console.log(img.size);
-
       if (img.size > 500000) {
         await compressImage(img, 512)
           .then(() => {
             path = img.filename.split('.')[0] + '.png';
           })
           .catch((err) => {
-            console.log('erro');
+            console.log(err);
           });
       }
 

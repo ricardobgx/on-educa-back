@@ -36,21 +36,16 @@ export const compressImage = async (
   file: Express.Multer.File,
   size: number
 ) => {
-  console.log(file.path);
-
   // Pega o PATH antigo e altera a string que representa a extensao do arquivo
   const newPath = file.path.split('.')[0] + '.png';
 
-  const image = await sharp(file.buffer);
-  const metadata = await image.metadata();
-
   // Usando o sharp para a compressao na imagem que o path aponta
   return sharp(file.path)
-    .resize(metadata.width > size ? size : metadata.width) // Redimensiona para o tamanho informado
+    .resize(size) // Redimensiona para o tamanho informado
     .toFormat('png') // Forca a conversao do arquivo para o formato PNG
     .png({
       // Define uma qualidade para o arquivo comprimido
-      quality: 100,
+      quality: 80,
     })
     .toBuffer() // Transforma o arquivo em Buffer
     .then((data) => {

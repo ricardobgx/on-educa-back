@@ -45,9 +45,31 @@ export class StudentWeekPerformanceRepository
   }
 
   async findAll(): Promise<StudentWeekPerformance[]> {
-    return await this.find({
-      relations: [],
+    const studentWeekPerformancesFound = await this.find({
+      order: {
+        xp: 'DESC',
+      },
+      relations: ['student'],
     });
+
+    const studentWeekPerformances: StudentWeekPerformance[] = [];
+
+    const studentRepository = await getCustomRepository(StudentRepository);
+
+    await Promise.all(
+      studentWeekPerformancesFound.map(async (studentWeekPerformanceFound) => {
+        const student = await studentRepository.findById(
+          studentWeekPerformanceFound.student.id
+        );
+
+        studentWeekPerformances.push({
+          ...studentWeekPerformanceFound,
+          student,
+        });
+      })
+    );
+
+    return studentWeekPerformances;
   }
 
   async verifyStudentWeekDayPerformance(

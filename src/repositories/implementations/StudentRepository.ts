@@ -60,11 +60,18 @@ export class StudentRepository
       { relations: ['schoolGrade', 'profilePicture'] }
     );
 
+    const schoolGradeRepository = await getCustomRepository(
+      SchoolGradeRepository
+    );
+    const schoolGrade = await schoolGradeRepository.findById(
+      student.schoolGrade.id
+    );
+
     const profilePicture = await this.getProfilePicture(
       student.profilePicture.id
     );
 
-    return this.create({ ...student, profilePicture });
+    return this.create({ ...student, profilePicture, schoolGrade });
   }
 
   async findByEmail(email: string): Promise<Student | undefined> {
