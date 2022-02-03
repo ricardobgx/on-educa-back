@@ -14,33 +14,33 @@ export class InterativeRoom {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne((type) => Teacher, (teacher) => teacher.interativeRooms, {
-    onUpdate: 'CASCADE',
-  })
-  teacher: Teacher;
+  // @ManyToOne(() => Teacher, (teacher) => teacher.interativeRooms, {
+  //   onUpdate: 'CASCADE',
+  // })
+  // teacher: Teacher;
 
-  @ManyToMany(
-    (type) => Teacher,
-    (teacher) => teacher.interativeRoomParticipations,
-    {
-      onUpdate: 'CASCADE',
-    }
-  )
-  @JoinTable()
-  teachers: Teacher[];
+  // @ManyToMany(
+  //   () => Teacher,
+  //   (teacher) => teacher.interativeRoomParticipations,
+  //   {
+  //     onUpdate: 'CASCADE',
+  //   }
+  // )
+  // @JoinTable()
+  // teachers: Teacher[];
 
-  @ManyToMany(
-    (type) => Student,
-    (student) => student.interativeRoomParticipations,
-    {
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    }
-  )
-  @JoinTable()
-  students: Student[];
+  // @ManyToMany(
+  //   () => Student,
+  //   (student) => student.interativeRoomParticipations,
+  //   {
+  //     onUpdate: 'CASCADE',
+  //     onDelete: 'CASCADE',
+  //   }
+  // )
+  // @JoinTable()
+  // students: Student[];
 
-  @ManyToMany((type) => Question, {
+  @ManyToMany(() => Question, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import { getCustomRepository } from 'typeorm';
-import { TeacherRepository } from '../../repositories/implementations/TeacherRepository';
+import { PeopleRepository } from '../../repositories/implementations/PeopleRepository';
 
 interface Payload {
   iat: number;
@@ -28,11 +28,11 @@ export async function verifyAuthentication(
     const { id } = verify(tokenCripto[1], tokenKey) as Payload;
     req.teacher_id = id;
 
-    const teacherRepository = getCustomRepository(TeacherRepository);
-    const teacher = await teacherRepository.findById(id);
+    const userRepository = getCustomRepository(PeopleRepository);
+    const teacher = await userRepository.findById(id);
 
-    if (teacher) return next();
-    return res.status(401).json({ message: 'Você não é um professor' });
+    if (teacher && !teacher.isStudent) return next();
+    return res.status(401).json({ message: 'Token inválido' });
   } catch (error) {
     return res.status(401).json({ message: 'Token inválido' });
   }

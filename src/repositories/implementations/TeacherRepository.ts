@@ -6,7 +6,9 @@ import {
 } from 'typeorm';
 import { ITeacherRequest } from '../../dto/ITeacherRequest';
 import { Teacher } from '../../entities/Teacher';
+import { ApplicationErrors } from '../../errors';
 import { ITeacherRepository } from '../interfaces/ITeacherRepository';
+import { PeopleRepository } from './PeopleRepository';
 import { TeachingTypeRepository } from './TeachingTypeRepository';
 
 @EntityRepository(Teacher)
@@ -15,14 +17,34 @@ export class TeacherRepository
   implements ITeacherRepository
 {
   async createTeacher(teacherParams: ITeacherRequest): Promise<Teacher> {
-    const { teachingTypeId } = teacherParams;
+    const { peopleId, teachingTypeId } = teacherParams;
+
+    delete teacherParams.teachingTypeId;
+    delete teacherParams.peopleId;
+
+    if (!peopleId) {
+      throw new ApplicationErrors('Pessoa não informada', 400);
+    }
+
+    if (!teachingTypeId) {
+      throw new ApplicationErrors('Ensino não informado', 400);
+    }
+
+    const peopleRepository = await getCustomRepository(PeopleRepository);
+    const people = await peopleRepository.findById(peopleId);
+
+    if (!people) {
+      throw new ApplicationErrors('Pessoa não encontrada', 404);
+    }
 
     const teachingTypeRepository = getCustomRepository(TeachingTypeRepository);
     const teachingType = await teachingTypeRepository.findById(teachingTypeId);
 
-    delete teacherParams.teachingTypeId;
+    if (!teachingType) {
+      throw new ApplicationErrors('Ensino não encontrado', 404);
+    }
 
-    const teacher = this.create({ ...teacherParams, teachingType });
+    const teacher = this.create({ ...teacherParams, people, teachingType });
 
     return await await this.save(teacher);
   }
@@ -36,15 +58,6 @@ export class TeacherRepository
   async findById(id: string): Promise<Teacher | undefined> {
     return await this.findOne(
       { id },
-      {
-        relations: ['teachingType'],
-      }
-    );
-  }
-
-  async findByEmail(email: string): Promise<Teacher | undefined> {
-    return await this.findOne(
-      { email },
       {
         relations: ['teachingType'],
       }

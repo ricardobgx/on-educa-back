@@ -6,11 +6,11 @@ import { UpdateUnityService } from '../../services/unity/UpdateUnityService';
 class UpdateUnityController {
   async handle(req: Request, res: Response) {
     const { id } = req.params;
-    const { title, subjectId } = req.body as IUnityRequest;
+    const { name, subjectId } = req.body as IUnityRequest;
 
     const updateUnityService = new UpdateUnityService(new UnityRepository());
 
-    await updateUnityService.execute({ id, title, subjectId });
+    await updateUnityService.execute({ id, name, subjectId });
 
     return res.status(200).json({ message: 'Unidade atualizada' });
   }

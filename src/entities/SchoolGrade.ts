@@ -1,7 +1,12 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Student } from "./Student";
-import { Subject } from "./Subject";
-import { TeachingType } from "./TeachingType";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Subject } from './Subject';
+import { TeachingType } from './TeachingType';
 
 @Entity()
 export class SchoolGrade {
@@ -11,20 +16,14 @@ export class SchoolGrade {
   @Column()
   index: number;
 
-  @OneToMany(type => Student, students => students.schoolGrade, {
+  @OneToMany(() => Subject, (subjects) => subjects.schoolGrade, {
     onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  students: Student[];
-
-  @OneToMany(type => Subject, subjects => subjects.schoolGrade, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
   })
   subjects: Subject[];
 
-  @ManyToOne(type => TeachingType, teachingType => teachingType.schoolGrades, {
-    onUpdate: 'CASCADE'
+  @ManyToOne(() => TeachingType, (teachingType) => teachingType.schoolGrades, {
+    onUpdate: 'CASCADE',
   })
   teachingType: TeachingType;
 }

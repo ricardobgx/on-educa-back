@@ -10,7 +10,7 @@ import { StudentWeekDayPerformance } from '../../entities/StudentWeekDayPerforma
 import { ApplicationErrors } from '../../errors';
 import { getFullDate } from '../../functions/utils';
 import { IStudentWeekDayPerformanceRepository } from '../interfaces/IStudentWeekDayPerformanceRepository';
-import { StudentWeekPerformanceRepository } from './StudentWeekPerformanceRepository';
+import { StudentWeeklyPerformanceRepository } from './StudentWeeklyPerformanceRepository';
 
 @EntityRepository(StudentWeekDayPerformance)
 export class StudentWeekDayPerformanceRepository
@@ -20,27 +20,25 @@ export class StudentWeekDayPerformanceRepository
   async createStudentWeekDayPerformance(
     studentWeekDayPerformanceParams: IStudentWeekDayPerformanceRequest
   ): Promise<StudentWeekDayPerformance> {
-    const { weekPerformanceId } = studentWeekDayPerformanceParams;
+    const { weeklyPerformanceId } = studentWeekDayPerformanceParams;
 
-    const studentWeekPerformanceRepository = await getCustomRepository(
-      StudentWeekPerformanceRepository
+    const studentWeeklyPerformanceRepository = await getCustomRepository(
+      StudentWeeklyPerformanceRepository
     );
-    const weekPerformance = await studentWeekPerformanceRepository.findById(
-      weekPerformanceId
+    const weeklyPerformance = await studentWeeklyPerformanceRepository.findById(
+      weeklyPerformanceId
     );
-
-    const fullDate = getFullDate();
 
     // Salva a pratica na base de dados e retorna
     return await this.save({
-      weekPerformance,
-      dailyXP: 0,
-      studiedContents: 0,
+      weeklyPerformance,
+      dailyXp: 0,
+      contentsStudied: 0,
       questionsAnswered: 0,
-      rightQuestionsAnswered: 0,
+      questionsAnsweredCorrectly: 0,
       duelsParticipated: 0,
       duelsWon: 0,
-      date: fullDate,
+      createdAt: getFullDate(),
     });
   }
 
@@ -78,25 +76,25 @@ export class StudentWeekDayPerformanceRepository
 
     const studentWeekDayPerformance = await this.findById(id);
     const {
-      dailyXP: oldDailyXP,
-      studiedContents: oldStudiedContents,
+      dailyXp: oldDailyXp,
+      contentsStudied: oldStudiedContents,
       questionsAnswered: oldQuestionsAnswered,
-      rightQuestionsAnswered: oldRightQuestionsAnswered,
+      questionsAnsweredCorrectly: oldRightQuestionsAnswered,
       duelsParticipated: oldDuelsParticipated,
       duelsWon: oldDuelsWon,
     } = studentWeekDayPerformance;
 
     // Verificando se as variaveis tem valores definidos
 
-    const dailyXP =
-      this.defineDefaultValueToUndefined(dailyXPNumber) + oldDailyXP;
-    const studiedContents =
+    const dailyXp =
+      this.defineDefaultValueToUndefined(dailyXPNumber) + oldDailyXp;
+    const contentsStudied =
       this.defineDefaultValueToUndefined(studiedContentsNumber) +
       oldStudiedContents;
     const questionsAnswered =
       this.defineDefaultValueToUndefined(questionsAnsweredNumber) +
       oldQuestionsAnswered;
-    const rightQuestionsAnswered =
+    const questionsAnsweredCorrectly =
       this.defineDefaultValueToUndefined(rightQuestionsAnsweredNumber) +
       oldRightQuestionsAnswered;
     const duelsParticipated =
@@ -107,10 +105,10 @@ export class StudentWeekDayPerformanceRepository
 
     await this.updateById({
       id,
-      dailyXP,
-      studiedContents,
+      dailyXp,
+      contentsStudied,
       questionsAnswered,
-      rightQuestionsAnswered,
+      questionsAnsweredCorrectly,
       duelsParticipated,
       duelsWon,
     });

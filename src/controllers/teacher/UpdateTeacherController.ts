@@ -5,14 +5,7 @@ import { UpdateTeacherService } from '../../services/teacher/UpdateTeacherServic
 
 class UpdateTeacherController {
   async handle(req: Request, res: Response) {
-    const {
-      name,
-      email,
-      password,
-      isOnline,
-      profilePictureId,
-      teachingTypeId,
-    } = req.body as ITeacherRequest;
+    const { teachingTypeId } = req.body as ITeacherRequest;
 
     const { id } = req.params;
 
@@ -22,11 +15,6 @@ class UpdateTeacherController {
 
     await updateTeacherService.execute({
       id,
-      email,
-      name,
-      password,
-      isOnline,
-      profilePictureId,
       teachingTypeId,
     });
 

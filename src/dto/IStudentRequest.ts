@@ -1,5 +1,5 @@
-import { IUserRequest } from "./IUserRequest";
-
-export interface IStudentRequest extends IUserRequest {
+export interface IStudentRequest {
+  id?: string;
+  peopleId?: string;
   schoolGradeId?: string;
 }

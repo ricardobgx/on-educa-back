@@ -16,12 +16,12 @@ export class UnityRepository
   implements IUnityRepository
 {
   async createUnity(unityParams: IUnityRequest): Promise<Unity> {
-    const { title, subjectId } = unityParams;
+    const { name, subjectId } = unityParams;
 
     const subjectRepository = getCustomRepository(SubjectRepository);
     const subject = await subjectRepository.findById(subjectId);
 
-    const unity = this.create({ title, subject });
+    const unity = this.create({ name, subject });
 
     return await this.save(unity);
   }

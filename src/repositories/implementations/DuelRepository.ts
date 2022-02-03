@@ -47,7 +47,7 @@ export class DuelRepository
     if (!student) throw new ApplicationErrors('Estudante não encontrado', 404);
 
     // Armazena o estudante encontrado no duelo
-    duel = this.create({ ...duel, student });
+    duel = this.create({ ...duel });
 
     // Obtem o repositorio que armazenas os rounds dos duelos
     const duelRoundRepository = await getCustomRepository(DuelRoundRepository);

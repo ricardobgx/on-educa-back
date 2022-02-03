@@ -5,8 +5,7 @@ import { UpdateStudentService } from '../../services/student/UpdateStudentServic
 
 class UpdateStudentController {
   async handle(req: Request, res: Response) {
-    const { name, email, password, schoolGradeId, isOnline, profilePictureId } =
-      req.body as IStudentRequest;
+    const { schoolGradeId } = req.body as IStudentRequest;
 
     const { id } = req.params;
 
@@ -16,12 +15,7 @@ class UpdateStudentController {
 
     await updateStudentService.execute({
       id,
-      email,
-      name,
-      password,
       schoolGradeId,
-      isOnline,
-      profilePictureId,
     });
 
     return res.status(200).json({ message: 'Estudante atualizado!' });

@@ -1,11 +1,10 @@
-export interface IStudentWeekDayPerformanceRequest {
-  id?: string;
-  dailyXP?: number;
-  studiedContents?: number;
+import { IPeopleWeekDayPerformanceRequest } from './IPeopleWeekDayPerformanceRequest';
+
+export interface IStudentWeekDayPerformanceRequest
+  extends IPeopleWeekDayPerformanceRequest {
+  contentsStudied?: number;
   questionsAnswered?: number;
-  rightQuestionsAnswered?: number;
+  questionsAnsweredCorrectly?: number;
   duelsParticipated?: number;
   duelsWon?: number;
-  date?: string;
-  weekPerformanceId?: string;
 }

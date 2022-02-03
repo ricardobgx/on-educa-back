@@ -1,5 +1,5 @@
 export interface IUnityRequest {
   id?: string;
-  title?: string;
+  name?: string;
   subjectId?: string;
 }

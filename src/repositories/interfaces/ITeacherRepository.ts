@@ -6,7 +6,6 @@ export interface ITeacherRepository {
   createTeacher(teacherParams: ITeacherRequest): Promise<Teacher>;
   findAll(): Promise<Teacher[]>;
   findById(id: string): Promise<Teacher | undefined>;
-  findByEmail(email: string): Promise<Teacher | undefined>;
   updateById(updateFields: ITeacherRequest): Promise<void>;
   deleteById(id: string): Promise<DeleteResult>;
 }

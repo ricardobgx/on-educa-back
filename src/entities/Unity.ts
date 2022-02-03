@@ -14,17 +14,17 @@ export class Unity {
   id: string;
 
   @Column()
-  title: string;
+  name: string;
 
-  @ManyToOne((type) => Subject, (subject) => subject.units, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-  })
-  subject: Subject;
-
-  @OneToMany((type) => Content, (contents) => contents.unity, {
+  @OneToMany(() => Content, (contents) => contents.unity, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   contents: Content[];
+
+  @ManyToOne(() => Subject, (subject) => subject.units, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  subject: Subject;
 }

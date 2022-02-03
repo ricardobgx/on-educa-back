@@ -20,12 +20,13 @@ const { PORT } = process.env;
 
 // Usuarios
 
+import peopleRoutes from './routes/people.routes';
 import studentRoutes from './routes/student.routes';
 import teacherRoutes from './routes/teacher.routes';
 
 // Desempenho
 
-import studentWeekPerformanceRoutes from './routes/studentWeekPerformance.routes';
+import studentWeeklyPerformanceRoutes from './routes/studentWeeklyPerformance.routes';
 
 // Materiais escolares
 
@@ -86,11 +87,12 @@ class App {
    */
   routes() {
     // Usuarios
+    this.app.use('/peoples', peopleRoutes);
     this.app.use('/students', studentRoutes);
     this.app.use('/teachers', teacherRoutes);
 
     // Desempenho
-    this.app.use('/studentWeekPerformances', studentWeekPerformanceRoutes);
+    this.app.use('/studentWeeklyPerformances', studentWeeklyPerformanceRoutes);
 
     // Materiais escolares
     this.app.use('/subjects', subjectRoutes);

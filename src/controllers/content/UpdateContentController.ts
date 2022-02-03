@@ -6,7 +6,7 @@ import { UpdateContentService } from '../../services/content/UpdateContentServic
 class UpdateContentController {
   async handle(req: Request, res: Response) {
     const { id } = req.params;
-    const { title, description, video, index, unityId } =
+    const { name, description, video, index, unityId } =
       req.body as IContentRequest;
 
     const updateContentService = new UpdateContentService(
@@ -15,7 +15,7 @@ class UpdateContentController {
 
     await updateContentService.execute({
       id,
-      title,
+      name,
       description,
       video,
       index,

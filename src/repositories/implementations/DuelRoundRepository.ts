@@ -192,57 +192,57 @@ export class DuelRoundRepository
         const { participation: activeParticipation } = activeTeam;
 
         // Verifica se a participacao ativa nao eh valida
-        if (!activeParticipation.student) {
-          let newActiveParticipation: DuelTeamParticipation;
-          let newActiveTeam: DuelTeam;
+        // if (!activeParticipation.student) {
+        let newActiveParticipation: DuelTeamParticipation;
+        let newActiveTeam: DuelTeam;
 
-          // Procura por uma nova participacao valida no time
-          newActiveParticipation = findValidDuelTeamParticipation(
-            activeTeam.participations
+        // Procura por uma nova participacao valida no time
+        newActiveParticipation = findValidDuelTeamParticipation(
+          activeTeam.participations
+        );
+
+        // Verifica se achou uma participacao valida
+        if (newActiveParticipation) {
+          newActiveTeam = activeTeam;
+        } else {
+          teams.map((team) => {
+            // Verifica se o time nao eh o antigo e se ainda nao achou uma participacao
+            if (team.id !== activeTeam.id && !newActiveParticipation) {
+              // Procura por uma participacao valida no time iterado
+              newActiveParticipation = findValidDuelTeamParticipation(
+                team.participations
+              );
+              // Se achar uma participacao define o time como ativo
+              if (newActiveParticipation) {
+                newActiveTeam = team;
+              }
+            }
+            return team;
+          });
+        }
+
+        // Se ainda nao tiver achado uma participacao o round eh dado como finalizado
+        if (!newActiveParticipation) {
+          await this.updateById({ id: duelRound.id, status: 2 });
+          return;
+        } else {
+          // Caso encontre sera atualizada a participacao no time
+
+          // Obtendo repositorio de times
+          const duelTeamRepository = await getCustomRepository(
+            DuelTeamRepository
           );
 
-          // Verifica se achou uma participacao valida
-          if (newActiveParticipation) {
-            newActiveTeam = activeTeam;
-          } else {
-            teams.map((team) => {
-              // Verifica se o time nao eh o antigo e se ainda nao achou uma participacao
-              if (team.id !== activeTeam.id && !newActiveParticipation) {
-                // Procura por uma participacao valida no time iterado
-                newActiveParticipation = findValidDuelTeamParticipation(
-                  team.participations
-                );
-                // Se achar uma participacao define o time como ativo
-                if (newActiveParticipation) {
-                  newActiveTeam = team;
-                }
-              }
-              return team;
-            });
-          }
+          // Atualizando a participacao valida no time
+          await duelTeamRepository.updateById({
+            id: activeTeam.id,
+            participationId: activeParticipation.id,
+          });
 
-          // Se ainda nao tiver achado uma participacao o round eh dado como finalizado
-          if (!newActiveParticipation) {
-            await this.updateById({ id: duelRound.id, status: 2 });
-            return;
-          } else {
-            // Caso encontre sera atualizada a participacao no time
-
-            // Obtendo repositorio de times
-            const duelTeamRepository = await getCustomRepository(
-              DuelTeamRepository
-            );
-
-            // Atualizando a participacao valida no time
-            await duelTeamRepository.updateById({
-              id: activeTeam.id,
-              participationId: activeParticipation.id,
-            });
-
-            // Atualizando o time ativo no round
-            await this.update({ id: duelRound.id }, { team: newActiveTeam });
-          }
+          // Atualizando o time ativo no round
+          await this.update({ id: duelRound.id }, { team: newActiveTeam });
         }
+        // }
       }
 
       // Verifica se existe uma questao ativa
