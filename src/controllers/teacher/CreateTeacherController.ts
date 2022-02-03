@@ -9,7 +9,7 @@ class CreateTeacherController {
     const { email, name, password, isOnline, teachingTypeId, userType } =
       req.body as ITeacherRequest;
 
-    const profilePictureId = 'ac982a73-5fa2-4333-8f59-ccc48e80d337';
+    const profilePictureId = process.env.DEFAULT_PROFILE_PICTURE;
 
     const createTeacherService = new CreateTeacherService(
       new TeacherRepository()
