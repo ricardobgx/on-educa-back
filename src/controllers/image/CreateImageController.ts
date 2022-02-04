@@ -10,15 +10,18 @@ class CreateImageController {
       const img = req.file;
       let path = img.filename;
 
-      if (img.size > 500000) {
-        await compressImage(img, 512)
-          .then(() => {
-            path = img.filename.split('.')[0] + '.png';
-          })
-          .catch((err) => {
+      await compressImage(img, 512)
+        .then(
+          () => {
+            path = img.filename.split('.')[0] + '.webp';
+          },
+          (err) => {
             console.log(err);
-          });
-      }
+          }
+        )
+        .catch((err) => {
+          console.log(err);
+        });
 
       const createImageService = new CreateImageService(new ImageRepository());
 

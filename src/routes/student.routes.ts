@@ -6,11 +6,17 @@ import ShowStudentController from '../controllers/student/ShowStudentController'
 import UpdateStudentController from '../controllers/student/UpdateStudentController';
 import { verifyAuthentication as studentAuthorization } from '../middlewares/student/verifyAuthentication';
 import { verifyAuthentication as peopleAuthorization } from '../middlewares/people/verifyAuthentication';
+import ShowStudentByPeopleController from '../controllers/student/ShowStudentByPeopleController';
 
 const routes = Router();
 
 routes.get('/', peopleAuthorization, ListStudentController.handle);
 routes.get('/:id', peopleAuthorization, ShowStudentController.handle);
+routes.get(
+  '/people/:peopleId',
+  peopleAuthorization,
+  ShowStudentByPeopleController.handle
+);
 routes.post('/', CreateStudentController.handle);
 routes.put('/:id', studentAuthorization, UpdateStudentController.handle);
 routes.delete('/:email', studentAuthorization, DeleteStudentController.handle);

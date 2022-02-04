@@ -64,6 +64,20 @@ export class TeacherRepository
     );
   }
 
+  async findByPeopleId(peopleId: string): Promise<Teacher | undefined> {
+    const peopleRepository = await getCustomRepository(PeopleRepository);
+    const people = await peopleRepository.findById(peopleId);
+
+    const teacher = await this.findOne(
+      { people },
+      {
+        relations: ['teachingType'],
+      }
+    );
+
+    return teacher;
+  }
+
   async updateById(updateFields: ITeacherRequest): Promise<void> {
     const { id } = updateFields;
     const fields = { ...updateFields };

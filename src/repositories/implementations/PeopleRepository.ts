@@ -142,7 +142,7 @@ export class PeopleRepository
     }
 
     // Atualiza o usuario
-    await this.update({ id }, fields);
+    await this.update({ id }, people);
   }
 
   async deleteById(id: string): Promise<DeleteResult> {

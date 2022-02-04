@@ -63,24 +63,47 @@ export class StudentRepository
 
   async findAll(): Promise<Student[]> {
     return await this.find({
-      relations: ['schoolGrade', 'profilePicture'],
+      relations: ['schoolGrade'],
     });
   }
 
   async findById(id: string): Promise<Student | undefined> {
+    const student = await this.findOne({ id }, { relations: ['schoolGrade'] });
+
+    if (student) {
+      const schoolGradeRepository = await getCustomRepository(
+        SchoolGradeRepository
+      );
+      const schoolGrade = await schoolGradeRepository.findById(
+        student.schoolGrade.id
+      );
+
+      return this.create({ ...student, schoolGrade });
+    }
+    return student;
+  }
+
+  async findByPeopleId(peopleId: string): Promise<Student | undefined> {
+    const peopleRepository = await getCustomRepository(PeopleRepository);
+    const people = await peopleRepository.findById(peopleId);
+
     const student = await this.findOne(
-      { id },
-      { relations: ['schoolGrade', 'profilePicture'] }
+      { people },
+      { relations: ['schoolGrade'] }
     );
 
-    const schoolGradeRepository = await getCustomRepository(
-      SchoolGradeRepository
-    );
-    const schoolGrade = await schoolGradeRepository.findById(
-      student.schoolGrade.id
-    );
+    if (student) {
+      const schoolGradeRepository = await getCustomRepository(
+        SchoolGradeRepository
+      );
+      const schoolGrade = await schoolGradeRepository.findById(
+        student.schoolGrade.id
+      );
 
-    return this.create({ ...student, schoolGrade });
+      return this.create({ ...student, schoolGrade });
+    }
+
+    return student;
   }
 
   async updateById(updateFields: IStudentRequest): Promise<void> {

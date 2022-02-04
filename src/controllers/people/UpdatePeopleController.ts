@@ -8,6 +8,8 @@ class UpdatePeopleController {
     const { name, email, password, isOnline, isStudent, profilePictureId } =
       req.body as IPeopleRequest;
 
+    console.log(req.body);
+
     const { id } = req.params;
 
     const updatePeopleService = new UpdatePeopleService(new PeopleRepository());
