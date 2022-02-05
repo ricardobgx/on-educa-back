@@ -36,7 +36,7 @@ export class PeopleRepository
   async findAll(): Promise<People[]> {
     // Busca todos os usuarios armazenados no banco
     const peoplesFound = await this.find({
-      relations: ['profilePicture'],
+      relations: ['profilePicture', 'friends'],
     });
 
     // Array que armazenara todos os usuarios com suas imagens
@@ -65,7 +65,7 @@ export class PeopleRepository
     // Procura o usuario pelo id e retorna os dados juntamente com os relacionamentos especificados
     const peopleFound = await this.findOne(
       { id },
-      { relations: ['profilePicture'] }
+      { relations: ['profilePicture', 'friends'] }
     );
 
     // Procura a imagem do usuario para que a url completa seja retornada
@@ -83,7 +83,7 @@ export class PeopleRepository
     // Procura o usuario pelo id e retorna os dados juntamente com os relacionamentos especificados
     const peopleFound = await this.findOne(
       { email },
-      { relations: ['profilePicture'] }
+      { relations: ['profilePicture', 'friends'] }
     );
 
     if (peopleFound) {

@@ -2,6 +2,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -33,4 +35,10 @@ export class People {
   })
   @JoinColumn()
   profilePicture: Image;
+
+  @ManyToMany(() => People, (people) => people.friends, {
+    onUpdate: 'CASCADE',
+  })
+  @JoinTable()
+  friends: People[];
 }
