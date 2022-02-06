@@ -1,4 +1,5 @@
 import { DeleteResult } from 'typeorm';
+import { IUpdateFriendRequest } from '../../dto/IUpdateFriendRequest';
 import { IPeopleRequest } from '../../dto/IPeopleRequest';
 import { People } from '../../entities/People';
 
@@ -9,4 +10,6 @@ export interface IPeopleRepository {
   findByEmail(email: string): Promise<People | undefined>;
   updateById(updateFields: IPeopleRequest): Promise<void>;
   deleteById(id: string): Promise<DeleteResult>;
+  addFriend(addFriendParams: IUpdateFriendRequest): Promise<void>;
+  removeFriend(removeFriendParams: IUpdateFriendRequest): Promise<void>;
 }

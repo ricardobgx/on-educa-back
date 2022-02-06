@@ -63,12 +63,15 @@ export class StudentRepository
 
   async findAll(): Promise<Student[]> {
     return await this.find({
-      relations: ['schoolGrade'],
+      relations: ['schoolGrade', 'people'],
     });
   }
 
   async findById(id: string): Promise<Student | undefined> {
-    const student = await this.findOne({ id }, { relations: ['schoolGrade'] });
+    const student = await this.findOne(
+      { id },
+      { relations: ['schoolGrade', 'people'] }
+    );
 
     if (student) {
       const schoolGradeRepository = await getCustomRepository(
@@ -89,7 +92,7 @@ export class StudentRepository
 
     const student = await this.findOne(
       { people },
-      { relations: ['schoolGrade'] }
+      { relations: ['schoolGrade', 'people'] }
     );
 
     if (student) {

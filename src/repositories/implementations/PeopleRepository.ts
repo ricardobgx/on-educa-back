@@ -4,6 +4,7 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
+import { IUpdateFriendRequest } from '../../dto/IUpdateFriendRequest';
 import { IPeopleRequest } from '../../dto/IPeopleRequest';
 import { Image } from '../../entities/Image';
 import { People } from '../../entities/People';
@@ -162,5 +163,41 @@ export class PeopleRepository
 
     // Retorna a imagem encontrada
     return image;
+  }
+
+  async addFriend(addFriendParams: IUpdateFriendRequest): Promise<void> {
+    const { peopleId, friendId } = addFriendParams;
+
+    const people = await this.findById(peopleId);
+
+    if (!people) {
+      return;
+    }
+
+    const friend = await this.findById(friendId);
+
+    if (!friend) {
+      return;
+    }
+
+    const { friends } = people;
+
+    await this.save({ ...people, friends: [...friends, friend] });
+  }
+
+  async removeFriend(removeFriendParams: IUpdateFriendRequest): Promise<void> {
+    const { peopleId, friendId } = removeFriendParams;
+
+    const people = await this.findById(peopleId);
+
+    if (!people) {
+      return;
+    }
+
+    const { friends: oldFriends } = people;
+
+    const friends = oldFriends.filter((oldFriend) => oldFriend.id !== friendId);
+
+    await this.save({ ...people, friends });
   }
 }

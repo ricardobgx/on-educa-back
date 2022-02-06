@@ -12,10 +12,6 @@ import path from 'path';
 
 const swaggerDocument = { ...swaggerDefinitionDocument, paths };
 
-// Variaveis de ambiente
-
-const { PORT } = process.env;
-
 /* Rotas */
 
 // Usuarios
@@ -71,7 +67,7 @@ class App {
 
     // Permitir acesso a outras aplicacoes
 
-    this.app.use(cors());
+    this.app.use(cors({ origin: '*' }));
 
     // Reconhece o objeto de solicitacao como JSON
 
