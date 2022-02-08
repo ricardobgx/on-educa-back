@@ -107,10 +107,14 @@ export class StudentWeeklyPerformanceRepository
   async findByStudent(
     studentId: string
   ): Promise<StudentWeeklyPerformance | undefined> {
+    if (!studentId) {
+      throw new ApplicationErrors('Estudante não informado', 400);
+    }
+
     const studentRepository = await getCustomRepository(StudentRepository);
     const student = await studentRepository.findById(studentId);
 
-    console.log(studentId);
+    console.log(`Buscando performance do estudante ${studentId}`);
 
     const studentWeeklyPerformanceFound = await this.findOne(
       { student },

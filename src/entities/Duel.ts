@@ -18,11 +18,11 @@ export class Duel {
   @Column({ unique: true })
   code: string;
 
-  // @ManyToOne(() => Student, (student) => student.duels, {
-  //   onUpdate: 'CASCADE',
-  //   onDelete: 'CASCADE',
-  // })
-  // student: Student;
+  @ManyToOne(() => Student, (student) => student.duels, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  student: Student;
 
   @OneToOne(() => DuelRound, {
     onUpdate: 'CASCADE',

@@ -20,6 +20,10 @@ import peopleRoutes from './routes/people.routes';
 import studentRoutes from './routes/student.routes';
 import teacherRoutes from './routes/teacher.routes';
 
+// Amizade
+
+import friendRequestRoutes from './routes/friendRequest.routes';
+
 // Desempenho
 
 import studentWeeklyPerformanceRoutes from './routes/studentWeeklyPerformance.routes';
@@ -86,6 +90,10 @@ class App {
     this.app.use('/peoples', peopleRoutes);
     this.app.use('/students', studentRoutes);
     this.app.use('/teachers', teacherRoutes);
+
+    // Amizade
+
+    this.app.use('/friendRequests', friendRequestRoutes);
 
     // Desempenho
     this.app.use('/studentWeeklyPerformances', studentWeeklyPerformanceRoutes);

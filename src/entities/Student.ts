@@ -2,12 +2,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { SchoolGrade } from './SchoolGrade';
 import { StudentWeeklyPerformance } from './StudentWeeklyPerformance';
 import { People } from './People';
+import { Duel } from './Duel';
+import { DuelTeamParticipation } from './DuelTeamParticipation';
 
 @Entity()
 export class Student {
@@ -42,4 +45,20 @@ export class Student {
     }
   )
   weeklyPerformance: StudentWeeklyPerformance;
+
+  @OneToMany(() => Duel, (duel) => duel.student, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  duels: Duel[];
+
+  @ManyToOne(
+    () => DuelTeamParticipation,
+    (duelTeamParticipations) => duelTeamParticipations.student,
+    {
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    }
+  )
+  duelTeamParticipations: DuelTeamParticipation[];
 }

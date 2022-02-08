@@ -1,8 +1,7 @@
-import { hash } from "bcryptjs";
-import { getCustomRepository, ObjectType } from "typeorm";
-import { IEntityNameRequest } from "../../dto/IEntityNameRequest";
-import { EntityName } from "../../entities/EntityName";
-import { IEntityNameRepository } from "../../repositories/interfaces/IEntityNameRepository";
+import { getCustomRepository, ObjectType } from 'typeorm';
+import { IEntityNameRequest } from '../../dto/IEntityNameRequest';
+import { EntityName } from '../../entities/EntityName';
+import { IEntityNameRepository } from '../../repositories/interfaces/IEntityNameRepository';
 
 export class CreateEntityNameService {
   entityNameRepository: IEntityNameRepository;
@@ -12,9 +11,13 @@ export class CreateEntityNameService {
   }
 
   async execute(entityNameParams: IEntityNameRequest): Promise<EntityName> {
-    const entityNameRepository = getCustomRepository(this.entityNameRepository as unknown as ObjectType<IEntityNameRepository>);
+    const entityNameRepository = getCustomRepository(
+      this.entityNameRepository as unknown as ObjectType<IEntityNameRepository>
+    );
 
-    const entityName = await entityNameRepository.createEntityName(entityNameParams);
+    const entityName = await entityNameRepository.createEntityName(
+      entityNameParams
+    );
 
     return entityName;
   }

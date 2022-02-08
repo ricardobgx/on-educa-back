@@ -46,9 +46,6 @@ export class DuelRepository
     // Se o estudante nao for encontrado retorna uma mensagem de erro
     if (!student) throw new ApplicationErrors('Estudante não encontrado', 404);
 
-    // Armazena o estudante encontrado no duelo
-    duel = this.create({ ...duel });
-
     // Obtem o repositorio que armazenas os rounds dos duelos
     const duelRoundRepository = await getCustomRepository(DuelRoundRepository);
     // Cria o round do duelo com os parametros necessarios
@@ -65,16 +62,29 @@ export class DuelRepository
     duelRounds = [...duelRounds, duelRound];
 
     // Adiciona o vetor de rounds e o round criado ao duelo
-    duel = this.create({ ...duel, duelRounds, duelRound });
+    duel = this.create({ ...duel, duelRounds, duelRound, student });
 
     // Salva o duelo na base de dados
     return await this.save({ ...duel });
   }
 
   async findAll(): Promise<Duel[]> {
-    return await this.find({
+    const duelsFound = await this.find({
       relations: ['student', 'duelRounds', 'duelRound'],
     });
+
+    const duels: Duel[] = [];
+
+    const studentRepository = await getCustomRepository(StudentRepository);
+
+    await Promise.all(
+      duelsFound.map(async (duelFound) => {
+        const student = await studentRepository.findById(duelFound.student.id);
+        duels.push({ ...duelFound, student });
+      })
+    );
+
+    return duels;
   }
 
   async findById(id: string): Promise<Duel | undefined> {
@@ -84,16 +94,27 @@ export class DuelRepository
     );
 
     if (duel) {
-      const { duelRound: duelRoundFound } = duel;
+      const { duelRound: duelRoundFound, student: studentFound } = duel;
 
-      if (duelRoundFound) {
-        const duelRoundRepository = await getCustomRepository(
-          DuelRoundRepository
-        );
-        const duelRound = await duelRoundRepository.findById(duelRoundFound.id);
-
-        return { ...duel, duelRound };
+      if (!studentFound) {
+        return;
       }
+      const studentRepository = await getCustomRepository(StudentRepository);
+      const student = await studentRepository.findById(studentFound.id);
+
+      if (!student) {
+        return;
+      }
+
+      if (!duelRoundFound) {
+        return;
+      }
+      const duelRoundRepository = await getCustomRepository(
+        DuelRoundRepository
+      );
+      const duelRound = await duelRoundRepository.findById(duelRoundFound.id);
+
+      return { ...duel, duelRound, student };
     }
 
     return duel;

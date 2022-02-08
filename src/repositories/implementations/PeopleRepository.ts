@@ -10,6 +10,7 @@ import { Image } from '../../entities/Image';
 import { People } from '../../entities/People';
 import { IPeopleRepository } from '../interfaces/IPeopleRepository';
 import { ImageRepository } from './ImageRepository';
+import { ApplicationErrors } from '../../errors';
 
 @EntityRepository(People)
 export class PeopleRepository
@@ -171,18 +172,20 @@ export class PeopleRepository
     const people = await this.findById(peopleId);
 
     if (!people) {
-      return;
+      throw new ApplicationErrors('Pessoa não encontrada', 404);
     }
 
     const friend = await this.findById(friendId);
 
     if (!friend) {
-      return;
+      throw new ApplicationErrors('Amigos não encontrado', 404);
     }
 
-    const { friends } = people;
+    const { friends: peopleFriends } = people;
+    const { friends: friendFriends } = friend;
 
-    await this.save({ ...people, friends: [...friends, friend] });
+    await this.save({ ...people, friends: [...peopleFriends, friend] });
+    await this.save({ ...friend, friends: [...friendFriends, people] });
   }
 
   async removeFriend(removeFriendParams: IUpdateFriendRequest): Promise<void> {
@@ -191,13 +194,26 @@ export class PeopleRepository
     const people = await this.findById(peopleId);
 
     if (!people) {
-      return;
+      throw new ApplicationErrors('Pessoa não encontrada', 404);
     }
 
-    const { friends: oldFriends } = people;
+    const friend = await this.findById(friendId);
 
-    const friends = oldFriends.filter((oldFriend) => oldFriend.id !== friendId);
+    if (!friend) {
+      throw new ApplicationErrors('Amigos não encontrado', 404);
+    }
 
-    await this.save({ ...people, friends });
+    const { friends: oldPeopleFriends } = people;
+    const { friends: oldFriendFriends } = friend;
+
+    const peopleFriends = oldPeopleFriends.filter(
+      (oldPeopleFriend) => oldPeopleFriend.id !== friendId
+    );
+    const friendFriends = oldFriendFriends.filter(
+      (oldFriendFriend) => oldFriendFriend.id !== peopleId
+    );
+
+    await this.save({ ...people, friends: peopleFriends });
+    await this.save({ ...friend, friends: friendFriends });
   }
 }
