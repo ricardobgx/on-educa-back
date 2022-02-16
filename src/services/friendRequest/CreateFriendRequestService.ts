@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IFriendRequestRequest } from '../../dto/IFriendRequestRequest';
+import { IFriendRequestRequest } from '../../dto/friendRequest/IFriendRequestRequest';
 import { FriendRequest } from '../../entities/FriendRequest';
 import { IFriendRequestRepository } from '../../repositories/interfaces/IFriendRequestRepository';
 

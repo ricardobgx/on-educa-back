@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs';
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IDuelRoundQuestionRequest } from '../../dto/IDuelRoundQuestionRequest';
+import { IDuelRoundQuestionRequest } from '../../dto/duelRoundQuestion/IDuelRoundQuestionRequest';
 import { DuelRoundQuestion } from '../../entities/DuelRoundQuestion';
 import { IDuelRoundQuestionRepository } from '../../repositories/interfaces/IDuelRoundQuestionRepository';
 

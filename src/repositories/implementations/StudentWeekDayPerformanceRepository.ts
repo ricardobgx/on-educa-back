@@ -4,10 +4,9 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IStudentWeekDayPerformanceRequest } from '../../dto/IStudentWeekDayPerformanceRequest';
-import { IUpdateStudentWeekDayPerformanceRequest } from '../../dto/IUpdateStudentWeekDayPerformanceRequest';
+import { IStudentWeekDayPerformanceRequest } from '../../dto/studentWeekDayPerformance/IStudentWeekDayPerformanceRequest';
+import { IUpdateStudentWeekDayPerformanceRequest } from '../../dto/studentWeekDayPerformance/IUpdateStudentWeekDayPerformanceRequest';
 import { StudentWeekDayPerformance } from '../../entities/StudentWeekDayPerformance';
-import { ApplicationErrors } from '../../errors';
 import { getFullDate } from '../../functions/utils';
 import { IStudentWeekDayPerformanceRepository } from '../interfaces/IStudentWeekDayPerformanceRepository';
 import { StudentWeeklyPerformanceRepository } from './StudentWeeklyPerformanceRepository';
@@ -38,7 +37,7 @@ export class StudentWeekDayPerformanceRepository
       questionsAnsweredCorrectly: 0,
       duelsParticipated: 0,
       duelsWon: 0,
-      createdAt: getFullDate(),
+      createdAt: new Date(),
     });
   }
 

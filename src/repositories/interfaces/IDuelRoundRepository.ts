@@ -1,7 +1,6 @@
 import { DeleteResult } from 'typeorm';
-import { IDuelRoundRequest } from '../../dto/IDuelRoundRequest';
+import { IDuelRoundRequest } from '../../dto/duelRound/IDuelRoundRequest';
 import { DuelRound } from '../../entities/DuelRound';
-import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 
 export interface IDuelRoundRepository {
   createDuelRound(duelRoundParams: IDuelRoundRequest): Promise<DuelRound>;

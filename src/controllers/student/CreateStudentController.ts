@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IStudentRequest } from '../../dto/IStudentRequest';
+import { IStudentRequest } from '../../dto/student/IStudentRequest';
 import { StudentRepository } from '../../repositories/implementations/StudentRepository';
 import { CreateStudentService } from '../../services/student/CreateStudentService';
 

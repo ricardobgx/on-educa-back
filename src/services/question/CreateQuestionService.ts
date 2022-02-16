@@ -1,6 +1,5 @@
-import { hash } from 'bcryptjs';
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IQuestionRequest } from '../../dto/IQuestionRequest';
+import { IQuestionRequest } from '../../dto/question/IQuestionRequest';
 import { Question } from '../../entities/Question';
 import { IQuestionRepository } from '../../repositories/interfaces/IQuestionRepository';
 

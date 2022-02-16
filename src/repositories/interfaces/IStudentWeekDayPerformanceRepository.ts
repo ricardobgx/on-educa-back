@@ -1,6 +1,6 @@
 import { DeleteResult } from 'typeorm';
-import { IStudentWeekDayPerformanceRequest } from '../../dto/IStudentWeekDayPerformanceRequest';
-import { IUpdateStudentWeekDayPerformanceRequest } from '../../dto/IUpdateStudentWeekDayPerformanceRequest';
+import { IStudentWeekDayPerformanceRequest } from '../../dto/studentWeekDayPerformance/IStudentWeekDayPerformanceRequest';
+import { IUpdateStudentWeekDayPerformanceRequest } from '../../dto/studentWeekDayPerformance/IUpdateStudentWeekDayPerformanceRequest';
 import { StudentWeekDayPerformance } from '../../entities/StudentWeekDayPerformance';
 
 export interface IStudentWeekDayPerformanceRepository {

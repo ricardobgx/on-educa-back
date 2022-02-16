@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IStudentRequest } from '../../dto/IStudentRequest';
+import { IStudentRequest } from '../../dto/student/IStudentRequest';
 import { Student } from '../../entities/Student';
 import { IStudentRepository } from '../../repositories/interfaces/IStudentRepository';
 

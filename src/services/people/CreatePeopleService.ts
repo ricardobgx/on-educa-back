@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs';
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IPeopleRequest } from '../../dto/IPeopleRequest';
+import { IPeopleRequest } from '../../dto/people/IPeopleRequest';
 import { People } from '../../entities/People';
 import { ApplicationErrors } from '../../errors';
 import { IPeopleRepository } from '../../repositories/interfaces/IPeopleRepository';

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IDuelTeamParticipationRequest } from '../../dto/IDuelTeamParticipationRequest';
+import { IDuelTeamParticipationRequest } from '../../dto/duelTeamParticipation/IDuelTeamParticipationRequest';
 import { DuelTeamParticipationRepository } from '../../repositories/implementations/DuelTeamParticipationRepository';
 import { UpdateDuelTeamParticipationService } from '../../services/duelTeamParticipation/UpdateDuelTeamParticipationService';
 

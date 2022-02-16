@@ -7,6 +7,6 @@ export class UserWeekDayPerformance {
   @Column()
   dailyXp: number;
 
-  @Column()
-  createdAt: string;
+  @Column({ type: 'timestamptz' })
+  createdAt: Date;
 }

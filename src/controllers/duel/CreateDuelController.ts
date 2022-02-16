@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IDuelRequest } from '../../dto/IDuelRequest';
+import { IDuelRequest } from '../../dto/duel/IDuelRequest';
 import { DuelRepository } from '../../repositories/implementations/DuelRepository';
 import { CreateDuelService } from '../../services/duel/CreateDuelService';
 

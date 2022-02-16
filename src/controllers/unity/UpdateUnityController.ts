@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IUnityRequest } from '../../dto/IUnityRequest';
+import { IUnityRequest } from '../../dto/unity/IUnityRequest';
 import { UnityRepository } from '../../repositories/implementations/UnityRepository';
 import { UpdateUnityService } from '../../services/unity/UpdateUnityService';
 

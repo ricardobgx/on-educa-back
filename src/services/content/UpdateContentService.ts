@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IContentRequest } from '../../dto/IContentRequest';
+import { IContentRequest } from '../../dto/content/IContentRequest';
 import { IContentRepository } from '../../repositories/interfaces/IContentRepository';
 
 export class UpdateContentService {

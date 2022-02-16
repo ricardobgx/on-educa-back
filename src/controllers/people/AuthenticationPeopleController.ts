@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IPeopleAuthenticationRequest } from '../../dto/IPeopleAuthenticationRequest';
+import { IPeopleAuthenticationRequest } from '../../dto/people/IPeopleAuthenticationRequest';
 import { PeopleRepository } from '../../repositories/implementations/PeopleRepository';
 import { AuthenticationPeopleService } from '../../services/people/AuthenticationPeopleService';
 

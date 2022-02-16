@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IContentRequest } from '../../dto/IContentRequest';
+import { IContentRequest } from '../../dto/content/IContentRequest';
 import { ContentRepository } from '../../repositories/implementations/ContentRepository';
 import { CreateContentService } from '../../services/content/CreateContentService';
 

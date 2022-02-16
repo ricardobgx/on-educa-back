@@ -4,15 +4,15 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IParticipateInDuelRequest } from '../../dto/IParticipateInDuelRequest';
-import { IDuelTeamParticipationRequest } from '../../dto/IDuelTeamParticipationRequest';
-import { IManyDuelTeamParticipationRequest } from '../../dto/IManyDuelTeamParticipationRequest';
+import { IParticipateInDuelRequest } from '../../dto/duel/IParticipateInDuelRequest';
+import { IDuelTeamParticipationRequest } from '../../dto/duelTeamParticipation/IDuelTeamParticipationRequest';
+import { IManyDuelTeamParticipationRequest } from '../../dto/duelTeamParticipation/IManyDuelTeamParticipationRequest';
 import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 import { IDuelTeamParticipationRepository } from '../interfaces/IDuelTeamParticipationRepository';
 import { DuelRepository } from './DuelRepository';
 import { DuelTeamRepository } from './DuelTeamRepository';
 import { StudentRepository } from './StudentRepository';
-import { IChangeDuelTeamPositionRequest } from '../../dto/IChangeDuelTeamPositionRequest';
+import { IChangeDuelTeamPositionRequest } from '../../dto/duelTeamParticipation/IChangeDuelTeamPositionRequest';
 
 @EntityRepository(DuelTeamParticipation)
 export class DuelTeamParticipationRepository

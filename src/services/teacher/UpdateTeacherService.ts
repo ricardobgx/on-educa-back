@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { ITeacherRequest } from '../../dto/ITeacherRequest';
+import { ITeacherRequest } from '../../dto/teacher/ITeacherRequest';
 import { ApplicationErrors } from '../../errors';
 import { ITeacherRepository } from '../../repositories/interfaces/ITeacherRepository';
 

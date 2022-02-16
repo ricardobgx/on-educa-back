@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IStudentWeeklyPerformanceRequest } from '../../dto/IStudentWeeklyPerformanceRequest';
+import { IStudentWeeklyPerformanceRequest } from '../../dto/studentWeeklyPerformance/IStudentWeeklyPerformanceRequest';
 import { StudentWeeklyPerformanceRepository } from '../../repositories/implementations/StudentWeeklyPerformanceRepository';
 import { CreateStudentWeeklyPerformanceService } from '../../services/studentWeeklyPerformance/CreateStudentWeeklyPerformanceService';
 

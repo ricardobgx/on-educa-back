@@ -1,4 +1,5 @@
 import {
+  Column,
   Entity,
   JoinTable,
   ManyToMany,
@@ -46,4 +47,7 @@ export class InterativeRoom {
   })
   @JoinTable()
   questions: Question[];
+
+  @Column({ type: 'timestamptz' })
+  createdAt: Date;
 }

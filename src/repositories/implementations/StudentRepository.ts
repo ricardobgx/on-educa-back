@@ -4,7 +4,7 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IStudentRequest } from '../../dto/IStudentRequest';
+import { IStudentRequest } from '../../dto/student/IStudentRequest';
 import { Student } from '../../entities/Student';
 import { IStudentRepository } from '../interfaces/IStudentRepository';
 import { SchoolGradeRepository } from './SchoolGradeRepository';

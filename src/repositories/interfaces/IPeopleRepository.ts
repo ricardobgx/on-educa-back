@@ -1,6 +1,6 @@
 import { DeleteResult } from 'typeorm';
-import { IUpdateFriendRequest } from '../../dto/IUpdateFriendRequest';
-import { IPeopleRequest } from '../../dto/IPeopleRequest';
+import { IUpdateFriendRequest } from '../../dto/friendRequest/IUpdateFriendRequest';
+import { IPeopleRequest } from '../../dto/people/IPeopleRequest';
 import { People } from '../../entities/People';
 
 export interface IPeopleRepository {

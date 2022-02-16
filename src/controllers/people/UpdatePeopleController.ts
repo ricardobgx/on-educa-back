@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IPeopleRequest } from '../../dto/IPeopleRequest';
+import { IPeopleRequest } from '../../dto/people/IPeopleRequest';
 import { PeopleRepository } from '../../repositories/implementations/PeopleRepository';
 import { UpdatePeopleService } from '../../services/people/UpdatePeopleService';
 

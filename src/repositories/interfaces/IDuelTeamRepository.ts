@@ -1,5 +1,5 @@
 import { DeleteResult } from 'typeorm';
-import { IDuelTeamRequest } from '../../dto/IDuelTeamRequest';
+import { IDuelTeamRequest } from '../../dto/duelTeam/IDuelTeamRequest';
 import { DuelTeam } from '../../entities/DuelTeam';
 
 export interface IDuelTeamRepository {

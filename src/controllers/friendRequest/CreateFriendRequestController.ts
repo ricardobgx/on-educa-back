@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IFriendRequestRequest } from '../../dto/IFriendRequestRequest';
+import { IFriendRequestRequest } from '../../dto/friendRequest/IFriendRequestRequest';
 import { FriendRequestRepository } from '../../repositories/implementations/FriendRequestRepository';
 import { CreateFriendRequestService } from '../../services/friendRequest/CreateFriendRequestService';
 

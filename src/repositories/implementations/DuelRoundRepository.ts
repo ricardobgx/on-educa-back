@@ -4,11 +4,10 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IDuelRoundRequest } from '../../dto/IDuelRoundRequest';
+import { IDuelRoundRequest } from '../../dto/duelRound/IDuelRoundRequest';
 import { DuelRound } from '../../entities/DuelRound';
 import { DuelTeam } from '../../entities/DuelTeam';
 import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
-import { Question } from '../../entities/Question';
 import { randomQuestionsIds, sortDuelTeams } from '../../functions/duelRound';
 import { findValidDuelTeamParticipation } from '../../functions/duelTeamParticipation';
 import { randInt } from '../../functions/utils';

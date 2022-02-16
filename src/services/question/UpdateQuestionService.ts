@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IQuestionRequest } from '../../dto/IQuestionRequest';
+import { IQuestionRequest } from '../../dto/question/IQuestionRequest';
 import { ApplicationErrors } from '../../errors';
 import { IQuestionRepository } from '../../repositories/interfaces/IQuestionRepository';
 

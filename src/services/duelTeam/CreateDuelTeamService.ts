@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IDuelTeamRequest } from '../../dto/IDuelTeamRequest';
+import { IDuelTeamRequest } from '../../dto/duelTeam/IDuelTeamRequest';
 import { DuelTeam } from '../../entities/DuelTeam';
 import { IDuelTeamRepository } from '../../repositories/interfaces/IDuelTeamRepository';
 

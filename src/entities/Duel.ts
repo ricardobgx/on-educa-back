@@ -36,4 +36,7 @@ export class Duel {
     onDelete: 'CASCADE',
   })
   duelRounds: DuelRound[];
+
+  @Column({ type: 'timestamptz' })
+  createdAt: Date;
 }

@@ -1,12 +1,20 @@
-import { DeleteResult, EntityRepository, getCustomRepository, Repository } from "typeorm";
-import { IManySubjects } from "../../dto/IManySubjects";
-import { ISubjectRequest } from "../../dto/ISubjectRequest";
-import { Subject } from "../../entities/Subject";
-import { ISubjectRepository } from "../interfaces/ISubjectRepository";
-import { SchoolGradeRepository } from "./SchoolGradeRepository";
+import {
+  DeleteResult,
+  EntityRepository,
+  getCustomRepository,
+  Repository,
+} from 'typeorm';
+import { IManySubjects } from '../../dto/subject/IManySubjects';
+import { ISubjectRequest } from '../../dto/subject/ISubjectRequest';
+import { Subject } from '../../entities/Subject';
+import { ISubjectRepository } from '../interfaces/ISubjectRepository';
+import { SchoolGradeRepository } from './SchoolGradeRepository';
 
 @EntityRepository(Subject)
-export class SubjectRepository extends Repository<Subject> implements ISubjectRepository {
+export class SubjectRepository
+  extends Repository<Subject>
+  implements ISubjectRepository
+{
   async createSubject(subjectParams: ISubjectRequest): Promise<Subject> {
     const { name, schoolGradeId } = subjectParams;
 
@@ -22,7 +30,7 @@ export class SubjectRepository extends Repository<Subject> implements ISubjectRe
 
   async findAll(): Promise<Subject[]> {
     return await this.find({
-      relations: ['units', 'schoolGrade']
+      relations: ['units', 'schoolGrade'],
     });
   }
 
@@ -36,7 +44,7 @@ export class SubjectRepository extends Repository<Subject> implements ISubjectRe
         subjects.push(subject);
       })
     );
-    
+
     return subjects;
   }
 
@@ -44,8 +52,11 @@ export class SubjectRepository extends Repository<Subject> implements ISubjectRe
     const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
 
     const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
-    
-    const subjects = this.find({ where: { schoolGrade }, relations: ['units'] });
+
+    const subjects = this.find({
+      where: { schoolGrade },
+      relations: ['units'],
+    });
 
     return subjects;
   }
@@ -62,7 +73,7 @@ export class SubjectRepository extends Repository<Subject> implements ISubjectRe
     delete fields.id;
 
     Object.keys(fields).map(
-      key => fields[key] === undefined && delete fields[key]
+      (key) => fields[key] === undefined && delete fields[key]
     );
 
     await this.update({ id }, fields);
@@ -78,7 +89,7 @@ export class SubjectRepository extends Repository<Subject> implements ISubjectRe
       .of(subject)
       .loadMany();
 
-    teachers.map(async teacher => {
+    teachers.map(async (teacher) => {
       await this.createQueryBuilder()
         .relation(Subject, 'teachers')
         .of(subject)

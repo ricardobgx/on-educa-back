@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Content } from './Content';
-import { Student } from './Student';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Doubt {
@@ -19,7 +11,7 @@ export class Doubt {
   @Column()
   status: boolean;
 
-  @Column()
+  @Column({ type: 'timestamptz' })
   createdAt: Date;
 
   // @ManyToOne(() => Student, student => student.doubts, {

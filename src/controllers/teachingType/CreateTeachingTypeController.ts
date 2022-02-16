@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { ITeachingTypeRequest } from '../../dto/ITeachingTypeRequest';
+import { ITeachingTypeRequest } from '../../dto/teachingType/ITeachingTypeRequest';
 import { TeachingTypeRepository } from '../../repositories/implementations/TeachingTypeRepository';
 import { CreateTeachingTypeService } from '../../services/teachingType/CreateTeachingTypeService';
 

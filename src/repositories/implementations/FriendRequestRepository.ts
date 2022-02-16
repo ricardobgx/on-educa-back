@@ -4,7 +4,7 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IFriendRequestRequest } from '../../dto/IFriendRequestRequest';
+import { IFriendRequestRequest } from '../../dto/friendRequest/IFriendRequestRequest';
 import { FriendRequest } from '../../entities/FriendRequest';
 import { ApplicationErrors } from '../../errors';
 import { IFriendRequestRepository } from '../interfaces/IFriendRequestRepository';

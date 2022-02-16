@@ -4,11 +4,12 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { ITeacherRequest } from '../../dto/ITeacherRequest';
+import { ITeacherRequest } from '../../dto/teacher/ITeacherRequest';
 import { Teacher } from '../../entities/Teacher';
 import { ApplicationErrors } from '../../errors';
 import { ITeacherRepository } from '../interfaces/ITeacherRepository';
 import { PeopleRepository } from './PeopleRepository';
+import { TeacherWeeklyPerformanceRepository } from './TeacherWeeklyPerformanceRepository';
 import { TeachingTypeRepository } from './TeachingTypeRepository';
 
 @EntityRepository(Teacher)
@@ -44,7 +45,20 @@ export class TeacherRepository
       throw new ApplicationErrors('Ensino não encontrado', 404);
     }
 
-    const teacher = this.create({ ...teacherParams, people, teachingType });
+    const teacherWeeklyPerformanceRepository = await getCustomRepository(
+      TeacherWeeklyPerformanceRepository
+    );
+    const weeklyPerformance =
+      await teacherWeeklyPerformanceRepository.createTeacherWeeklyPerformance(
+        {}
+      );
+
+    const teacher = this.create({
+      ...teacherParams,
+      people,
+      teachingType,
+      weeklyPerformance,
+    });
 
     return await await this.save(teacher);
   }

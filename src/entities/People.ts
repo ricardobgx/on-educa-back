@@ -5,9 +5,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Chat } from './Chat';
 import { Image } from './Image';
+import { Message } from './Message';
 
 @Entity()
 export class People {
@@ -29,6 +32,9 @@ export class People {
   @Column({ nullable: false })
   isStudent: boolean;
 
+  @Column()
+  dailyGoal: number;
+
   @ManyToOne(() => Image, {
     onUpdate: 'CASCADE',
     nullable: true,
@@ -41,4 +47,26 @@ export class People {
   })
   @JoinTable()
   friends: People[];
+
+  @OneToMany(() => Chat, (chatsCreated) => chatsCreated.chatCreator, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  chatsCreated: Chat[];
+
+  @OneToMany(
+    () => Chat,
+    (chatsParticipated) => chatsParticipated.chatParticipant,
+    {
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    }
+  )
+  chatsParticipated: Chat[];
+
+  @OneToMany(() => Message, (messagesSent) => messagesSent.sender, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  messagesSent: Message[];
 }

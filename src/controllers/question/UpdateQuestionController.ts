@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IQuestionRequest } from '../../dto/IQuestionRequest';
+import { IQuestionRequest } from '../../dto/question/IQuestionRequest';
 import { QuestionRepository } from '../../repositories/implementations/QuestionRepository';
 import { UpdateQuestionService } from '../../services/question/UpdateQuestionService';
 

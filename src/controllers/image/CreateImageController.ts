@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { compressImage } from '../../config/upload';
-import { IImageRequest } from '../../dto/IImageRequest';
+import { IImageRequest } from '../../dto/image/IImageRequest';
 import { ImageRepository } from '../../repositories/implementations/ImageRepository';
 import { CreateImageService } from '../../services/image/CreateImageService';
 

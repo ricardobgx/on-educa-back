@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IUnityRequest } from '../../dto/IUnityRequest';
+import { IUnityRequest } from '../../dto/unity/IUnityRequest';
 import { IUnityRepository } from '../../repositories/interfaces/IUnityRepository';
 
 export class UpdateUnityService {

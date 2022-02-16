@@ -4,8 +4,8 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IUpdateFriendRequest } from '../../dto/IUpdateFriendRequest';
-import { IPeopleRequest } from '../../dto/IPeopleRequest';
+import { IUpdateFriendRequest } from '../../dto/friendRequest/IUpdateFriendRequest';
+import { IPeopleRequest } from '../../dto/people/IPeopleRequest';
 import { Image } from '../../entities/Image';
 import { People } from '../../entities/People';
 import { IPeopleRepository } from '../interfaces/IPeopleRepository';
@@ -29,7 +29,11 @@ export class PeopleRepository
     const profilePicture = await imageRepository.findById(profilePictureId);
 
     // Armazena todos os dados do usuario que devem ser salvos
-    const people = { ...peopleParams, profilePicture };
+    const people = this.create({
+      ...peopleParams,
+      profilePicture,
+      dailyGoal: 50,
+    });
 
     // Salva o usuario na base de dados e retorna
     return await this.save({ ...people });

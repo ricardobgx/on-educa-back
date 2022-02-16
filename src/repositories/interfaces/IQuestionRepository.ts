@@ -1,5 +1,5 @@
 import { DeleteResult } from 'typeorm';
-import { IQuestionRequest } from '../../dto/IQuestionRequest';
+import { IQuestionRequest } from '../../dto/question/IQuestionRequest';
 import { Question } from '../../entities/Question';
 
 export interface IQuestionRepository {

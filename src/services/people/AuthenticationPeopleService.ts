@@ -3,8 +3,8 @@ import { sign } from 'jsonwebtoken';
 import { getCustomRepository, ObjectType } from 'typeorm';
 import { ApplicationErrors } from '../../errors';
 import { IPeopleRepository } from '../../repositories/interfaces/IPeopleRepository';
-import { IPeopleAuthenticationRequest } from '../../dto/IPeopleAuthenticationRequest';
-import { IAuthenticationResponse } from '../../dto/IAuthenticationResponse';
+import { IPeopleAuthenticationRequest } from '../../dto/people/IPeopleAuthenticationRequest';
+import { IAuthenticationResponse } from '../../dto/people/IAuthenticationResponse';
 
 export class AuthenticationPeopleService {
   peopleRepository: IPeopleRepository;

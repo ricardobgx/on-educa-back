@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IDuelRequest } from '../../dto/IDuelRequest';
+import { IDuelRequest } from '../../dto/duel/IDuelRequest';
 import { Duel } from '../../entities/Duel';
 import { generateDuelCode } from '../../functions/utils';
 import { IDuelRepository } from '../../repositories/interfaces/IDuelRepository';

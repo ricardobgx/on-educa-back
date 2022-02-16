@@ -4,7 +4,7 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IUnityRequest } from '../../dto/IUnityRequest';
+import { IUnityRequest } from '../../dto/unity/IUnityRequest';
 import { Unity } from '../../entities/Unity';
 import { IUnityRepository } from '../interfaces/IUnityRepository';
 import { ContentRepository } from './ContentRepository';

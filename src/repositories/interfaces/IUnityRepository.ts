@@ -1,5 +1,4 @@
-import { DeleteResult } from 'typeorm';
-import { IUnityRequest } from '../../dto/IUnityRequest';
+import { IUnityRequest } from '../../dto/unity/IUnityRequest';
 import { Unity } from '../../entities/Unity';
 
 export interface IUnityRepository {

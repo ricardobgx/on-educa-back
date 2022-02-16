@@ -4,14 +4,13 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { ICorrectPracticeQuestionsRequest } from '../../dto/ICorrectPracticeQuestionsRequest';
-import { IQuestionRequest } from '../../dto/IQuestionRequest';
+import { ICorrectPracticeQuestionsRequest } from '../../dto/question/ICorrectPracticeQuestionsRequest';
+import { IQuestionRequest } from '../../dto/question/IQuestionRequest';
 import { Question } from '../../entities/Question';
 import { randInt } from '../../functions/utils';
 import { IQuestionRepository } from '../interfaces/IQuestionRepository';
 import { AlternativeRepository } from './AlternativeRepository';
 import { ContentRepository } from './ContentRepository';
-import { StudentRepository } from './StudentRepository';
 
 @EntityRepository(Question)
 export class QuestionRepository
@@ -31,6 +30,8 @@ export class QuestionRepository
     question = this.create({
       ...question,
       content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     return await this.save(question);

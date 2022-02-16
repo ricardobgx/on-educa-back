@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IManyAlternatives } from '../../dto/IManyAlternatives';
+import { IManyAlternatives } from '../../dto/alternative/IManyAlternatives';
 import { Alternative } from '../../entities/Alternative';
 import { IAlternativeRepository } from '../../repositories/interfaces/IAlternativeRepository';
 

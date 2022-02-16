@@ -1,5 +1,5 @@
 import { DeleteResult } from 'typeorm';
-import { ITemplateRequest } from '../../dto/ITemplateRequest';
+import { ITemplateRequest } from '../../dto/template/ITemplateRequest';
 import { Template } from '../../entities/Template';
 
 export interface ITemplateRepository {

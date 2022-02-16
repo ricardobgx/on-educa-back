@@ -1,5 +1,5 @@
 import { DeleteResult } from 'typeorm';
-import { IFriendRequestRequest } from '../../dto/IFriendRequestRequest';
+import { IFriendRequestRequest } from '../../dto/friendRequest/IFriendRequestRequest';
 import { FriendRequest } from '../../entities/FriendRequest';
 
 export interface IFriendRequestRepository {

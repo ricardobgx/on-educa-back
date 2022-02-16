@@ -1,8 +1,6 @@
-import { hash } from 'bcryptjs';
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { ITeacherRequest } from '../../dto/ITeacherRequest';
+import { ITeacherRequest } from '../../dto/teacher/ITeacherRequest';
 import { Teacher } from '../../entities/Teacher';
-import { ApplicationErrors } from '../../errors';
 import { ITeacherRepository } from '../../repositories/interfaces/ITeacherRepository';
 
 export class CreateTeacherService {

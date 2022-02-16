@@ -4,7 +4,7 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IDuelRequest } from '../../dto/IDuelRequest';
+import { IDuelRequest } from '../../dto/duel/IDuelRequest';
 import { Duel } from '../../entities/Duel';
 import { DuelRound } from '../../entities/DuelRound';
 import { ApplicationErrors } from '../../errors';

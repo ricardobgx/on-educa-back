@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IImageRequest } from '../../dto/IImageRequest';
+import { IImageRequest } from '../../dto/image/IImageRequest';
 import { Image } from '../../entities/Image';
 import { IImageRepository } from '../../repositories/interfaces/IImageRepository';
 

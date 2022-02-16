@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IUpdateFriendRequest } from '../../dto/IUpdateFriendRequest';
+import { IUpdateFriendRequest } from '../../dto/friendRequest/IUpdateFriendRequest';
 import { ApplicationErrors } from '../../errors';
 import { IPeopleRepository } from '../../repositories/interfaces/IPeopleRepository';
 

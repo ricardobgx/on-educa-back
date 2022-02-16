@@ -4,14 +4,12 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IDuelTeamRequest } from '../../dto/IDuelTeamRequest';
-import { IManyDuelTeamsRequest } from '../../dto/IManyDuelTeamsRequest';
-import { DuelRound } from '../../entities/DuelRound';
+import { IDuelTeamRequest } from '../../dto/duelTeam/IDuelTeamRequest';
+import { IManyDuelTeamsRequest } from '../../dto/duelTeam/IManyDuelTeamsRequest';
 import { DuelTeam } from '../../entities/DuelTeam';
 import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 import { sortDuelTeamParticipations } from '../../functions/duelTeamParticipation';
 import { IDuelTeamRepository } from '../interfaces/IDuelTeamRepository';
-import { DuelRepository } from './DuelRepository';
 import { DuelRoundRepository } from './DuelRoundRepository';
 import { DuelTeamParticipationRepository } from './DuelTeamParticipationRepository';
 

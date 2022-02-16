@@ -1,14 +1,10 @@
 import {
   Column,
   Entity,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Attachment } from './Attachment';
-import { ContentReview } from './ContentReview';
-import { Doubt } from './Doubt';
 import { Question } from './Question';
 import { Unity } from './Unity';
 
@@ -58,4 +54,10 @@ export class Content {
     onDelete: 'CASCADE',
   })
   unity: Unity;
+
+  @Column({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @Column({ type: 'timestamptz' })
+  updatedAt: Date;
 }

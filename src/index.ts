@@ -14,6 +14,7 @@ const io = new socket.Server(server, {
 io.on('connection', (socket: socket.Socket) => {
   socket.on('chat.message', (msg) => {
     io.emit('chat.message', msg);
+    console.log(msg);
   });
   socket.on('disconnect', () => {
     console.log('[IO: Server] User is disconnected');

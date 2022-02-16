@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { ITeacherRequest } from '../../dto/ITeacherRequest';
+import { ITeacherRequest } from '../../dto/teacher/ITeacherRequest';
 import { TeacherRepository } from '../../repositories/implementations/TeacherRepository';
 import { CreateTeacherService } from '../../services/teacher/CreateTeacherService';
 

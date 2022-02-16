@@ -1,7 +1,7 @@
-import { getCustomRepository, ObjectType } from "typeorm";
-import { ISchoolGradeRequest } from "../../dto/ISchoolGradeRequest";
-import { SchoolGrade } from "../../entities/SchoolGrade";
-import { ISchoolGradeRepository } from "../../repositories/interfaces/ISchoolGradeRepository";
+import { getCustomRepository, ObjectType } from 'typeorm';
+import { ISchoolGradeRequest } from '../../dto/schoolGrade/ISchoolGradeRequest';
+import { SchoolGrade } from '../../entities/SchoolGrade';
+import { ISchoolGradeRepository } from '../../repositories/interfaces/ISchoolGradeRepository';
 
 export class CreateSchoolGradeService {
   schoolGradeRepository: ISchoolGradeRepository;
@@ -11,9 +11,13 @@ export class CreateSchoolGradeService {
   }
 
   async execute(schoolGradeParams: ISchoolGradeRequest): Promise<SchoolGrade> {
-    const schoolGradeRepository = getCustomRepository(this.schoolGradeRepository as unknown as ObjectType<ISchoolGradeRepository>);
+    const schoolGradeRepository = getCustomRepository(
+      this
+        .schoolGradeRepository as unknown as ObjectType<ISchoolGradeRepository>
+    );
 
-    const schoolGrade = schoolGradeRepository.createSchoolGrade(schoolGradeParams);
+    const schoolGrade =
+      schoolGradeRepository.createSchoolGrade(schoolGradeParams);
 
     return schoolGrade;
   }

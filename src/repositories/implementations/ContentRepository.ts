@@ -5,9 +5,8 @@ import {
   Repository,
   ILike,
 } from 'typeorm';
-import { IContentRequest } from '../../dto/IContentRequest';
+import { IContentRequest } from '../../dto/content/IContentRequest';
 import { Content } from '../../entities/Content';
-import { Unity } from '../../entities/Unity';
 import { IContentRepository } from '../interfaces/IContentRepository';
 import { UnityRepository } from './UnityRepository';
 
@@ -26,7 +25,12 @@ export class ContentRepository
     const unityRepository = getCustomRepository(UnityRepository);
     const unity = await unityRepository.findById(unityId);
 
-    content = this.create({ ...content, unity });
+    content = this.create({
+      ...content,
+      unity,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
     return await this.save(content);
   }

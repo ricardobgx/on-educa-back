@@ -1,6 +1,6 @@
 import { hash } from 'bcryptjs';
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IStudentWeeklyPerformanceRequest } from '../../dto/IStudentWeeklyPerformanceRequest';
+import { IStudentWeeklyPerformanceRequest } from '../../dto/studentWeeklyPerformance/IStudentWeeklyPerformanceRequest';
 import { StudentWeeklyPerformance } from '../../entities/StudentWeeklyPerformance';
 import { IStudentWeeklyPerformanceRepository } from '../../repositories/interfaces/IStudentWeeklyPerformanceRepository';
 

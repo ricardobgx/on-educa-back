@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IDuelRoundRequest } from '../../dto/IDuelRoundRequest';
+import { IDuelRoundRequest } from '../../dto/duelRound/IDuelRoundRequest';
 import { DuelRoundRepository } from '../../repositories/implementations/DuelRoundRepository';
 import { CreateDuelRoundService } from '../../services/duelRound/CreateDuelRoundService';
 

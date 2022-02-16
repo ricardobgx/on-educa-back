@@ -4,8 +4,8 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IStudentWeeklyPerformanceRequest } from '../../dto/IStudentWeeklyPerformanceRequest';
-import { IUpdateStudentWeeklyPerformanceRequest } from '../../dto/IUpdateStudentWeeklyPerformanceRequest';
+import { IStudentWeeklyPerformanceRequest } from '../../dto/studentWeeklyPerformance/IStudentWeeklyPerformanceRequest';
+import { IUpdateStudentWeeklyPerformanceRequest } from '../../dto/studentWeeklyPerformance/IUpdateStudentWeeklyPerformanceRequest';
 import { StudentWeeklyPerformance } from '../../entities/StudentWeeklyPerformance';
 import { ApplicationErrors } from '../../errors';
 import { getFullDate } from '../../functions/utils';
@@ -23,7 +23,6 @@ export class StudentWeeklyPerformanceRepository
   ): Promise<StudentWeeklyPerformance> {
     // Salva o desempenho semanal do aluno na base de dados e retorna
     const studentWeeklyPerformance = await this.save({
-      createdAt: Date.now,
       xp: 0,
     });
 
@@ -77,7 +76,7 @@ export class StudentWeeklyPerformanceRepository
   ): Promise<StudentWeeklyPerformance | undefined> {
     const { id, weekDay } = studentWeeklyPerformance;
 
-    if (weekDay.createdAt === getFullDate()) {
+    if (getFullDate(weekDay.createdAt) === getFullDate()) {
       return { ...studentWeeklyPerformance };
     }
 
