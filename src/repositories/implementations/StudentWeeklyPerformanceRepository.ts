@@ -113,8 +113,6 @@ export class StudentWeeklyPerformanceRepository
     const studentRepository = await getCustomRepository(StudentRepository);
     const student = await studentRepository.findById(studentId);
 
-    console.log(`Buscando performance do estudante ${studentId}`);
-
     const studentWeeklyPerformanceFound = await this.findOne(
       { student },
       { relations: ['weekDay', 'weekDays'] }

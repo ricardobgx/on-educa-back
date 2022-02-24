@@ -10,6 +10,7 @@ import { DuelRound } from '../../entities/DuelRound';
 import { ApplicationErrors } from '../../errors';
 import { IDuelRepository } from '../interfaces/IDuelRepository';
 import { DuelRoundRepository } from './DuelRoundRepository';
+import { DuelTeamParticipationRepository } from './DuelTeamParticipationRepository';
 import { StudentRepository } from './StudentRepository';
 
 @EntityRepository(Duel)
@@ -36,7 +37,7 @@ export class DuelRepository
     delete duelParams.studentId;
 
     // Armazena os campos que devem ser salvos em uma no variavel
-    let duel = { ...duelParams };
+    let newDuelParams = { ...duelParams };
 
     // Obtem o repositorio que armazena os dados dos estudantes
     const studentRepository = getCustomRepository(StudentRepository);
@@ -62,10 +63,26 @@ export class DuelRepository
     duelRounds = [...duelRounds, duelRound];
 
     // Adiciona o vetor de rounds e o round criado ao duelo
-    duel = this.create({ ...duel, duelRounds, duelRound, student });
+    newDuelParams = this.create({
+      ...newDuelParams,
+      duelRounds,
+      duelRound,
+      student,
+      createdAt: new Date(),
+    });
 
     // Salva o duelo na base de dados
-    return await this.save({ ...duel });
+    const duel = await this.save({ ...newDuelParams });
+
+    const duelTeamParticipationRepository = await getCustomRepository(
+      DuelTeamParticipationRepository
+    );
+    await duelTeamParticipationRepository.participateInDuel({
+      duelId: duel.id,
+      studentId,
+    });
+
+    return duel;
   }
 
   async findAll(): Promise<Duel[]> {
@@ -93,21 +110,23 @@ export class DuelRepository
       { relations: ['student', 'duelRound', 'duelRounds'] }
     );
 
+    console.log(duel);
+
     if (duel) {
       const { duelRound: duelRoundFound, student: studentFound } = duel;
 
       if (!studentFound) {
-        return;
+        return duel;
       }
       const studentRepository = await getCustomRepository(StudentRepository);
       const student = await studentRepository.findById(studentFound.id);
 
       if (!student) {
-        return;
+        return duel;
       }
 
       if (!duelRoundFound) {
-        return;
+        return duel;
       }
       const duelRoundRepository = await getCustomRepository(
         DuelRoundRepository
@@ -116,6 +135,8 @@ export class DuelRepository
 
       return { ...duel, duelRound, student };
     }
+
+    console.log(duel);
 
     return duel;
   }

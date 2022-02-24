@@ -6,4 +6,5 @@ export interface IDuelRoundRequest {
   questionsPerContent?: number;
   duelId?: string;
   contentsId?: string[];
+  winnerTeamId?: string;
 }

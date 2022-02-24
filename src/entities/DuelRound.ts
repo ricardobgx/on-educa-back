@@ -48,6 +48,14 @@ export class DuelRound {
   })
   teams: DuelTeam[];
 
+  @OneToOne(() => DuelTeam, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  @JoinColumn()
+  winnerTeam: DuelTeam;
+
   @OneToOne(() => DuelRoundQuestion, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',

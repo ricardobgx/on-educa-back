@@ -127,7 +127,7 @@ export class DuelQuestionAnswerRepository
       where: {
         id,
       },
-      relations: ['question'],
+      relations: ['question', 'duelTeamParticipation', 'selectedAlternative'],
     });
 
     const { question: foundQuestion } = duelQuestionAnswer;

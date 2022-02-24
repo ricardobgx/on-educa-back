@@ -27,6 +27,7 @@ import friendRequestRoutes from './routes/friendRequest.routes';
 // Desempenho
 
 import studentWeeklyPerformanceRoutes from './routes/studentWeeklyPerformance.routes';
+import teacherWeeklyPerformanceRoutes from './routes/teacherWeeklyPerformance.routes';
 
 // Conversas
 
@@ -102,6 +103,7 @@ class App {
 
     // Desempenho
     this.app.use('/studentWeeklyPerformances', studentWeeklyPerformanceRoutes);
+    this.app.use('/teacherWeeklyPerformances', teacherWeeklyPerformanceRoutes);
 
     // Conversas
     this.app.use('/chats', chatRoutes);

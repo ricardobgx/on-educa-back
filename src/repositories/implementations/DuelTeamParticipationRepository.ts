@@ -13,6 +13,9 @@ import { DuelRepository } from './DuelRepository';
 import { DuelTeamRepository } from './DuelTeamRepository';
 import { StudentRepository } from './StudentRepository';
 import { IChangeDuelTeamPositionRequest } from '../../dto/duelTeamParticipation/IChangeDuelTeamPositionRequest';
+import { ApplicationErrors } from '../../errors';
+import { DuelQuestionAnswerRepository } from './DuelQuestionAnswerRepository';
+import { DuelQuestionAnswer } from '../../entities/DuelQuestionAnswer';
 
 @EntityRepository(DuelTeamParticipation)
 export class DuelTeamParticipationRepository
@@ -89,21 +92,45 @@ export class DuelTeamParticipationRepository
   }
 
   async findById(id: string): Promise<DuelTeamParticipation | undefined> {
-    const duelTeamParticipation = await this.findOne(
+    let duelTeamParticipation = await this.findOne(
       { id },
       {
         relations: ['student', 'duelQuestionsAnswers'],
       }
     );
 
-    const { student: studentFound } = duelTeamParticipation;
+    const {
+      student: studentFound,
+      duelQuestionsAnswers: duelQuestionsAnswersFound,
+    } = duelTeamParticipation;
 
-    if (studentFound) {
-      const studentRepository = await getCustomRepository(StudentRepository);
-      const student = await studentRepository.findById(studentFound.id);
-
-      return { ...duelTeamParticipation, student };
+    // Verifica se tem um estudante na participacao
+    if (!studentFound) {
+      return duelTeamParticipation;
     }
+    const studentRepository = await getCustomRepository(StudentRepository);
+    const student = await studentRepository.findById(studentFound.id);
+
+    const duelQuestionAnswerRepository = await getCustomRepository(
+      DuelQuestionAnswerRepository
+    );
+    const duelQuestionsAnswers: DuelQuestionAnswer[] = [];
+
+    await Promise.all(
+      duelQuestionsAnswersFound.map(async (duelQuestionAnswerFound) => {
+        const duelQuestionAnswer = await duelQuestionAnswerRepository.findById(
+          duelQuestionAnswerFound.id
+        );
+
+        duelQuestionsAnswers.push(duelQuestionAnswer);
+      })
+    );
+
+    duelTeamParticipation = this.create({
+      ...duelTeamParticipation,
+      student,
+      duelQuestionsAnswers,
+    });
 
     return duelTeamParticipation;
   }
@@ -170,16 +197,12 @@ export class DuelTeamParticipationRepository
   ): Promise<DuelTeamParticipation | undefined> {
     const { duelId, studentId } = participateInDuelParams;
 
-    console.log(participateInDuelParams);
-
     const duelRepository = await getCustomRepository(DuelRepository);
     const duel = await duelRepository.findById(duelId);
 
     let duelTeamParticipation: DuelTeamParticipation;
 
     if (duel) {
-      console.log('duelo existe');
-
       const { duelRound } = duel;
 
       const duelTeamRepository = await getCustomRepository(DuelTeamRepository);
@@ -251,8 +274,6 @@ export class DuelTeamParticipationRepository
       newDuelTeamParticipationId,
       studentId,
     } = changeDuelTeamPositionParams;
-
-    console.log(changeDuelTeamPositionParams);
 
     // Procura a antiga posicao do estudante no duelo
     const newDuelTeamParticipation = await this.findById(

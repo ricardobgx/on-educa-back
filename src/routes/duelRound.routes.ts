@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import AnswerDuelRoundQuestionController from '../controllers/duelRound/AnswerDuelRoundQuestionController';
 import CreateDuelRoundController from '../controllers/duelRound/CreateDuelRoundController';
 import DeleteDuelRoundController from '../controllers/duelRound/DeleteDuelRoundController';
 import ListDuelRoundController from '../controllers/duelRound/ListDuelRoundController';
@@ -13,6 +14,7 @@ routes.get('/:id', ShowDuelRoundController.handle);
 routes.post('/', CreateDuelRoundController.handle);
 routes.put('/:id', UpdateDuelRoundController.handle);
 routes.put('/start/:id', StartDuelRoundController.handle);
+routes.put('/answerQuestion/:id', AnswerDuelRoundQuestionController.handle);
 routes.delete('/:id', DeleteDuelRoundController.handle);
 
 export default routes;

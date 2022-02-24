@@ -76,7 +76,7 @@ export class DuelRoundQuestionRepository
       where: {
         id,
       },
-      relations: ['question'],
+      relations: ['question', 'answer'],
     });
 
     const { question: foundQuestion } = duelRoundQuestion;
