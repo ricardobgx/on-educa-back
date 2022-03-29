@@ -86,18 +86,14 @@ export class DuelRepository
   }
 
   async findAll(): Promise<Duel[]> {
-    const duelsFound = await this.find({
-      relations: ['student', 'duelRounds', 'duelRound'],
-    });
+    const duelsFound = await this.find();
 
     const duels: Duel[] = [];
 
-    const studentRepository = await getCustomRepository(StudentRepository);
-
     await Promise.all(
       duelsFound.map(async (duelFound) => {
-        const student = await studentRepository.findById(duelFound.student.id);
-        duels.push({ ...duelFound, student });
+        const duel = await this.findById(duelFound.id);
+        duels.push(duel);
       })
     );
 
@@ -109,8 +105,6 @@ export class DuelRepository
       { id },
       { relations: ['student', 'duelRound', 'duelRounds'] }
     );
-
-    console.log(duel);
 
     if (duel) {
       const { duelRound: duelRoundFound, student: studentFound } = duel;
@@ -135,8 +129,6 @@ export class DuelRepository
 
       return { ...duel, duelRound, student };
     }
-
-    console.log(duel);
 
     return duel;
   }

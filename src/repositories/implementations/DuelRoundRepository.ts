@@ -22,6 +22,7 @@ import { DuelQuestionAnswerRepository } from './DuelQuestionAnswerRepository';
 import { DuelRoundQuestionRepository } from './DuelRoundQuestionRepository';
 import { DuelTeamParticipationRepository } from './DuelTeamParticipationRepository';
 import { DuelTeamRepository } from './DuelTeamRepository';
+import { StudentWeeklyPerformanceRepository } from './StudentWeeklyPerformanceRepository';
 
 @EntityRepository(DuelRound)
 export class DuelRoundRepository
@@ -336,6 +337,10 @@ export class DuelRoundRepository
       DuelQuestionAnswerRepository
     );
 
+    const studentWeeklyPerformanceRepository = await getCustomRepository(
+      StudentWeeklyPerformanceRepository
+    );
+
     // Percorre cada time
     await Promise.all(
       teams.map(async (team, teamIndex) => {
@@ -345,6 +350,8 @@ export class DuelRoundRepository
             if (!participation.student) {
               return participation;
             }
+
+            let participationXP = 0;
 
             // Pega as respostas da participacao
             const { duelQuestionsAnswers } = participation;
@@ -369,6 +376,7 @@ export class DuelRoundRepository
 
                 // Verifica se a alternativa selecionada eh a correta
                 if (selectedAlternative.id === rightAlternative.id) {
+                  participationXP += 10;
                   if (team.index === 0) {
                     teamAScore += 10;
                   } else {
@@ -376,6 +384,14 @@ export class DuelRoundRepository
                   }
                 }
               })
+            );
+
+            await studentWeeklyPerformanceRepository.updateStudentWeeklyPerformanceValues(
+              {
+                studentId: participation.student.id,
+                dailyXPNumber: participationXP,
+                duelsParticipatedNumber: 1,
+              }
             );
           })
         );
@@ -389,6 +405,20 @@ export class DuelRoundRepository
         : teamBScore > teamAScore
         ? teams[1]
         : null;
+
+    if (winnerTeam) {
+      await Promise.all(
+        winnerTeam.participations.map(async (participation) => {
+          if (!participation.student) {
+            return;
+          }
+
+          await studentWeeklyPerformanceRepository.updateStudentWeeklyPerformanceValues(
+            { studentId: participation.student.id, duelsWonNumber: 1 }
+          );
+        })
+      );
+    }
 
     if (winnerTeam) {
       await this.update(

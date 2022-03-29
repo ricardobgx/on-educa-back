@@ -70,12 +70,22 @@ export class TeacherRepository
   }
 
   async findById(id: string): Promise<Teacher | undefined> {
-    return await this.findOne(
+    const teacher = await this.findOne(
       { id },
-      {
-        relations: ['teachingType'],
-      }
+      { relations: ['teachingType', 'people'] }
     );
+
+    if (teacher) {
+      const teachingTypeRepository = await getCustomRepository(
+        TeachingTypeRepository
+      );
+      const teachingType = await teachingTypeRepository.findById(
+        teacher.teachingType.id
+      );
+
+      return this.create({ ...teacher, teachingType });
+    }
+    return teacher;
   }
 
   async findByPeopleId(peopleId: string): Promise<Teacher | undefined> {

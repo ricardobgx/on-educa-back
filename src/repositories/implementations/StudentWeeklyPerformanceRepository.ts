@@ -21,9 +21,22 @@ export class StudentWeeklyPerformanceRepository
   async createStudentWeeklyPerformance(
     studentWeeklyPerformanceParams: IStudentWeeklyPerformanceRequest
   ): Promise<StudentWeeklyPerformance> {
+    const { studentId } = studentWeeklyPerformanceParams;
+
+    delete studentWeeklyPerformanceParams.studentId;
+
+    let student = null;
+
+    if (studentId) {
+      const studentRepository = await getCustomRepository(StudentRepository);
+
+      student = await studentRepository.findById(studentId);
+    }
+
     // Salva o desempenho semanal do aluno na base de dados e retorna
     const studentWeeklyPerformance = await this.save({
       xp: 0,
+      student,
     });
 
     const studentWeekDayPerformanceRepository = await getCustomRepository(
@@ -46,6 +59,7 @@ export class StudentWeeklyPerformanceRepository
       order: {
         xp: 'DESC',
       },
+      take: 100,
       relations: ['student'],
     });
 
@@ -165,5 +179,21 @@ export class StudentWeeklyPerformanceRepository
 
   async deleteById(id: string): Promise<DeleteResult> {
     return await this.delete({ id });
+  }
+
+  async resetWeeklyPerformances(): Promise<void> {
+    console.log('resetando os desempenhos dos estudantes');
+
+    await this.delete({});
+
+    const studentRepository = await getCustomRepository(StudentRepository);
+
+    const students = await studentRepository.findAll();
+
+    await Promise.all(
+      students.map(async (student) => {
+        await this.createStudentWeeklyPerformance({ studentId: student.id });
+      })
+    );
   }
 }

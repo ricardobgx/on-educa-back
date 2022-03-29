@@ -73,6 +73,8 @@ export class StudentWeekDayPerformanceRepository
       duelsWonNumber,
     } = updateStudentWeekDayPerformanceParams;
 
+    console.log(updateStudentWeekDayPerformanceParams);
+
     const studentWeekDayPerformance = await this.findById(id);
     const {
       dailyXp: oldDailyXp,

@@ -17,4 +17,5 @@ export interface ITeacherWeeklyPerformanceRepository {
   ): Promise<void>;
   updateById(updateFields: ITeacherWeeklyPerformanceRequest): Promise<void>;
   deleteById(id: string): Promise<DeleteResult>;
+  resetWeeklyPerformances(): Promise<void>;
 }

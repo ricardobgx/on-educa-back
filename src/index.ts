@@ -1,6 +1,9 @@
 import app from './app';
 import socket from 'socket.io';
 import http from 'http';
+import { getCustomRepository } from 'typeorm';
+import { StudentWeeklyPerformanceRepository } from './repositories/implementations/StudentWeeklyPerformanceRepository';
+import { TeacherWeeklyPerformanceRepository } from './repositories/implementations/TeacherWeeklyPerformanceRepository';
 
 const { PORT } = process.env;
 const server = http.createServer(app);
@@ -30,6 +33,11 @@ io.on('connection', (socket: socket.Socket) => {
     io.emit(`duel.start:${change.duelId}`);
   });
 
+  // Excluir
+  socket.on('duel.delete', (change) => {
+    io.emit(`duel.delete:${change.duelId}`);
+  });
+
   // Muda posicao
   socket.on('duel.update-participation', (change) => {
     io.emit(`duel.update-participation:${change.duelId}`, change.data);
@@ -55,8 +63,27 @@ io.on('connection', (socket: socket.Socket) => {
     io.emit(`duel.question-answered:${change.duelId}`);
   });
 
+  // Envia mensagem
+  socket.on('duel.message', (msg) => {
+    io.emit(`duel.message:${msg.duelId}`, msg.data);
+  });
+
   console.log('[IO: Server] A new user is connected');
 });
+
+// setTimeout(async () => {
+//   const studentWeeklyPerformanceRepository = await getCustomRepository(
+//     StudentWeeklyPerformanceRepository
+//   );
+//   await studentWeeklyPerformanceRepository.resetWeeklyPerformances();
+// }, 5000);
+
+// setTimeout(async () => {
+//   const teacherWeeklyPerformanceRepository = await getCustomRepository(
+//     TeacherWeeklyPerformanceRepository
+//   );
+//   await teacherWeeklyPerformanceRepository.resetWeeklyPerformances();
+// }, 5000);
 
 server.listen(PORT, () => {
   console.log('ON EDUCA - ' + PORT);

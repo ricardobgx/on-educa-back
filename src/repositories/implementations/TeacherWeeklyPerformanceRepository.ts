@@ -21,9 +21,22 @@ export class TeacherWeeklyPerformanceRepository
   async createTeacherWeeklyPerformance(
     teacherWeeklyPerformanceParams: ITeacherWeeklyPerformanceRequest
   ): Promise<TeacherWeeklyPerformance> {
+    const { teacherId } = teacherWeeklyPerformanceParams;
+
+    delete teacherWeeklyPerformanceParams.teacherId;
+
+    let teacher = null;
+
+    if (teacherId) {
+      const teacherRepository = await getCustomRepository(TeacherRepository);
+
+      teacher = await teacherRepository.findById(teacherId);
+    }
+
     // Salva o desempenho semanal do aluno na base de dados e retorna
     const teacherWeeklyPerformance = await this.save({
       xp: 0,
+      teacher,
     });
 
     const teacherWeekDayPerformanceRepository = await getCustomRepository(
@@ -132,6 +145,8 @@ export class TeacherWeeklyPerformanceRepository
   ): Promise<void> {
     let { teacherId, dailyXPNumber } = updateTeacherWeeklyPerformanceParams;
 
+    console.log(updateTeacherWeeklyPerformanceParams);
+
     delete updateTeacherWeeklyPerformanceParams.teacherId;
     dailyXPNumber = !dailyXPNumber ? 0 : dailyXPNumber;
 
@@ -167,5 +182,21 @@ export class TeacherWeeklyPerformanceRepository
 
   async deleteById(id: string): Promise<DeleteResult> {
     return await this.delete({ id });
+  }
+
+  async resetWeeklyPerformances(): Promise<void> {
+    console.log('resetando os desempenhos dos professores');
+
+    await this.delete({});
+
+    const teacherRepository = await getCustomRepository(TeacherRepository);
+
+    const teachers = await teacherRepository.findAll();
+
+    await Promise.all(
+      teachers.map(async (teacher) => {
+        await this.createTeacherWeeklyPerformance({ teacherId: teacher.id });
+      })
+    );
   }
 }
