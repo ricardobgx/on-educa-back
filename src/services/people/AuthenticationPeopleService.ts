@@ -24,8 +24,6 @@ export class AuthenticationPeopleService {
 
     const people = await peopleRepository.findByEmail(email);
 
-    console.log(credentials);
-
     if (!people) throw new ApplicationErrors('E-mail ou senha incorreta', 400);
 
     const passwordCompared = await compare(password, people.password);

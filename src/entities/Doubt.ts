@@ -1,26 +1,28 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Content } from './Content';
+import { Student } from './Student';
 
 @Entity()
 export class Doubt {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   description: string;
 
   @Column()
-  status: boolean;
+  status: number;
 
   @Column({ type: 'timestamptz' })
   createdAt: Date;
 
-  // @ManyToOne(() => Student, student => student.doubts, {
-  //   onUpdate: 'CASCADE',
-  // })
-  // student: Student;
+  @ManyToOne(() => Student, (student) => student.doubts, {
+    onUpdate: 'CASCADE',
+  })
+  student: Student;
 
-  // @ManyToOne(() => Content, content => content.doubts, {
-  //   onUpdate: 'CASCADE',
-  // })
-  // content: Content;
+  @ManyToOne(() => Content, (content) => content.doubts, {
+    onUpdate: 'CASCADE',
+  })
+  content: Content;
 }

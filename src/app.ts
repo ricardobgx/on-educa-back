@@ -43,6 +43,7 @@ import unityRoutes from './routes/unity.routes';
 import contentRoutes from './routes/content.routes';
 import questionRoutes from './routes/question.routes';
 import alternativeRoutes from './routes/alternative.routes';
+import doubtRoutes from './routes/doubt.routes';
 
 // Duelos
 
@@ -117,6 +118,7 @@ class App {
     this.app.use('/contents', contentRoutes);
     this.app.use('/questions', questionRoutes);
     this.app.use('/alternatives', alternativeRoutes);
+    this.app.use('/doubts', doubtRoutes);
 
     // Duelos
     this.app.use('/duels', duelRoutes);

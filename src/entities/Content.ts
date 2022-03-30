@@ -5,6 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Doubt } from './Doubt';
 import { Question } from './Question';
 import { Unity } from './Unity';
 
@@ -37,11 +38,11 @@ export class Content {
   })
   questions: Question[];
 
-  // @OneToMany(() => Doubt, (doubt) => doubt.content, {
-  //   onUpdate: 'CASCADE',
-  //   onDelete: 'CASCADE',
-  // })
-  // doubts: Doubt[];
+  @OneToMany(() => Doubt, (doubt) => doubt.content, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  doubts: Doubt[];
 
   // @ManyToMany(() => ContentReview, (contentReview) => contentReview.contents, {
   //   onUpdate: 'CASCADE',

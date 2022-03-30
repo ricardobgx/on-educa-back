@@ -74,6 +74,9 @@ export class StudentRepository
     );
 
     if (student) {
+      const peopleRepository = await getCustomRepository(PeopleRepository);
+      const people = await peopleRepository.findById(student.people.id);
+
       const schoolGradeRepository = await getCustomRepository(
         SchoolGradeRepository
       );
@@ -81,7 +84,7 @@ export class StudentRepository
         student.schoolGrade.id
       );
 
-      return this.create({ ...student, schoolGrade });
+      return this.create({ ...student, schoolGrade, people });
     }
     return student;
   }

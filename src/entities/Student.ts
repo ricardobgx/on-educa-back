@@ -11,6 +11,7 @@ import { StudentWeeklyPerformance } from './StudentWeeklyPerformance';
 import { People } from './People';
 import { Duel } from './Duel';
 import { DuelTeamParticipation } from './DuelTeamParticipation';
+import { Doubt } from './Doubt';
 
 @Entity()
 export class Student {
@@ -61,4 +62,10 @@ export class Student {
     }
   )
   duelTeamParticipations: DuelTeamParticipation[];
+
+  @OneToMany(() => Doubt, (doubt) => doubt.student, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  doubts: Doubt[];
 }
