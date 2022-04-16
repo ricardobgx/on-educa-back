@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Content } from './Content';
+import { DoubtComment } from './DoubtComment';
 import { Student } from './Student';
 
 @Entity()
@@ -25,4 +32,11 @@ export class Doubt {
     onUpdate: 'CASCADE',
   })
   content: Content;
+
+  // Comentarios
+  @OneToMany(() => DoubtComment, (comments) => comments.doubt, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  comments: DoubtComment[];
 }

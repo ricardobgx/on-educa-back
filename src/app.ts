@@ -44,6 +44,7 @@ import contentRoutes from './routes/content.routes';
 import questionRoutes from './routes/question.routes';
 import alternativeRoutes from './routes/alternative.routes';
 import doubtRoutes from './routes/doubt.routes';
+import doubtCommentRoutes from './routes/doubtComment.routes';
 
 // Duelos
 
@@ -119,6 +120,7 @@ class App {
     this.app.use('/questions', questionRoutes);
     this.app.use('/alternatives', alternativeRoutes);
     this.app.use('/doubts', doubtRoutes);
+    this.app.use('/doubtComments', doubtCommentRoutes);
 
     // Duelos
     this.app.use('/duels', duelRoutes);

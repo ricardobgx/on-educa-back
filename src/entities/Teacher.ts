@@ -1,6 +1,7 @@
 import {
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -8,6 +9,7 @@ import {
 import { TeacherWeeklyPerformance } from './TeacherWeeklyPerformance';
 import { TeachingType } from './TeachingType';
 import { People } from './People';
+import { DoubtComment } from './DoubtComment';
 
 @Entity()
 export class Teacher {

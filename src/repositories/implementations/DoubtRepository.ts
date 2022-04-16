@@ -10,6 +10,7 @@ import { ApplicationErrors } from '../../errors';
 import { DoubtStatus } from '../../types/DoubtStatus';
 import { IDoubtRepository } from '../interfaces/IDoubtRepository';
 import { ContentRepository } from './ContentRepository';
+import { DoubtCommentRepository } from './DoubtCommentRepository';
 import { StudentRepository } from './StudentRepository';
 
 @EntityRepository(Doubt)
@@ -59,7 +60,7 @@ export class DoubtRepository
   async findById(id: string): Promise<Doubt | undefined> {
     const doubtFound = await this.findOne(
       { id },
-      { relations: ['content', 'student'] }
+      { relations: ['content', 'student', 'comments'] }
     );
 
     if (doubtFound) {
@@ -70,6 +71,10 @@ export class DoubtRepository
 
       const studentRepository = await getCustomRepository(StudentRepository);
       const student = await studentRepository.findById(studentFound.id);
+
+      const doubtCommentRepository = await getCustomRepository(
+        DoubtCommentRepository
+      );
 
       const doubt = this.create({ ...doubtFound, content, student });
 
