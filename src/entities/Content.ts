@@ -1,13 +1,10 @@
 import {
   Column,
   Entity,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Attachment } from './Attachment';
-import { ContentReview } from './ContentReview';
 import { Doubt } from './Doubt';
 import { Question } from './Question';
 import { Unity } from './Unity';
@@ -18,7 +15,7 @@ export class Content {
   id: string;
 
   @Column()
-  title: string;
+  name: string;
 
   @Column()
   description: string;
@@ -29,37 +26,39 @@ export class Content {
   @Column()
   index: number;
 
-  @OneToMany((type) => Attachment, (attachment) => attachment.content, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-  })
-  attachments: Attachment[];
+  // @OneToMany(() => Attachment, (attachment) => attachment.content, {
+  //   onUpdate: 'CASCADE',
+  //   onDelete: 'CASCADE',
+  // })
+  // attachments: Attachment[];
 
-  @OneToMany((type) => Question, (question) => question.content, {
+  @OneToMany(() => Question, (question) => question.content, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   questions: Question[];
 
-  @OneToMany((type) => Doubt, (doubt) => doubt.content, {
+  @OneToMany(() => Doubt, (doubt) => doubt.content, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   doubts: Doubt[];
 
-  @ManyToOne((type) => Unity, (unity) => unity.contents, {
+  // @ManyToMany(() => ContentReview, (contentReview) => contentReview.contents, {
+  //   onUpdate: 'CASCADE',
+  //   onDelete: 'CASCADE',
+  // })
+  // contentReviews: ContentReview[];
+
+  @ManyToOne(() => Unity, (unity) => unity.contents, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
   unity: Unity;
 
-  @ManyToMany(
-    (type) => ContentReview,
-    (contentReview) => contentReview.contents,
-    {
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    }
-  )
-  contentReviews: ContentReview[];
+  @Column({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @Column({ type: 'timestamptz' })
+  updatedAt: Date;
 }

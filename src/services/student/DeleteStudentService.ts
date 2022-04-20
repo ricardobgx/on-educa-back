@@ -1,6 +1,6 @@
-import { getCustomRepository, ObjectType } from "typeorm";
-import { ApplicationErrors } from "../../errors";
-import { IStudentRepository } from "../../repositories/interfaces/IStudentRepository";
+import { getCustomRepository, ObjectType } from 'typeorm';
+import { ApplicationErrors } from '../../errors';
+import { IStudentRepository } from '../../repositories/interfaces/IStudentRepository';
 
 export class DeleteStudentService {
   StudentRepository: IStudentRepository;
@@ -9,13 +9,15 @@ export class DeleteStudentService {
     this.StudentRepository = StudentRepository;
   }
 
-  async execute(email: string): Promise<void> {
-    const studentRepository = getCustomRepository(this.StudentRepository as unknown as ObjectType<IStudentRepository>);
+  async execute(id: string): Promise<void> {
+    const studentRepository = getCustomRepository(
+      this.StudentRepository as unknown as ObjectType<IStudentRepository>
+    );
 
-    const student = await studentRepository.findByEmail(email);
+    const student = await studentRepository.findById(id);
 
-    if (!student) throw new ApplicationErrors("Estudante não existe!", 404);
+    if (!student) throw new ApplicationErrors('Estudante não existe!', 404);
 
-    await studentRepository.deleteByEmail(email);
+    await studentRepository.deleteById(id);
   }
 }

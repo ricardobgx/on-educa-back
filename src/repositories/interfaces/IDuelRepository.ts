@@ -1,5 +1,5 @@
 import { DeleteResult } from 'typeorm';
-import { IDuelRequest } from '../../dto/IDuelRequest';
+import { IDuelRequest } from '../../dto/duel/IDuelRequest';
 import { Duel } from '../../entities/Duel';
 
 export interface IDuelRepository {

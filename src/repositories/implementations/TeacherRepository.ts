@@ -4,11 +4,13 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { ITeacherRequest } from '../../dto/ITeacherRequest';
-import { Image } from '../../entities/Image';
+
+import { ITeacherRequest } from '../../dto/teacher/ITeacherRequest';
 import { Teacher } from '../../entities/Teacher';
+import { ApplicationErrors } from '../../errors';
 import { ITeacherRepository } from '../interfaces/ITeacherRepository';
-import { ImageRepository } from './ImageRepository';
+import { PeopleRepository } from './PeopleRepository';
+import { TeacherWeeklyPerformanceRepository } from './TeacherWeeklyPerformanceRepository';
 import { TeachingTypeRepository } from './TeachingTypeRepository';
 
 @EntityRepository(Teacher)
@@ -17,21 +19,47 @@ export class TeacherRepository
   implements ITeacherRepository
 {
   async createTeacher(teacherParams: ITeacherRequest): Promise<Teacher> {
-    const { teachingTypeId, profilePictureId } = teacherParams;
+    const { peopleId, teachingTypeId } = teacherParams;
+
+    delete teacherParams.teachingTypeId;
+    delete teacherParams.peopleId;
+
+    if (!peopleId) {
+      throw new ApplicationErrors('Pessoa não informada', 400);
+    }
+
+    if (!teachingTypeId) {
+      throw new ApplicationErrors('Ensino não informado', 400);
+    }
+
+    const peopleRepository = await getCustomRepository(PeopleRepository);
+    const people = await peopleRepository.findById(peopleId);
+
+    if (!people) {
+      throw new ApplicationErrors('Pessoa não encontrada', 404);
+    }
 
     const teachingTypeRepository = getCustomRepository(TeachingTypeRepository);
     const teachingType = await teachingTypeRepository.findById(teachingTypeId);
 
-    delete teacherParams.teachingTypeId;
-    delete teacherParams.profilePictureId;
-
-    let teacher = this.create({ ...teacherParams, teachingType });
-
-    if (profilePictureId) {
-      const imageRepository = await getCustomRepository(ImageRepository);
-      const profilePicture = await imageRepository.findById(profilePictureId);
-      teacher = this.create({ ...teacher, profilePicture });
+    if (!teachingType) {
+      throw new ApplicationErrors('Ensino não encontrado', 404);
     }
+
+    const teacherWeeklyPerformanceRepository = await getCustomRepository(
+      TeacherWeeklyPerformanceRepository
+    );
+    const weeklyPerformance =
+      await teacherWeeklyPerformanceRepository.createTeacherWeeklyPerformance(
+        {}
+      );
+
+    const teacher = this.create({
+      ...teacherParams,
+      people,
+      teachingType,
+      weeklyPerformance,
+    });
 
     return await await this.save(teacher);
   }
@@ -43,27 +71,36 @@ export class TeacherRepository
   }
 
   async findById(id: string): Promise<Teacher | undefined> {
-    const teacherFound = await this.findOne(
+    const teacher = await this.findOne(
       { id },
-      {
-        relations: ['teachingType', 'profilePicture'],
-      }
+      { relations: ['teachingType', 'people'] }
     );
 
-    const profilePicture = await this.getProfilePicture(
-      teacherFound.profilePicture.id
-    );
+    if (teacher) {
+      const teachingTypeRepository = await getCustomRepository(
+        TeachingTypeRepository
+      );
+      const teachingType = await teachingTypeRepository.findById(
+        teacher.teachingType.id
+      );
 
-    return this.create({ ...teacherFound, profilePicture });
+      return this.create({ ...teacher, teachingType });
+    }
+    return teacher;
   }
 
-  async findByEmail(email: string): Promise<Teacher | undefined> {
-    return await this.findOne(
-      { email },
+  async findByPeopleId(peopleId: string): Promise<Teacher | undefined> {
+    const peopleRepository = await getCustomRepository(PeopleRepository);
+    const people = await peopleRepository.findById(peopleId);
+
+    const teacher = await this.findOne(
+      { people },
       {
         relations: ['teachingType', 'profilePicture'],
       }
     );
+
+    return teacher;
   }
 
   async updateById(updateFields: ITeacherRequest): Promise<void> {

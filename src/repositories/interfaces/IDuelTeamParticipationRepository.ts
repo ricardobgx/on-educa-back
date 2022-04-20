@@ -1,8 +1,8 @@
 import { DeleteResult } from 'typeorm';
-import { IChangeDuelTeamPositionRequest } from '../../dto/IChangeDuelTeamPositionRequest';
-import { IDuelTeamParticipationRequest } from '../../dto/IDuelTeamParticipationRequest';
-import { IManyDuelTeamParticipationRequest } from '../../dto/IManyDuelTeamParticipationRequest';
-import { IParticipateInDuelRequest } from '../../dto/IParticipateInDuelRequest';
+import { IChangeDuelTeamPositionRequest } from '../../dto/duelTeamParticipation/IChangeDuelTeamPositionRequest';
+import { IDuelTeamParticipationRequest } from '../../dto/duelTeamParticipation/IDuelTeamParticipationRequest';
+import { IManyDuelTeamParticipationRequest } from '../../dto/duelTeamParticipation/IManyDuelTeamParticipationRequest';
+import { IParticipateInDuelRequest } from '../../dto/duel/IParticipateInDuelRequest';
 import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 
 export interface IDuelTeamParticipationRepository {

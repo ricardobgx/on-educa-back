@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { IChangeDuelTeamPositionRequest } from '../../dto/IChangeDuelTeamPositionRequest';
+import { IChangeDuelTeamPositionRequest } from '../../dto/duelTeamParticipation/IChangeDuelTeamPositionRequest';
 import { DuelTeamParticipationRepository } from '../../repositories/implementations/DuelTeamParticipationRepository';
 import { ChangeDuelTeamPositionService } from '../../services/duelTeamParticipation/ChangeDuelTeamPositionService';
 

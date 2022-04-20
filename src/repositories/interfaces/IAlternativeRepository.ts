@@ -1,6 +1,6 @@
 import { DeleteResult } from 'typeorm';
-import { IAlternativeRequest } from '../../dto/IAlternativeRequest';
-import { IManyAlternatives } from '../../dto/IManyAlternatives';
+import { IAlternativeRequest } from '../../dto/alternative/IAlternativeRequest';
+import { IManyAlternatives } from '../../dto/alternative/IManyAlternatives';
 import { Alternative } from '../../entities/Alternative';
 
 export interface IAlternativeRepository {

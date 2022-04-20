@@ -1,6 +1,6 @@
 import { DeleteResult, EntityRepository, Repository } from 'typeorm';
 import { deleteImage } from '../../config/upload';
-import { IImageRequest } from '../../dto/IImageRequest';
+import { IImageRequest } from '../../dto/image/IImageRequest';
 import { Image } from '../../entities/Image';
 import { IImageRepository } from '../interfaces/IImageRepository';
 import path from 'path';

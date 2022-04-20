@@ -1,56 +1,51 @@
 import {
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ContentReview } from './ContentReview';
-import { Doubt } from './Doubt';
+import { SchoolGrade } from './SchoolGrade';
+import { StudentWeeklyPerformance } from './StudentWeeklyPerformance';
+import { People } from './People';
 import { Duel } from './Duel';
 import { DuelTeamParticipation } from './DuelTeamParticipation';
-import { InterativeRoom } from './InterativeRoom';
-import { SchoolGrade } from './SchoolGrade';
-import { StudStudChat } from './StudStudChat';
-import { StudStudMessage } from './StudStudMessage';
-import { StudTeachChat } from './StudTeachChat';
-import { StudTeachMessage } from './StudTeachMessage';
-import { User } from './User';
-import { StudentWeekPerformance } from './StudentWeekPerformance';
+import { Doubt } from './Doubt';
 
 @Entity()
-export class Student extends User {
-  @ManyToOne(() => SchoolGrade, (schoolGrade) => schoolGrade.students, {
+export class Student {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  // Usuario
+
+  @OneToOne(() => People, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
+  people: People;
+
+  // Serie escolar
+
+  @ManyToOne(() => SchoolGrade, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
   schoolGrade: SchoolGrade;
 
-  // Desempenho
+  // Desempenho semanal
 
   @OneToOne(
-    () => StudentWeekPerformance,
-    (weekPerformance) => weekPerformance.student,
+    () => StudentWeeklyPerformance,
+    (weeklyPerformance) => weeklyPerformance.student,
     {
       onUpdate: 'CASCADE',
     }
   )
-  weekPerformance: StudentWeekPerformance;
-
-  // Duvidas
-  @OneToMany(() => Doubt, (doubt) => doubt.student, {
-    cascade: true,
-  })
-  doubts: Doubt[];
-
-  // Revisoes de conteudo
-  @OneToMany(() => ContentReview, (contentReview) => contentReview.student, {
-    cascade: true,
-  })
-  contentReviews: ContentReview[];
-
-  // Duelos criados
+  weeklyPerformance: StudentWeeklyPerformance;
 
   @OneToMany(() => Duel, (duel) => duel.student, {
     onUpdate: 'CASCADE',
@@ -58,71 +53,19 @@ export class Student extends User {
   })
   duels: Duel[];
 
-  // Duelos participados
-
-  @ManyToMany(
+  @ManyToOne(
     () => DuelTeamParticipation,
-    (duelTeamsParticipations) => duelTeamsParticipations.student,
+    (duelTeamParticipations) => duelTeamParticipations.student,
     {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     }
   )
-  duelTeamsParticipations: DuelTeamParticipation[];
+  duelTeamParticipations: DuelTeamParticipation[];
 
-  // Sala interativas participadas
-
-  @ManyToMany(() => InterativeRoom, (interativeRoom) => interativeRoom, {
+  @OneToMany(() => Doubt, (doubt) => doubt.student, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  interativeRoomParticipations: InterativeRoom[];
-
-  // Chats com professores
-
-  @OneToMany(() => StudTeachChat, (studTeachChat) => studTeachChat.student, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-  })
-  studTeachChats: StudTeachChat[];
-
-  // Mensagens de chats com professores
-
-  @OneToMany(
-    () => StudTeachMessage,
-    (studTeachMessage) => studTeachMessage.student,
-    {
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    }
-  )
-  studTeachMessages: StudTeachMessage[];
-
-  // Chats com outros alunos criados pelo aluno
-
-  @OneToMany(() => StudStudChat, (studStudChat) => studStudChat.studentOne, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-  })
-  studStudChatsOne: StudStudChat[];
-
-  // Chats com outros alunos criados por outros alunos
-
-  @OneToMany(() => StudStudChat, (studStudChat) => studStudChat.studentTwo, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE',
-  })
-  studStudChatsTwo: StudStudChat[];
-
-  // Mensagens de chats com outros alunos
-
-  @OneToMany(
-    () => StudStudMessage,
-    (studStudMessage) => studStudMessage.student,
-    {
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE',
-    }
-  )
-  studStudMessages: StudStudMessage[];
+  doubts: Doubt[];
 }

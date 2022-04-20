@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { IAlternativeRequest } from '../../dto/IAlternativeRequest';
+import { IAlternativeRequest } from '../../dto/alternative/IAlternativeRequest';
 import { AlternativeRepository } from '../../repositories/implementations/AlternativeRepository';
 import { CreateAlternativeService } from '../../services/alternative/CreateAlternativeService';
 

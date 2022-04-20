@@ -1,7 +1,7 @@
-import { getCustomRepository, ObjectType } from "typeorm";
-import { IEntityNameRequest } from "../../dto/IEntityNameRequest";
-import { ApplicationErrors } from "../../errors";
-import { IEntityNameRepository } from "../../repositories/interfaces/IEntityNameRepository";
+import { getCustomRepository, ObjectType } from 'typeorm';
+import { IEntityNameRequest } from '../../dto/IEntityNameRequest';
+import { ApplicationErrors } from '../../errors';
+import { IEntityNameRepository } from '../../repositories/interfaces/IEntityNameRepository';
 
 export class UpdateEntityNameService {
   entityNameRepository: IEntityNameRepository;
@@ -11,11 +11,13 @@ export class UpdateEntityNameService {
   }
 
   async execute(entityNameParams: IEntityNameRequest): Promise<void> {
-    const entityNameRepository = getCustomRepository(this.entityNameRepository as unknown as ObjectType<IEntityNameRepository>);
+    const entityNameRepository = getCustomRepository(
+      this.entityNameRepository as unknown as ObjectType<IEntityNameRepository>
+    );
 
     const entityName = await entityNameRepository.findById(entityNameParams.id);
 
-    if (!entityName) throw new ApplicationErrors("Disciplina não existe", 404);
+    if (!entityName) throw new ApplicationErrors('Entidade não existe', 404);
 
     await entityNameRepository.updateById(entityNameParams);
   }

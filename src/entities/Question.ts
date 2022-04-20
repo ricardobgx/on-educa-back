@@ -36,4 +36,10 @@ export class Question {
   @OneToOne(() => Alternative)
   @JoinColumn()
   rightAlternative: Alternative;
+
+  @Column({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @Column({ type: 'timestamptz' })
+  updatedAt: Date;
 }

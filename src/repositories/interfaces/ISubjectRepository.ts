@@ -1,7 +1,7 @@
-import { DeleteResult } from "typeorm";
-import { IManySubjects } from "../../dto/IManySubjects";
-import { ISubjectRequest } from "../../dto/ISubjectRequest";
-import { Subject } from "../../entities/Subject";
+import { DeleteResult } from 'typeorm';
+import { IManySubjects } from '../../dto/subject/IManySubjects';
+import { ISubjectRequest } from '../../dto/subject/ISubjectRequest';
+import { Subject } from '../../entities/Subject';
 
 export interface ISubjectRepository {
   createSubject(subjectParams: ISubjectRequest): Promise<Subject>;

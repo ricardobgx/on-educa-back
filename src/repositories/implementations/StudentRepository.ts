@@ -4,13 +4,13 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IStudentRequest } from '../../dto/IStudentRequest';
-import { Image } from '../../entities/Image';
+import { IStudentRequest } from '../../dto/student/IStudentRequest';
 import { Student } from '../../entities/Student';
 import { IStudentRepository } from '../interfaces/IStudentRepository';
-import { ImageRepository } from './ImageRepository';
 import { SchoolGradeRepository } from './SchoolGradeRepository';
-import { StudentWeekPerformanceRepository } from './StudentWeekPerformanceRepository';
+import { StudentWeeklyPerformanceRepository } from './StudentWeeklyPerformanceRepository';
+import { PeopleRepository } from './PeopleRepository';
+import { ApplicationErrors } from '../../errors';
 
 @EntityRepository(Student)
 export class StudentRepository
@@ -18,78 +18,98 @@ export class StudentRepository
   implements IStudentRepository
 {
   async createStudent(studentParams: IStudentRequest): Promise<Student> {
-    const { schoolGradeId, profilePictureId } = studentParams;
+    const { peopleId, schoolGradeId } = studentParams;
 
+    delete studentParams.peopleId;
     delete studentParams.schoolGradeId;
-    delete studentParams.profilePictureId;
 
-    let student = { ...studentParams };
+    if (!peopleId) {
+      throw new ApplicationErrors('Pessoa não informada', 404);
+    }
+    const peopleRepository = await getCustomRepository(PeopleRepository);
+    const people = await peopleRepository.findById(peopleId);
 
-    if (schoolGradeId) {
-      const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
-      const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
-      student = this.create({ ...studentParams, schoolGrade });
+    if (!people) {
+      throw new ApplicationErrors('Pessoa não encontrada', 404);
     }
 
-    if (profilePictureId) {
-      const imageRepository = await getCustomRepository(ImageRepository);
-      const profilePicture = await imageRepository.findById(profilePictureId);
-      student = this.create({ ...student, profilePicture });
+    if (!schoolGradeId) {
+      throw new ApplicationErrors('Série não informada', 400);
+    }
+    const schoolGradeRepository = getCustomRepository(SchoolGradeRepository);
+    const schoolGrade = await schoolGradeRepository.findById(schoolGradeId);
+
+    if (!schoolGrade) {
+      throw new ApplicationErrors('Série não encontrada', 404);
     }
 
-    const studentWeekPerformanceRepository = await getCustomRepository(
-      StudentWeekPerformanceRepository
+    const studentWeeklyPerformanceRepository = await getCustomRepository(
+      StudentWeeklyPerformanceRepository
     );
-    const weekPerformance =
-      await studentWeekPerformanceRepository.createStudentWeekPerformance({});
+    const weeklyPerformance =
+      await studentWeeklyPerformanceRepository.createStudentWeeklyPerformance(
+        {}
+      );
 
-    student = this.create({ ...student, weekPerformance });
+    const student = this.create({
+      ...studentParams,
+      people,
+      schoolGrade,
+      weeklyPerformance,
+    });
 
     return await this.save(student);
   }
 
   async findAll(): Promise<Student[]> {
     return await this.find({
-      relations: ['schoolGrade', 'profilePicture'],
+      relations: ['schoolGrade', 'people'],
     });
   }
 
   async findById(id: string): Promise<Student | undefined> {
     const student = await this.findOne(
       { id },
-      { relations: ['schoolGrade', 'profilePicture'] }
+      { relations: ['schoolGrade', 'people'] }
     );
 
-    const schoolGradeRepository = await getCustomRepository(
-      SchoolGradeRepository
-    );
-    const schoolGrade = await schoolGradeRepository.findById(
-      student.schoolGrade.id
-    );
+    if (student) {
+      const peopleRepository = await getCustomRepository(PeopleRepository);
+      const people = await peopleRepository.findById(student.people.id);
 
-    const profilePicture = await this.getProfilePicture(
-      student.profilePicture.id
-    );
+      const schoolGradeRepository = await getCustomRepository(
+        SchoolGradeRepository
+      );
+      const schoolGrade = await schoolGradeRepository.findById(
+        student.schoolGrade.id
+      );
 
-    return this.create({ ...student, profilePicture, schoolGrade });
-  }
-
-  async findByEmail(email: string): Promise<Student | undefined> {
-    const student = await this.findOne({ email });
+      return this.create({ ...student, schoolGrade, people });
+    }
     return student;
   }
 
-  async updateByEmail(updateFields: IStudentRequest): Promise<void> {
-    const { email } = updateFields;
-    const fields = { ...updateFields };
+  async findByPeopleId(peopleId: string): Promise<Student | undefined> {
+    const peopleRepository = await getCustomRepository(PeopleRepository);
+    const people = await peopleRepository.findById(peopleId);
 
-    delete fields.email;
-
-    Object.keys(fields).map(
-      (key) => !!fields[key] === undefined && delete fields[key]
+    const student = await this.findOne(
+      { people },
+      { relations: ['schoolGrade', 'people'] }
     );
 
-    await this.update({ email }, fields);
+    if (student) {
+      const schoolGradeRepository = await getCustomRepository(
+        SchoolGradeRepository
+      );
+      const schoolGrade = await schoolGradeRepository.findById(
+        student.schoolGrade.id
+      );
+
+      return this.create({ ...student, schoolGrade });
+    }
+
+    return student;
   }
 
   async updateById(updateFields: IStudentRequest): Promise<void> {
@@ -113,39 +133,10 @@ export class StudentRepository
       if (schoolGrade) student = this.create({ ...fields, schoolGrade });
     }
 
-    if (fields.profilePictureId) {
-      const imageRepository = await getCustomRepository(ImageRepository);
-      const profilePicture = await imageRepository.findById(
-        fields.profilePictureId
-      );
-
-      if (profilePicture) {
-        const oldStudent = await this.findById(id);
-        const { profilePicture: oldProfilePicture } = oldStudent;
-
-        if (
-          oldProfilePicture &&
-          oldProfilePicture.id !== process.env.DEFAULT_PROFILE_PICTURE
-        ) {
-          console.log('apagou foto');
-          await this.update({ id }, { profilePicture: null });
-          await imageRepository.deleteById(oldProfilePicture.id);
-        }
-        student = this.create({ ...student, profilePicture });
-      }
-    }
-
     await this.update({ id }, student);
   }
 
-  async deleteByEmail(email: string): Promise<DeleteResult> {
-    return await this.delete({ email });
-  }
-
-  async getProfilePicture(imageId: string): Promise<Image> {
-    const imageRepository = await getCustomRepository(ImageRepository);
-    const image = await imageRepository.findById(imageId);
-
-    return image;
+  async deleteById(id: string): Promise<DeleteResult> {
+    return await this.delete({ id });
   }
 }

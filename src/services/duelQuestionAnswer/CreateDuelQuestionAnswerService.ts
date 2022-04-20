@@ -1,5 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IDuelQuestionAnswerRequest } from '../../dto/IDuelQuestionAnswerRequest';
+import { IDuelQuestionAnswerRequest } from '../../dto/duelRoundQuestion/IDuelQuestionAnswerRequest';
 import { DuelQuestionAnswer } from '../../entities/DuelQuestionAnswer';
 import { IDuelQuestionAnswerRepository } from '../../repositories/interfaces/IDuelQuestionAnswerRepository';
 

@@ -1,7 +1,7 @@
 import { DeleteResult } from 'typeorm';
-import { IDuelRoundRequest } from '../../dto/IDuelRoundRequest';
+import { IDuelRoundRequest } from '../../dto/duelRound/IDuelRoundRequest';
+import { IAnswerDuelRoundQuestionRequest } from '../../dto/duelRoundQuestion/IAnswerDuelRoundQuestionRequest';
 import { DuelRound } from '../../entities/DuelRound';
-import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
 
 export interface IDuelRoundRepository {
   createDuelRound(duelRoundParams: IDuelRoundRequest): Promise<DuelRound>;
@@ -10,4 +10,7 @@ export interface IDuelRoundRepository {
   updateById(updateFields: IDuelRoundRequest): Promise<void>;
   deleteById(id: string): Promise<DeleteResult>;
   startDuelRound(duelRoundId: string): Promise<void>;
+  answerDuelRoundQuestion(
+    answerDuelRoundQuestionParams: IAnswerDuelRoundQuestionRequest
+  ): Promise<void>;
 }

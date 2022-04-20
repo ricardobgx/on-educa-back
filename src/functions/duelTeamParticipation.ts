@@ -18,5 +18,6 @@ export const findValidDuelTeamParticipation = (
 ): DuelTeamParticipation | undefined => {
   const sortedParticipations = sortDuelTeamParticipations(participations);
 
-  return sortedParticipations.find((participation) => !!participation.student);
+  return undefined;
+  // return sortedParticipations.find((participation) => !!participation.student);
 };

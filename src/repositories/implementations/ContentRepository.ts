@@ -5,9 +5,8 @@ import {
   Repository,
   ILike,
 } from 'typeorm';
-import { IContentRequest } from '../../dto/IContentRequest';
+import { IContentRequest } from '../../dto/content/IContentRequest';
 import { Content } from '../../entities/Content';
-import { Unity } from '../../entities/Unity';
 import { IContentRepository } from '../interfaces/IContentRepository';
 import { UnityRepository } from './UnityRepository';
 
@@ -17,22 +16,23 @@ export class ContentRepository
   implements IContentRepository
 {
   async createContent(contentParams: IContentRequest): Promise<Content> {
-    const { title, description, video, index, unityId } = contentParams;
+    const { unityId } = contentParams;
+
+    delete contentParams.unityId;
+
+    let content = { ...contentParams };
 
     const unityRepository = getCustomRepository(UnityRepository);
     const unity = await unityRepository.findById(unityId);
 
-    const newContentParams = this.create({
-      title,
-      description,
-      video,
-      index,
+    content = this.create({
+      ...content,
       unity,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
-    const content = await this.save(newContentParams);
-
-    return content;
+    return await this.save(content);
   }
 
   async findAll(name?: string): Promise<Content[]> {

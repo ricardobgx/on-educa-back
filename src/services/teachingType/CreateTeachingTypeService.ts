@@ -1,7 +1,7 @@
-import { getCustomRepository, ObjectType } from "typeorm";
-import { ITeachingTypeRequest } from "../../dto/ITeachingTypeRequest";
-import { TeachingType } from "../../entities/TeachingType";
-import { ITeachingTypeRepository } from "../../repositories/interfaces/ITeachingTypeRepository";
+import { getCustomRepository, ObjectType } from 'typeorm';
+import { ITeachingTypeRequest } from '../../dto/teachingType/ITeachingTypeRequest';
+import { TeachingType } from '../../entities/TeachingType';
+import { ITeachingTypeRepository } from '../../repositories/interfaces/ITeachingTypeRepository';
 
 export class CreateTeachingTypeService {
   teachingTypeRepository: ITeachingTypeRepository;
@@ -10,10 +10,17 @@ export class CreateTeachingTypeService {
     this.teachingTypeRepository = teachingTypeRepository;
   }
 
-  async execute(teachingTypeParams: ITeachingTypeRequest): Promise<TeachingType> {
-    const teachingTypeRepository = getCustomRepository(this.teachingTypeRepository as unknown as ObjectType<ITeachingTypeRepository>);
+  async execute(
+    teachingTypeParams: ITeachingTypeRequest
+  ): Promise<TeachingType> {
+    const teachingTypeRepository = getCustomRepository(
+      this
+        .teachingTypeRepository as unknown as ObjectType<ITeachingTypeRepository>
+    );
 
-    const teachingType = await teachingTypeRepository.createTeachingType(teachingTypeParams);
+    const teachingType = await teachingTypeRepository.createTeachingType(
+      teachingTypeParams
+    );
 
     return teachingType;
   }

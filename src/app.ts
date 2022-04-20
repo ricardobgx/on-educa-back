@@ -12,20 +12,27 @@ import path from 'path';
 
 const swaggerDocument = { ...swaggerDefinitionDocument, paths };
 
-// Variaveis de ambiente
-
-const { PORT } = process.env;
-
 /* Rotas */
 
 // Usuarios
 
+import peopleRoutes from './routes/people.routes';
 import studentRoutes from './routes/student.routes';
 import teacherRoutes from './routes/teacher.routes';
 
+// Amizade
+
+import friendRequestRoutes from './routes/friendRequest.routes';
+
 // Desempenho
 
-import studentWeekPerformanceRoutes from './routes/studentWeekPerformance.routes';
+import studentWeeklyPerformanceRoutes from './routes/studentWeeklyPerformance.routes';
+import teacherWeeklyPerformanceRoutes from './routes/teacherWeeklyPerformance.routes';
+
+// Conversas
+
+import chatRoutes from './routes/chat.routes';
+import messageRoutes from './routes/message.routes';
 
 // Materiais escolares
 
@@ -36,6 +43,8 @@ import unityRoutes from './routes/unity.routes';
 import contentRoutes from './routes/content.routes';
 import questionRoutes from './routes/question.routes';
 import alternativeRoutes from './routes/alternative.routes';
+import doubtRoutes from './routes/doubt.routes';
+import doubtCommentRoutes from './routes/doubtComment.routes';
 
 // Duelos
 
@@ -70,7 +79,7 @@ class App {
 
     // Permitir acesso a outras aplicacoes
 
-    this.app.use(cors());
+    this.app.use(cors({ origin: '*' }));
 
     // Reconhece o objeto de solicitacao como JSON
 
@@ -86,11 +95,21 @@ class App {
    */
   routes() {
     // Usuarios
+    this.app.use('/peoples', peopleRoutes);
     this.app.use('/students', studentRoutes);
     this.app.use('/teachers', teacherRoutes);
 
+    // Amizade
+
+    this.app.use('/friendRequests', friendRequestRoutes);
+
     // Desempenho
-    this.app.use('/studentWeekPerformances', studentWeekPerformanceRoutes);
+    this.app.use('/studentWeeklyPerformances', studentWeeklyPerformanceRoutes);
+    this.app.use('/teacherWeeklyPerformances', teacherWeeklyPerformanceRoutes);
+
+    // Conversas
+    this.app.use('/chats', chatRoutes);
+    this.app.use('/messages', messageRoutes);
 
     // Materiais escolares
     this.app.use('/subjects', subjectRoutes);
@@ -100,6 +119,8 @@ class App {
     this.app.use('/contents', contentRoutes);
     this.app.use('/questions', questionRoutes);
     this.app.use('/alternatives', alternativeRoutes);
+    this.app.use('/doubts', doubtRoutes);
+    this.app.use('/doubtComments', doubtCommentRoutes);
 
     // Duelos
     this.app.use('/duels', duelRoutes);

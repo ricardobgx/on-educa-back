@@ -4,7 +4,7 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IDuelQuestionAnswerRequest } from '../../dto/IDuelQuestionAnswerRequest';
+import { IDuelQuestionAnswerRequest } from '../../dto/duelRoundQuestion/IDuelQuestionAnswerRequest';
 // import { IManyDuelQuestionAnswersRequest } from '../../dto/IManyDuelQuestionAnswersRequest';
 import { DuelQuestionAnswer } from '../../entities/DuelQuestionAnswer';
 import { ApplicationErrors } from '../../errors';
@@ -127,7 +127,7 @@ export class DuelQuestionAnswerRepository
       where: {
         id,
       },
-      relations: ['question'],
+      relations: ['question', 'duelTeamParticipation', 'selectedAlternative'],
     });
 
     const { question: foundQuestion } = duelQuestionAnswer;

@@ -4,7 +4,7 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IUnityRequest } from '../../dto/IUnityRequest';
+import { IUnityRequest } from '../../dto/unity/IUnityRequest';
 import { Unity } from '../../entities/Unity';
 import { IUnityRepository } from '../interfaces/IUnityRepository';
 import { ContentRepository } from './ContentRepository';
@@ -16,12 +16,12 @@ export class UnityRepository
   implements IUnityRepository
 {
   async createUnity(unityParams: IUnityRequest): Promise<Unity> {
-    const { title, subjectId } = unityParams;
+    const { name, subjectId } = unityParams;
 
     const subjectRepository = getCustomRepository(SubjectRepository);
     const subject = await subjectRepository.findById(subjectId);
 
-    const unity = this.create({ title, subject });
+    const unity = this.create({ name, subject });
 
     return await this.save(unity);
   }

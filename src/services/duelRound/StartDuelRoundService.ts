@@ -1,5 +1,4 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IDuelRoundRequest } from '../../dto/IDuelRoundRequest';
 import { ApplicationErrors } from '../../errors';
 import { IDuelRoundRepository } from '../../repositories/interfaces/IDuelRoundRepository';
 

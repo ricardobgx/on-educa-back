@@ -1,6 +1,13 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Content } from "./Content";
-import { Student } from "./Student";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Content } from './Content';
+import { Student } from './Student';
 
 @Entity()
 export class ContentReview {
@@ -10,16 +17,16 @@ export class ContentReview {
   @Column()
   createdAt: Date;
 
-  @ManyToOne(type => Student, student => student.contentReviews, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  student: Student;
+  // @ManyToOne(() => Student, student => student.contentReviews, {
+  //   onUpdate: 'CASCADE',
+  //   onDelete: 'CASCADE'
+  // })
+  // student: Student;
 
-  @ManyToMany(type => Content, content => content.contentReviews, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  @JoinTable()
-  contents: Content[];
+  // @ManyToMany(() => Content, (content) => content.contentReviews, {
+  //   onUpdate: 'CASCADE',
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinTable()
+  // contents: Content[];
 }

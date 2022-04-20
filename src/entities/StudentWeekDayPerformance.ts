@@ -1,22 +1,17 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { StudentWeekPerformance } from './StudentWeekPerformance';
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { StudentWeeklyPerformance } from './StudentWeeklyPerformance';
+import { UserWeekDayPerformance } from './UserWeekDayPerformance';
 
 @Entity()
-export class StudentWeekDayPerformance {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class StudentWeekDayPerformance extends UserWeekDayPerformance {
   @Column()
-  dailyXP: number;
-
-  @Column()
-  studiedContents: number;
+  contentsStudied: number;
 
   @Column()
   questionsAnswered: number;
 
   @Column()
-  rightQuestionsAnswered: number;
+  questionsAnsweredCorrectly: number;
 
   @Column()
   duelsParticipated: number;
@@ -24,16 +19,13 @@ export class StudentWeekDayPerformance {
   @Column()
   duelsWon: number;
 
-  @Column()
-  date: string;
-
   @ManyToOne(
-    () => StudentWeekPerformance,
-    (weekPerformance) => weekPerformance.weekDays,
+    () => StudentWeeklyPerformance,
+    (weeklyPerformance) => weeklyPerformance.weekDays,
     {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     }
   )
-  weekPerformance: StudentWeekPerformance;
+  weeklyPerformance: StudentWeeklyPerformance;
 }

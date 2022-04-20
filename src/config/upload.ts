@@ -37,12 +37,12 @@ export const compressImage = async (
   size: number
 ) => {
   // Pega o PATH antigo e altera a string que representa a extensao do arquivo
-  const newPath = file.path.split('.')[0] + '.png';
+  const newPath = file.path.split('.')[0] + '.webp';
 
   // Usando o sharp para a compressao na imagem que o path aponta
   return sharp(file.path)
     .resize(size) // Redimensiona para o tamanho informado
-    .toFormat('png') // Forca a conversao do arquivo para o formato PNG
+    .toFormat('webp') // Forca a conversao do arquivo para o formato PNG
     .png({
       // Define uma qualidade para o arquivo comprimido
       quality: 80,

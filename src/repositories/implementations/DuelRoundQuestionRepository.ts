@@ -4,13 +4,11 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
-import { IAnswerDuelRoundQuestionRequest } from '../../dto/IAnswerDuelRoundQuestionRequest';
-import { IDuelRoundQuestionRequest } from '../../dto/IDuelRoundQuestionRequest';
-import { IManyDuelRoundQuestionsRequest } from '../../dto/IManyDuelRoundQuestionsRequest';
+import { IDuelRoundQuestionRequest } from '../../dto/duelRoundQuestion/IDuelRoundQuestionRequest';
+import { IManyDuelRoundQuestionsRequest } from '../../dto/duelRoundQuestion/IManyDuelRoundQuestionsRequest';
 import { DuelRoundQuestion } from '../../entities/DuelRoundQuestion';
 import { ApplicationErrors } from '../../errors';
 import { IDuelRoundQuestionRepository } from '../interfaces/IDuelRoundQuestionRepository';
-import { DuelQuestionAnswerRepository } from './DuelQuestionAnswerRepository';
 import { DuelRoundRepository } from './DuelRoundRepository';
 import { QuestionRepository } from './QuestionRepository';
 
@@ -78,7 +76,7 @@ export class DuelRoundQuestionRepository
       where: {
         id,
       },
-      relations: ['question'],
+      relations: ['question', 'answer'],
     });
 
     const { question: foundQuestion } = duelRoundQuestion;

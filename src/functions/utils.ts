@@ -52,8 +52,8 @@ export const generateDuelCode = (codeSize: number): string => {
   return code;
 };
 
-export const getFullDate = (): string => {
-  const now = new Date();
+export const getFullDate = (date?: Date): string => {
+  const now = date ? new Date(date) : new Date();
 
   const day = now.getUTCDate();
   const month = now.getUTCMonth() + 1;

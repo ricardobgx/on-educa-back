@@ -23,7 +23,7 @@ export class DuelTeamParticipation {
   })
   duelTeam: DuelTeam;
 
-  @ManyToOne(() => Student, (student) => student.duelTeamsParticipations, {
+  @ManyToOne(() => Student, (student) => student.duelTeamParticipations, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })

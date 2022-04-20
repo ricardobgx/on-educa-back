@@ -1,7 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
-import { IChangeDuelTeamPositionRequest } from '../../dto/IChangeDuelTeamPositionRequest';
-import { IParticipateInDuelRequest } from '../../dto/IParticipateInDuelRequest';
-import { DuelTeamParticipation } from '../../entities/DuelTeamParticipation';
+import { IChangeDuelTeamPositionRequest } from '../../dto/duelTeamParticipation/IChangeDuelTeamPositionRequest';
 import { IDuelTeamParticipationRepository } from '../../repositories/interfaces/IDuelTeamParticipationRepository';
 
 export class ChangeDuelTeamPositionService {

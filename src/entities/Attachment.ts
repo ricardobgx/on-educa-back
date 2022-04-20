@@ -1,5 +1,5 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Content } from "./Content";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Content } from './Content';
 
 @Entity()
 export class Attachment {
@@ -12,8 +12,8 @@ export class Attachment {
   @Column()
   url: string;
 
-  @ManyToOne(type => Content, content => content.attachments, {
-    onUpdate: 'CASCADE',
-  })
-  content: Content;
+  // @ManyToOne(() => Content, (content) => content.attachments, {
+  //   onUpdate: 'CASCADE',
+  // })
+  // content: Content;
 }

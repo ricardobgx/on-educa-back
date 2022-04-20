@@ -1,72 +1,46 @@
-import { Entity, ManyToMany, ManyToOne, OneToMany } from "typeorm";
-import { InterativeRoom } from "./InterativeRoom";
-import { StudTeachChat } from "./StudTeachChat";
-import { TeachingType } from "./TeachingType";
-import { TeachStudMessage } from "./TeachStudMessage";
-import { TeachTeachChat } from "./TeachTeachChat";
-import { TeachTeachMessage } from "./TeachTeachMessage";
-import { User } from "./User";
+import {
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TeacherWeeklyPerformance } from './TeacherWeeklyPerformance';
+import { TeachingType } from './TeachingType';
+import { People } from './People';
+import { DoubtComment } from './DoubtComment';
 
 @Entity()
-export class Teacher extends User {
-  @ManyToOne(type => TeachingType, teachingType => teachingType.teachers, {
-    onUpdate: 'CASCADE'
+export class Teacher {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  // Usuario
+
+  @OneToOne(() => People, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   })
+  @JoinColumn()
+  people: People;
+
+  // Tipo de ensino
+
+  @ManyToOne(() => TeachingType, {
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn()
   teachingType: TeachingType;
 
-  // Salas interativas criadas
+  // Desempenho semanal
 
-  @OneToMany(type => InterativeRoom, interativeRoom => interativeRoom.teacher, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  interativeRooms: InterativeRoom[];
-
-  // Salas interativas participadas
-
-  @ManyToMany(type => InterativeRoom, interativeRoom => interativeRoom.teachers, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  interativeRoomParticipations: InterativeRoom[];
-
-  // Chats com alunos
-
-  @OneToMany(type => StudTeachChat, studTeachChat => studTeachChat.teacher, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  studTeachChats: StudTeachChat[];
-
-  // Mensagens de chats com alunos
-
-  @OneToMany(type => TeachStudMessage, teachStudMessage => teachStudMessage.teacher, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  teachStudMessages: TeachStudMessage[];
-
-  // Chats com outros professores criados pelo professor
-
-  @OneToMany(type => TeachTeachChat, teachTeachChat => teachTeachChat.teacherOne, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  teachTeachChatsOne: TeachTeachChat[];
-
-  // Chats com outros professores criados pelos outros professores
-
-  @OneToMany(type => TeachTeachChat, teachTeachChat => teachTeachChat.teacherTwo, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  teachTeachChatsTwo: TeachTeachChat[];
-
-  // Mensagens de chats com professores criados por outros professores
-
-  @OneToMany(type => TeachTeachMessage, teachTeachMessage => teachTeachMessage.teacher, {
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
-  })
-  teachTeachMessages: TeachTeachMessage[];
+  @OneToOne(
+    () => TeacherWeeklyPerformance,
+    (weeklyPerformance) => weeklyPerformance.teacher,
+    {
+      onUpdate: 'CASCADE',
+    }
+  )
+  weeklyPerformance: TeacherWeeklyPerformance;
 }
