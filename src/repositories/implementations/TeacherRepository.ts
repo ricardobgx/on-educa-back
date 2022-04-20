@@ -4,6 +4,7 @@ import {
   getCustomRepository,
   Repository,
 } from 'typeorm';
+
 import { ITeacherRequest } from '../../dto/teacher/ITeacherRequest';
 import { Teacher } from '../../entities/Teacher';
 import { ApplicationErrors } from '../../errors';
@@ -65,7 +66,7 @@ export class TeacherRepository
 
   async findAll(): Promise<Teacher[]> {
     return await this.find({
-      relations: ['teachingType'],
+      relations: ['teachingType', 'profilePicture'],
     });
   }
 
@@ -95,7 +96,7 @@ export class TeacherRepository
     const teacher = await this.findOne(
       { people },
       {
-        relations: ['teachingType'],
+        relations: ['teachingType', 'profilePicture'],
       }
     );
 
@@ -130,5 +131,12 @@ export class TeacherRepository
 
   async deleteById(id: string): Promise<DeleteResult> {
     return await this.delete({ id });
+  }
+
+  async getProfilePicture(imageId: string): Promise<Image> {
+    const imageRepository = await getCustomRepository(ImageRepository);
+    const image = await imageRepository.findById(imageId);
+
+    return image;
   }
 }
