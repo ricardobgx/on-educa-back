@@ -6,9 +6,11 @@ import {
 } from 'typeorm';
 
 import { ITeacherRequest } from '../../dto/teacher/ITeacherRequest';
+import { Image } from '../../entities/Image';
 import { Teacher } from '../../entities/Teacher';
 import { ApplicationErrors } from '../../errors';
 import { ITeacherRepository } from '../interfaces/ITeacherRepository';
+import { ImageRepository } from './ImageRepository';
 import { PeopleRepository } from './PeopleRepository';
 import { TeacherWeeklyPerformanceRepository } from './TeacherWeeklyPerformanceRepository';
 import { TeachingTypeRepository } from './TeachingTypeRepository';
@@ -66,7 +68,7 @@ export class TeacherRepository
 
   async findAll(): Promise<Teacher[]> {
     return await this.find({
-      relations: ['teachingType', 'profilePicture'],
+      relations: ['teachingType'],
     });
   }
 
@@ -96,7 +98,7 @@ export class TeacherRepository
     const teacher = await this.findOne(
       { people },
       {
-        relations: ['teachingType', 'profilePicture'],
+        relations: ['teachingType'],
       }
     );
 
