@@ -24,12 +24,12 @@ export class AuthenticationPeopleService {
 
     const people = await peopleRepository.findByEmail(email);
 
-    if (!people) throw new ApplicationErrors('E-mail ou senha incorreta', 400);
+    if (!people) throw new ApplicationErrors('Não encontramos uma conta com esse e-mail', 400);
 
     const passwordCompared = await compare(password, people.password);
 
     if (!passwordCompared)
-      throw new ApplicationErrors('E-mail ou senha incorreta', 400);
+      throw new ApplicationErrors('E-mail ou senha incorretos', 400);
 
     const tokenKey = process.env.TOKEN_KEY || '';
     const token = sign(

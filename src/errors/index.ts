@@ -1,10 +1,10 @@
-export class ApplicationErrors extends Error {
+export class ApplicationErrors {
   public readonly message: string;
   public readonly statusCode: number;
 
   constructor(message: string, statusCode: number) {
-    super(message);
     this.statusCode = statusCode;
+    this.message = message;
   }
 
   get name() {

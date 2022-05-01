@@ -8,6 +8,8 @@ import * as swaggerDefinitionDocument from './swagger.json';
 import { paths } from './routes';
 import path from 'path';
 
+import exceptionsHandle from './middlewares/handleExceptions';
+
 // Documentacao da API
 
 const swaggerDocument = { ...swaggerDefinitionDocument, paths };
@@ -68,6 +70,7 @@ class App {
     this.app = express();
     this.middlewares();
     this.routes();
+    this.exceptionHandles();
   }
 
   /**
@@ -88,6 +91,12 @@ class App {
     // Permite o uso de objetos aninhados, como no JSON
 
     this.app.use(express.urlencoded({ extended: true }));
+  }
+
+  exceptionHandles() {
+    // Tratamento de excecoes
+
+    this.app.use(exceptionsHandle);
   }
 
   /**
