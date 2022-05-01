@@ -6,10 +6,11 @@
   "author": "José Ricardo <jricardobgoncalves@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "tsc && node ./build/index.js",
+    "start": "node build/index.js",
     "build": "tsc",
     "dev": "ts-node-dev src/index.ts",
-    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
+    "postinstall": "npm run build"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
