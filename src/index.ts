@@ -85,6 +85,6 @@ io.on('connection', (socket: socket.Socket) => {
 //   await teacherWeeklyPerformanceRepository.resetWeeklyPerformances();
 // }, 5000);
 
-server.listen(8080, () => {
-  console.log('ON EDUCA - ' + 8080);
+server.listen(PORT, () => {
+  console.log('ON EDUCA - ' + PORT);
 });
