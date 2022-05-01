@@ -1,6 +1,8 @@
 # Uploaded files
 
 uploads/
+dist/
+build/
 
 # Logs
 logs
