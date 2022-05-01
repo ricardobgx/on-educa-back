@@ -6,6 +6,7 @@
   "author": "José Ricardo <jricardobgoncalves@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "tsc && node /build/index.js",
     "build": "tsc",
     "dev": "ts-node-dev src/index.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
