@@ -50,10 +50,17 @@ export class FriendRequestRepository
     const peopleRepository = await getCustomRepository(PeopleRepository);
     const people = await peopleRepository.findById(peopleId);
 
-    return await this.find({
+    const requesteds = await this.find({
       relations: ['requester', 'requested'],
       where: { requested: people },
     });
+
+    const requesters = await this.find({
+      relations: ['requester', 'requested'],
+      where: { requester: people },
+    });
+
+    return requesteds.concat(requesters);
   }
 
   async findById(id: string): Promise<FriendRequest | undefined> {

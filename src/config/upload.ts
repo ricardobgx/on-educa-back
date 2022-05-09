@@ -70,8 +70,6 @@ export const compressImage = async (
         }
       });
 
-      console.log(newPath);
-
       // Retorna o novo path do arquivo
       return newPath;
     });
@@ -79,7 +77,7 @@ export const compressImage = async (
 
 export const deleteImage = async (filename: string) => {
   const imagePath = path.join(__dirname, '..', '..', 'uploads', filename);
-
+  
   // Verifica se o arquivo existe
   await fs.access(imagePath, (err) => {
     // Se nao houver erro quer dizer que o arquivo existe

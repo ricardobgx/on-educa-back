@@ -4,6 +4,7 @@ import { IImageRequest } from '../../dto/image/IImageRequest';
 import { Image } from '../../entities/Image';
 import { IImageRepository } from '../interfaces/IImageRepository';
 import path from 'path';
+import { ApplicationErrors } from '../../errors';
 
 @EntityRepository(Image)
 export class ImageRepository
@@ -31,7 +32,12 @@ export class ImageRepository
   }
 
   async deleteById(id: string): Promise<DeleteResult> {
-    const image = await this.findById(id);
+    const image = await this.findOne({ id });
+    
+    if (!image) {
+      throw new ApplicationErrors('Imagem não encontrada', 404);
+    }
+    
     await deleteImage(image.path);
 
     return await this.delete({ id });
