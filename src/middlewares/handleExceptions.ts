@@ -13,5 +13,5 @@ export default function exceptionsHandle(
 
     return res.status(500).json({
       status:"Error",
-      message: "Error server internal"});
+      message: err.message });
   }
