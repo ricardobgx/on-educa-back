@@ -70,8 +70,9 @@ export class MessageRepository
       },
       relations: ['sender', 'chat'],
       order: {
-        createdAt: 'ASC',
+        createdAt: 'DESC',
       },
+      take: 10,
     });
   }
 

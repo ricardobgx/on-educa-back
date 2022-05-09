@@ -4,11 +4,11 @@ import { DeletePeopleService } from '../../services/people/DeletePeopleService';
 
 class DeletePeopleController {
   async handle(req: Request, res: Response) {
-    const { email } = req.params;
+    const { id } = req.params;
 
     const deletePeopleService = new DeletePeopleService(new PeopleRepository());
 
-    await deletePeopleService.execute(email);
+    await deletePeopleService.execute(id);
 
     return res.status(200).json({ message: 'Usuário removido!' });
   }

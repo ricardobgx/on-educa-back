@@ -15,7 +15,7 @@ routes.get('/', peopleAuthorization, ListPeopleController.handle);
 routes.get('/:id', peopleAuthorization, ShowPeopleController.handle);
 routes.post('/', CreatePeopleController.handle);
 routes.put('/:id', peopleAuthorization, UpdatePeopleController.handle);
-routes.delete('/:email', peopleAuthorization, DeletePeopleController.handle);
+routes.delete('/:id', peopleAuthorization, DeletePeopleController.handle);
 routes.put(
   '/:id/addFriend',
   peopleAuthorization,

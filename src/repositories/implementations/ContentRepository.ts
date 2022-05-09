@@ -50,7 +50,7 @@ export class ContentRepository
             else text += ` ${nameWords[j]}`;
 
             let foundContents = await this.find({
-              where: { title: ILike(`%${text}%`) },
+              where: { name: ILike(`%${text}%`) },
               relations: ['unity', 'questions'],
             });
             foundContents.map((foundContent) =>

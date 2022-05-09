@@ -11,6 +11,8 @@ import { People } from '../../entities/People';
 import { IPeopleRepository } from '../interfaces/IPeopleRepository';
 import { ImageRepository } from './ImageRepository';
 import { ApplicationErrors } from '../../errors';
+import { StudentRepository } from './StudentRepository';
+import { TeacherRepository } from './TeacherRepository';
 
 @EntityRepository(People)
 export class PeopleRepository
@@ -61,6 +63,7 @@ export class PeopleRepository
 
         // Adiciona o usuario ao array de usuarios que sera retornado
         peoples.push(people);
+
       })
     );
 
@@ -152,6 +155,47 @@ export class PeopleRepository
   }
 
   async deleteById(id: string): Promise<DeleteResult> {
+    
+    const peopleFound = await this.findById(id);
+
+    if (!peopleFound) {
+      throw new ApplicationErrors('Pessoa não encontrada', 404);
+    }
+    
+    const { profilePicture, isStudent } = peopleFound;
+        
+
+    // Verifica se a imagem eh diferente da imagem padrao
+    if (
+      profilePicture && profilePicture.id !== process.env.DEFAULT_PROFILE_PICTURE
+    ) {
+      const imageRepository = await getCustomRepository(ImageRepository);
+
+
+      // Remove a imagem anterior do usuario
+      await this.update({ id }, { profilePicture: null });
+      
+      // Apaga a imagem do banco
+      await imageRepository.deleteById(profilePicture.id);
+    }
+
+
+    await this.save({...peopleFound, friends: [] });
+
+    
+    if (isStudent) {
+      const studentRepository = await getCustomRepository(StudentRepository);
+      const studentFound = await studentRepository.findByPeopleId(id);
+
+      await studentRepository.deleteById(studentFound.id);
+
+    } else {
+      const teacherRepository = await getCustomRepository(TeacherRepository);
+      const teacherFound = await teacherRepository.findByPeopleId(id);
+
+      await teacherRepository.deleteById(teacherFound.id);
+    }
+
     // Busca o usuario pelo id e exclui da base de dados
     return await this.delete({ id });
   }

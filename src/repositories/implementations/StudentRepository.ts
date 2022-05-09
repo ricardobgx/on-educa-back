@@ -11,6 +11,7 @@ import { SchoolGradeRepository } from './SchoolGradeRepository';
 import { StudentWeeklyPerformanceRepository } from './StudentWeeklyPerformanceRepository';
 import { PeopleRepository } from './PeopleRepository';
 import { ApplicationErrors } from '../../errors';
+import { DoubtRepository } from './DoubtRepository';
 
 @EntityRepository(Student)
 export class StudentRepository
@@ -137,6 +138,16 @@ export class StudentRepository
   }
 
   async deleteById(id: string): Promise<DeleteResult> {
+    const studentFound = await this.findById(id);
+
+    if (!studentFound) {
+      throw new ApplicationErrors('Estudante não encontrado', 404);
+    }
+    
+    const doubtRepository = await getCustomRepository(DoubtRepository);
+
+    await doubtRepository.delete({ student: studentFound });
+    
     return await this.delete({ id });
   }
 }

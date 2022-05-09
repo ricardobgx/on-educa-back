@@ -132,6 +132,12 @@ export class TeacherRepository
   }
 
   async deleteById(id: string): Promise<DeleteResult> {
+    const teacherFound = await this.findById(id);
+
+    if (!teacherFound) {
+      throw new ApplicationErrors('Professor não encontrado', 404);
+    }
+    
     return await this.delete({ id });
   }
 
