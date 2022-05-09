@@ -180,7 +180,9 @@ export class PeopleRepository
     }
 
 
-    await this.save({...peopleFound, friends: [] });
+    await Promise.all(peopleFound.friends.map(async (friend) => {
+      await this.removeFriend({ peopleId: id, friendId: friend.id });
+    }))
 
     
     if (isStudent) {

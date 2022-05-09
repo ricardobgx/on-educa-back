@@ -12,8 +12,6 @@ class AcceptFriendRequestController {
 
     await createFriendRequestService.execute(id);
 
-    console.log('aceitou');
-
     return res.status(200).json();
   }
 }

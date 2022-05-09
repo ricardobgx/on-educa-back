@@ -6,8 +6,6 @@ class ListFriendRequestByPeopleController {
   async handle(req: Request, res: Response) {
     const { peopleId } = req.params;
 
-    console.log(`Pegando solicitações de ${peopleId}`);
-
     const listFriendRequestByPeopleService =
       new ListFriendRequestByPeopleService(new FriendRequestRepository());
 
