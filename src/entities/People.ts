@@ -8,6 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import AchievementProgress from './AchievementProgress';
 import { Chat } from './Chat';
 import { DoubtComment } from './DoubtComment';
 import { Image } from './Image';
@@ -77,4 +78,10 @@ export class People {
     onUpdate: 'CASCADE',
   })
   doubtsComments: DoubtComment[];
+
+  @OneToMany(() => AchievementProgress, achievementProgress => achievementProgress.people, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  achievementsProgress: AchievementProgress[];
 }

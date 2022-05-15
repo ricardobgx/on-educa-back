@@ -31,6 +31,12 @@ import friendRequestRoutes from './routes/friendRequest.routes';
 import studentWeeklyPerformanceRoutes from './routes/studentWeeklyPerformance.routes';
 import teacherWeeklyPerformanceRoutes from './routes/teacherWeeklyPerformance.routes';
 
+// Conquistas
+
+import achievementRoutes from './routes/achievement.routes';
+import achievementLevelRoutes from './routes/achievementLevel.routes';
+import achievementProgressRoutes from './routes/achievementProgress.routes';
+
 // Conversas
 
 import chatRoutes from './routes/chat.routes';
@@ -115,6 +121,11 @@ class App {
     // Desempenho
     this.app.use('/studentWeeklyPerformances', studentWeeklyPerformanceRoutes);
     this.app.use('/teacherWeeklyPerformances', teacherWeeklyPerformanceRoutes);
+
+    // Conquistas
+    this.app.use('/achievements', achievementRoutes);
+    this.app.use('/achievementLevels', achievementLevelRoutes);
+    this.app.use('/achievementProgress', achievementProgressRoutes);
 
     // Conversas
     this.app.use('/chats', chatRoutes);
