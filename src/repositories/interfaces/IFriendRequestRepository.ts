@@ -8,6 +8,7 @@ export interface IFriendRequestRepository {
   ): Promise<FriendRequest>;
   findAll(name?: string): Promise<FriendRequest[]>;
   findByPeople(peopleId: string): Promise<FriendRequest[]>;
+  findAllByPeople(peopleId: string): Promise<FriendRequest[]>;
   findById(id: string): Promise<FriendRequest | undefined>;
   updateById(updateFields: IFriendRequestRequest): Promise<void>;
   deleteById(id: string): Promise<DeleteResult>;

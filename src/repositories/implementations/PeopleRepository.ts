@@ -54,18 +54,19 @@ export class PeopleRepository
     // Percorre por todos os usuarios buscando e adicionando suas fotos de perfil
     await Promise.all(
       peoplesFound.map(async (peopleFound) => {
-        let profilePicture = peopleFound.profilePicture || { id: '', path: '' } as Image;
-        
+        let profilePicture =
+          peopleFound.profilePicture || ({ id: '', path: '' } as Image);
+
         if (peopleFound.profilePicture) {
           // Procura a imagem do usuario para que a url completa seja retornada
           profilePicture = await this.getProfilePicture(
             peopleFound.profilePicture.id
-            );
-        }  
-        
+          );
+        }
+
         // Adiciona a imagem aos dados que devem ser retornados
         const people = this.create({ ...peopleFound, profilePicture });
-        
+
         // Adiciona o usuario ao array de usuarios que sera retornado
         peoples.push(people);
       })
@@ -80,9 +81,10 @@ export class PeopleRepository
       { id },
       { relations: ['profilePicture', 'friends'] }
     );
-    
-    if (!peopleFound) throw new ApplicationErrors('Usuário não encontrado', 404);
-    
+
+    if (!peopleFound)
+      throw new ApplicationErrors('Usuário não encontrado', 404);
+
     let profilePicture =
       peopleFound.profilePicture || ({ id: '', path: '' } as Image);
 
@@ -169,59 +171,61 @@ export class PeopleRepository
     // Atualiza o usuario
     await this.update({ id }, people);
   }
-  
+
   async deleteById(id: string): Promise<DeleteResult> {
-    
     const peopleFound = await this.findById(id);
 
     if (!peopleFound) {
       throw new ApplicationErrors('Pessoa não encontrada', 404);
     }
-    
+
     const { profilePicture, isStudent } = peopleFound;
-    
-    
-    const friendRequestRepository = await getCustomRepository(FriendRequestRepository);
-    
-    const friendRequests = await friendRequestRepository.findByPeople(id);
-    
+
+    const friendRequestRepository = await getCustomRepository(
+      FriendRequestRepository
+    );
+
+    const friendRequests = await friendRequestRepository.findAllByPeople(id);
+
     // Removendo solicitacoes de amizade
-    await Promise.all(friendRequests.map(async friendRequest => {
-      await friendRequestRepository.deleteById(friendRequest.id);
-    }));
-    
+    await Promise.all(
+      friendRequests.map(async (friendRequest) => {
+        await friendRequestRepository.deleteById(friendRequest.id);
+      })
+    );
+
     // Removendo amigos
-    await Promise.all(peopleFound.friends.map(async (friend) => {
-      await this.removeFriend({ peopleId: id, friendId: friend.id });
-    }))
+    await Promise.all(
+      peopleFound.friends.map(async (friend) => {
+        await this.removeFriend({ peopleId: id, friendId: friend.id });
+      })
+    );
 
     // Verifica se a imagem eh diferente da imagem padrao
     if (
-      profilePicture && profilePicture.id && profilePicture.id !== process.env.DEFAULT_PROFILE_PICTURE
+      profilePicture &&
+      profilePicture.id &&
+      profilePicture.id !== process.env.DEFAULT_PROFILE_PICTURE
     ) {
       const imageRepository = await getCustomRepository(ImageRepository);
 
       // Remove a imagem anterior do usuario
       await this.update({ id }, { profilePicture: null });
-      
+
       // Apaga a imagem do banco
       await imageRepository.deleteById(profilePicture.id);
-    
     }
-    
+
     if (isStudent) {
       const studentRepository = await getCustomRepository(StudentRepository);
       const studentFound = await studentRepository.findByPeopleId(id);
 
-      if (studentFound)
-        await studentRepository.deleteById(studentFound.id);
-
+      if (studentFound) await studentRepository.deleteById(studentFound.id);
     } else {
       const teacherRepository = await getCustomRepository(TeacherRepository);
       const teacherFound = await teacherRepository.findByPeopleId(id);
 
-      if (teacherFound)
-        await teacherRepository.deleteById(teacherFound.id);
+      if (teacherFound) await teacherRepository.deleteById(teacherFound.id);
     }
 
     // Busca o usuario pelo id e exclui da base de dados
@@ -291,6 +295,6 @@ export class PeopleRepository
     );
 
     await this.save({ ...people, friends: peopleFriends });
-    await this.save({ ...friend, friends: friendFriends });      
+    await this.save({ ...friend, friends: friendFriends });
   }
 }

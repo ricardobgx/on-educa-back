@@ -55,6 +55,18 @@ export class FriendRequestRepository
       where: { requested: people },
     });
 
+    return requesteds;
+  }
+
+  async findAllByPeople(peopleId: string): Promise<FriendRequest[]> {
+    const peopleRepository = await getCustomRepository(PeopleRepository);
+    const people = await peopleRepository.findById(peopleId);
+
+    const requesteds = await this.find({
+      relations: ['requester', 'requested'],
+      where: { requested: people },
+    });
+
     const requesters = await this.find({
       relations: ['requester', 'requested'],
       where: { requester: people },
