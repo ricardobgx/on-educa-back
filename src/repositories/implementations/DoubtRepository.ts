@@ -5,7 +5,10 @@ import {
   Repository,
 } from 'typeorm';
 import { IDoubtRequest } from '../../dto/doubt/IDoubtRequest';
+import { IDoubtSearchParams } from '../../dto/doubt/IDoubtSearchParams';
+import { Content } from '../../entities/Content';
 import { Doubt } from '../../entities/Doubt';
+import { Student } from '../../entities/Student';
 import { ApplicationErrors } from '../../errors';
 import { DoubtStatus } from '../../types/DoubtStatus';
 import { IDoubtRepository } from '../interfaces/IDoubtRepository';
@@ -51,10 +54,48 @@ export class DoubtRepository
     return await this.save(doubt);
   }
 
-  async findAll(): Promise<Doubt[]> {
-    return await this.find({
-      relations: [],
+  async findAll(searchParams: IDoubtSearchParams): Promise<Doubt[]> {
+    const { studentId, contentId, status } = searchParams;
+
+    let student: Student = undefined;
+    let content: Content = undefined;
+
+    if (studentId) {
+      const studentRepository = await getCustomRepository(StudentRepository);
+      await studentRepository.findById(studentId).then((studentFound) => {
+        if (studentFound) student = studentFound;
+      });
+    }
+
+    if (contentId) {
+      const contentRepository = await getCustomRepository(ContentRepository);
+      await contentRepository.findById(contentId).then((contentFound) => {
+        if (contentFound) content = contentFound;
+      });
+    }
+
+    let where = {};
+
+    if (studentId) where['student'] = student;
+    if (contentId) where['content'] = content;
+    if (status) where['status'] = Number(status);
+
+    const doubtsFound = await this.find({
+      where,
+      relations: ['content', 'student', 'comments'],
     });
+
+    const doubts: Doubt[] = [];
+
+    await Promise.all(
+      doubtsFound.map(async (doubtFound) => {
+        const doubt = await this.findById(doubtFound.id);
+
+        doubts.push(doubt);
+      })
+    );
+
+    return doubts;
   }
 
   async findById(id: string): Promise<Doubt | undefined> {
@@ -71,10 +112,6 @@ export class DoubtRepository
 
       const studentRepository = await getCustomRepository(StudentRepository);
       const student = await studentRepository.findById(studentFound.id);
-
-      const doubtCommentRepository = await getCustomRepository(
-        DoubtCommentRepository
-      );
 
       const doubt = this.create({ ...doubtFound, content, student });
 

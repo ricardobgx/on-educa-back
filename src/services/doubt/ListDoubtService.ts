@@ -1,4 +1,5 @@
 import { getCustomRepository, ObjectType } from 'typeorm';
+import { IDoubtSearchParams } from '../../dto/doubt/IDoubtSearchParams';
 import { Doubt } from '../../entities/Doubt';
 import { IDoubtRepository } from '../../repositories/interfaces/IDoubtRepository';
 
@@ -9,12 +10,12 @@ export class ListDoubtService {
     this.doubtRepository = doubtRepository;
   }
 
-  async execute(): Promise<Doubt[]> {
+  async execute(searchParams: IDoubtSearchParams): Promise<Doubt[]> {
     const doubtRepository = getCustomRepository(
       this.doubtRepository as unknown as ObjectType<IDoubtRepository>
     );
 
-    const doubts = await doubtRepository.findAll();
+    const doubts = await doubtRepository.findAll(searchParams);
 
     return doubts;
   }
