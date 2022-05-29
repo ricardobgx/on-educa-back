@@ -1,12 +1,12 @@
 {
   "type": "postgres",
-  "url": "postgres://tppkpkqiztrzpj:9fe180b450f6ac3462a42f1dc4539943c4ad6f1f90ba8472ff5091e341317a08@ec2-3-217-113-25.compute-1.amazonaws.com:5432/de9i888r7p4tqj?sslmode=no-verify",
+  "url": "postgres://postgres:postgres@10.0.0.2:5432/RefactorPg",
   "synchronize": false,
   "logging": false,
   "entities": ["src/entities/*.ts"],
-  "migrations": ["src/database/migrations/*.ts"],
+  "migrations": ["src/database/migrationsDev/*.ts"],
   "subscribers": ["src/subscriber/**/*.ts"],
   "cli": {
-    "migrationsDir": "./src/database/migrations"
+    "migrationsDir": "./src/database/migrationsDev"
   }
 }

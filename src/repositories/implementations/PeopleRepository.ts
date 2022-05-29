@@ -14,6 +14,7 @@ import { ApplicationErrors } from '../../errors';
 import { StudentRepository } from './StudentRepository';
 import { TeacherRepository } from './TeacherRepository';
 import { FriendRequestRepository } from './FriendRequestRepository';
+import { LeagueRepository } from './league/LeagueRepository';
 
 @EntityRepository(People)
 export class PeopleRepository
@@ -79,24 +80,50 @@ export class PeopleRepository
     // Procura o usuario pelo id e retorna os dados juntamente com os relacionamentos especificados
     const peopleFound = await this.findOne(
       { id },
-      { relations: ['profilePicture', 'friends'] }
+      { relations: ['profilePicture', 'friends', 'league'] }
     );
 
     if (!peopleFound)
       throw new ApplicationErrors('Usuário não encontrado', 404);
 
-    let profilePicture =
-      peopleFound.profilePicture || ({ id: '', path: '' } as Image);
+    const { profilePicture: profilePictureFound, league: leagueFound } =
+      peopleFound;
 
-    if (peopleFound.profilePicture) {
+    let profilePicture = profilePictureFound || ({ id: '', path: '' } as Image);
+
+    if (profilePictureFound) {
       // Procura a imagem do usuario para que a url completa seja retornada
       profilePicture = await this.getProfilePicture(
         peopleFound.profilePicture.id
       );
     }
 
+    let league = leagueFound;
+
+    const leagueRepository = await getCustomRepository(LeagueRepository);
+
+    if (!leagueFound) {
+      const defaultLeague = await leagueRepository.findAll({
+        type: 0,
+        level: 1,
+      });
+
+      if (defaultLeague.length > 0) {
+        await this.update(
+          { id },
+          {
+            league: defaultLeague[0],
+          }
+        );
+
+        league = defaultLeague[0];
+      }
+    } else {
+      league = await leagueRepository.findById(league.id);
+    }
+
     // Adiciona a imagem aos dados que serao retornados
-    const people = this.create({ ...peopleFound, profilePicture });
+    const people = this.create({ ...peopleFound, profilePicture, league });
 
     return people;
   }

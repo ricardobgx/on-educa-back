@@ -12,7 +12,9 @@ import AchievementProgress from './AchievementProgress';
 import { Chat } from './Chat';
 import { DoubtComment } from './DoubtComment';
 import { Image } from './Image';
+import League from './League';
 import { Message } from './Message';
+import MissionProgress from './MissionProgress';
 
 @Entity()
 export class People {
@@ -79,9 +81,29 @@ export class People {
   })
   doubtsComments: DoubtComment[];
 
-  @OneToMany(() => AchievementProgress, achievementProgress => achievementProgress.people, {
+  @OneToMany(
+    () => AchievementProgress,
+    (achievementProgress) => achievementProgress.people,
+    {
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    }
+  )
+  achievementsProgress: AchievementProgress[];
+
+  @OneToMany(
+    () => MissionProgress,
+    (missionProgress) => missionProgress.people,
+    {
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+    }
+  )
+  missionsProgress: MissionProgress[];
+
+  @ManyToOne(() => League, (league) => league.peoples, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  achievementsProgress: AchievementProgress[];
+  league: League;
 }

@@ -37,6 +37,15 @@ import achievementRoutes from './routes/achievement.routes';
 import achievementLevelRoutes from './routes/achievementLevel.routes';
 import achievementProgressRoutes from './routes/achievementProgress.routes';
 
+// Missões
+
+import missionRoutes from './routes/mission.routes';
+import missionProgressRoutes from './routes/missionProgress.routes';
+
+// Ligas
+
+import leagueRoutes from './routes/league.routes';
+
 // Conversas
 
 import chatRoutes from './routes/chat.routes';
@@ -126,6 +135,13 @@ class App {
     this.app.use('/achievements', achievementRoutes);
     this.app.use('/achievementLevels', achievementLevelRoutes);
     this.app.use('/achievementProgress', achievementProgressRoutes);
+
+    // Missões
+    this.app.use('/missions', missionRoutes);
+    this.app.use('/missionProgress', missionProgressRoutes);
+
+    // Ligas
+    this.app.use('/leagues', leagueRoutes);
 
     // Conversas
     this.app.use('/chats', chatRoutes);

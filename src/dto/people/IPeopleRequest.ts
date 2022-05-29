@@ -6,4 +6,5 @@ export interface IPeopleRequest {
   isOnline?: boolean;
   isStudent?: boolean;
   profilePictureId?: string;
+  leagueId?: string;
 }
